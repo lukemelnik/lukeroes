@@ -30,16 +30,16 @@ export default function Header() {
   ] as const;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background backdrop-blur">
+    <header className="sticky top-0 z-50 w-full bg-background backdrop-blur">
       {/* Desktop Header */}
       <div className="hidden md:flex items-center justify-between px-6 py-4">
         {/* Left - Navigation Links */}
-        <nav className="flex gap-6 text-sm font-medium">
+        <nav className="flex gap-6 text-lg font-heading font-medium ">
           {links.map(({ to, label }) => (
             <Link
               key={to}
               to={to}
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
+              className="squiggly-underline transition-colors mt-2 uppercase hover:text-foreground/80 text-foreground/60"
               activeProps={{
                 className: "text-foreground",
               }}
@@ -51,8 +51,8 @@ export default function Header() {
 
         {/* Center - Artist Name */}
         <div className="absolute left-1/2 -translate-x-1/2">
-          <Link to="/" className="text-2xl font-bold tracking-tight">
-            LUKE ROES
+          <Link to="/" className="text-4xl font-bold tracking-tight">
+            <h1 className="mb-0 mt-2 p-0">LUKE ROES</h1>
           </Link>
         </div>
 
@@ -64,7 +64,7 @@ export default function Header() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground/60 transition-colors hover:text-foreground"
+              className="text-foreground/60 transition-colors hover:text-primary"
               aria-label={label}
             >
               <Icon size={20} />
@@ -114,10 +114,10 @@ export default function Header() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-foreground/60 transition-colors hover:text-foreground"
+                  className="text-foreground/60 transition-colors hover:text-primary"
                   aria-label={label}
                 >
-                  <Icon size={24} />
+                  <Icon size={42} />
                 </a>
               ))}
             </div>

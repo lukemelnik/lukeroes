@@ -9,6 +9,7 @@ export function YoutubeIcon({ size = 24, ...props }: YoutubeIconProps) {
     <svg
       stroke="currentColor"
       width={size}
+      height={size}
       fill="currentColor"
       strokeWidth="0"
       role="img"

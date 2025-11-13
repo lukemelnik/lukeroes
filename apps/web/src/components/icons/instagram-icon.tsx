@@ -7,7 +7,8 @@ interface InstagramIconProps extends SVGProps<SVGSVGElement> {
 export function InstagramIcon({ size = 24, ...props }: InstagramIconProps) {
   return (
     <svg
-      width={size * 0.85}
+      width={size}
+      height={size}
       fill="currentColor"
       role="img"
       viewBox="0 0 24 24"

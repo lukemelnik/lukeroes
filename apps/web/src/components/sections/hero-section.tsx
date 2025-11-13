@@ -14,7 +14,7 @@ export default function HeroSection() {
 	];
 
 	return (
-		<section className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
+		<section className="relative h-screen w-full overflow-hidden -mt-[72px]">
 			{/* Background Image */}
 			<div
 				className="absolute inset-0 bg-cover bg-center bg-no-repeat"

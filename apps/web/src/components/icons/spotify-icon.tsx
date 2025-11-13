@@ -8,7 +8,8 @@ export function SpotifyIcon({ size = 24, ...props }: SpotifyIconProps) {
   return (
     <svg
       fill="currentColor"
-      width={size * 0.87}
+      width={size}
+      height={size}
       role="img"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"

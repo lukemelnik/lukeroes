@@ -8,7 +8,8 @@ export function TiktokIcon({ size = 24, ...props }: TiktokIconProps) {
   return (
     <svg
       fill="currentColor"
-      width={size * 0.82}
+      width={size}
+      height={size}
       role="img"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
