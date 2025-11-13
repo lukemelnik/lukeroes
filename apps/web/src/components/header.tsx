@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SpotifyIcon } from "./icons/spotify-icon";
 import { AppleMusicIcon } from "./icons/apple-music-icon";
 import { InstagramIcon } from "./icons/instagram-icon";
@@ -9,6 +9,16 @@ import { YoutubeIcon } from "./icons/youtube-icon";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const links = [
     { to: "/", label: "Home" },
@@ -30,7 +40,9 @@ export default function Header() {
   ] as const;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background backdrop-blur">
+    <header
+      className={`sticky top-0 z-50 w-full transition-colors duration-300 ${isScrolled ? "bg-background" : "bg-transparent"}`}
+    >
       {/* Desktop Header */}
       <div className="hidden md:flex items-center justify-between px-6 py-4">
         {/* Left - Navigation Links */}
@@ -39,7 +51,7 @@ export default function Header() {
             <Link
               key={to}
               to={to}
-              className="squiggly-underline transition-colors mt-2 uppercase hover:text-foreground/80 text-foreground/60"
+              className="squiggly-underline transition-colors mt-2 uppercase hover:text-foreground/80"
               activeProps={{
                 className: "text-foreground",
               }}
@@ -114,10 +126,10 @@ export default function Header() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-foreground/60 transition-colors hover:text-primary"
+                  className="transition-colors text-foreground hover:text-primary"
                   aria-label={label}
                 >
-                  <Icon size={42} />
+                  <Icon size={32} />
                 </a>
               ))}
             </div>
