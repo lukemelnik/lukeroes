@@ -1,34 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
+import HeroSection from "@/components/sections/hero-section";
+import MusicSection from "@/components/sections/music-section";
+import VideosSection from "@/components/sections/videos-section";
+import TourSection from "@/components/sections/tour-section";
+import MailingListSection from "@/components/sections/mailing-list-section";
+import Footer from "@/components/footer";
 
-export const Route = createFileRoute("/")({
-	component: HomeComponent,
-});
-
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
-
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
+export const Route = createFileRoute("/")({ component: HomeComponent });
 
 function HomeComponent() {
-	return (
-		<div className="container mx-auto max-w-3xl px-4 py-2">
-			<pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-			<div className="grid gap-6">
-				<section className="rounded-lg border p-4">
-					<h2 className="mb-2 font-medium">API Status</h2>
-				</section>
-			</div>
-		</div>
-	);
+  return (
+    <div className="bg-background w-full">
+      <HeroSection />
+      <MusicSection />
+      <VideosSection />
+      <TourSection />
+      <MailingListSection />
+      <Footer />
+    </div>
+  );
 }
