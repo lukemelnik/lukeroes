@@ -25,8 +25,7 @@ export default function HeroSection() {
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
       </div>
-
-      {/* Content */}
+      a{/* Content */}
       <div className="relative h-full flex items-end justify-center pb-52 px-4">
         <div className="text-center space-y-6 max-w-2xl">
           <div className="space-y-2">

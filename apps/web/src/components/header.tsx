@@ -51,9 +51,10 @@ export default function Header() {
             <Link
               key={to}
               to={to}
-              className="squiggly-underline transition-colors mt-2 uppercase hover:text-foreground/80"
+              className="text-xl squiggly-underline transition-colors mt-2 uppercase hover:text-foreground/80"
               activeProps={{
                 className: "text-foreground",
+                "data-status": "active",
               }}
             >
               {label}
@@ -64,12 +65,12 @@ export default function Header() {
         {/* Center - Artist Name */}
         <div className="absolute left-1/2 -translate-x-1/2">
           <Link to="/" className="text-4xl font-bold tracking-tight">
-            <h1 className="mb-0 mt-2 p-0">LUKE ROES</h1>
+            <h1 className="mb-0 mt-3 p-0">LUKE ROES</h1>
           </Link>
         </div>
 
         {/* Right - Social Icons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           {socialLinks.map(({ href, icon: Icon, label }) => (
             <a
               key={label}
@@ -79,7 +80,7 @@ export default function Header() {
               className="text-foreground/60 transition-colors hover:text-primary"
               aria-label={label}
             >
-              <Icon size={20} />
+              <Icon size={24} />
             </a>
           ))}
         </div>
@@ -94,7 +95,7 @@ export default function Header() {
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-        <Link to="/" className="text-xl font-bold tracking-tight">
+        <Link to="/" className="text-3xl font-bold tracking-tight">
           LUKE ROES
         </Link>
         <div className="w-10" /> {/* Spacer for centering */}
@@ -102,15 +103,16 @@ export default function Header() {
 
       {/* Mobile Dropdown Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t bg-background">
+        <div className="md:hidden border-t text-center bg-background">
           <nav className="flex flex-col px-4 py-2">
             {links.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
-                className="py-3 text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+                className="py-3 text-xl font-medium squiggly-underline transition-colors hover:text-foreground/80 text-foreground/60"
                 activeProps={{
                   className: "text-foreground",
+                  "data-status": "active",
                 }}
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -129,7 +131,7 @@ export default function Header() {
                   className="transition-colors text-foreground hover:text-primary"
                   aria-label={label}
                 >
-                  <Icon size={32} />
+                  <Icon size={24} />
                 </a>
               ))}
             </div>

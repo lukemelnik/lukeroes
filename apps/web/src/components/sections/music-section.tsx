@@ -6,7 +6,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play } from "lucide-react";
+import { Play, Info } from "lucide-react";
+import { SpotifyIcon } from "@/components/icons/spotify-icon";
+import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
+import { YoutubeIcon } from "@/components/icons/youtube-icon";
 
 interface MusicItem {
   id: string;
@@ -15,6 +18,9 @@ interface MusicItem {
   artwork: string;
   releaseDate: string;
   streamUrl: string;
+  spotify?: string;
+  appleMusic?: string;
+  youtube?: string;
 }
 
 const mockMusicData: MusicItem[] = [
@@ -25,6 +31,9 @@ const mockMusicData: MusicItem[] = [
     artwork: "https://placehold.co/400x400/1a1a1a/white?text=Single",
     releaseDate: "2024",
     streamUrl: "#",
+    spotify: "https://open.spotify.com",
+    appleMusic: "https://music.apple.com",
+    youtube: "https://youtube.com",
   },
   {
     id: "2",
@@ -33,6 +42,8 @@ const mockMusicData: MusicItem[] = [
     artwork: "https://placehold.co/400x400/2a2a2a/white?text=Album",
     releaseDate: "2023",
     streamUrl: "#",
+    spotify: "https://open.spotify.com",
+    appleMusic: "https://music.apple.com",
   },
   {
     id: "3",
@@ -41,6 +52,7 @@ const mockMusicData: MusicItem[] = [
     artwork: "https://placehold.co/400x400/3a3a3a/white?text=EP",
     releaseDate: "2023",
     streamUrl: "#",
+    youtube: "https://youtube.com",
   },
   {
     id: "4",
@@ -57,6 +69,7 @@ const mockMusicData: MusicItem[] = [
     artwork: "https://placehold.co/400x400/5a5a5a/white?text=EP",
     releaseDate: "2022",
     streamUrl: "#",
+    spotify: "https://open.spotify.com",
   },
 ];
 
@@ -110,9 +123,53 @@ export default function MusicSection() {
                           {item.type}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {item.releaseDate}
-                      </p>
+                      <div className="flex items-center justify-between pt-2">
+                        <div className="flex gap-3">
+                          {item.spotify && (
+                            <a
+                              href={item.spotify}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-muted-foreground hover:text-primary transition-colors"
+                              aria-label="Listen on Spotify"
+                            >
+                              <SpotifyIcon size={20} />
+                            </a>
+                          )}
+                          {item.appleMusic && (
+                            <a
+                              href={item.appleMusic}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-muted-foreground hover:text-primary transition-colors"
+                              aria-label="Listen on Apple Music"
+                            >
+                              <AppleMusicIcon size={20} />
+                            </a>
+                          )}
+                          {item.youtube && (
+                            <a
+                              href={item.youtube}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-muted-foreground hover:text-primary transition-colors"
+                              aria-label="Watch on YouTube"
+                            >
+                              <YoutubeIcon size={20} />
+                            </a>
+                          )}
+                          <a
+                            href={`/music/${item.id}`}
+                            className="text-muted-foreground hover:text-primary transition-colors"
+                            aria-label="Release info"
+                          >
+                            <Info size={20} />
+                          </a>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {item.releaseDate}
+                        </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

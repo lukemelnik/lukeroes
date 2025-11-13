@@ -42,9 +42,9 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             <h3 className="font-semibold">Quick Links</h3>
-            <nav className="flex flex-col space-y-2">
+            <nav className="flex gap-4 ">
               {links.map(({ to, label }) => (
                 <Link
                   key={to}
@@ -58,7 +58,7 @@ export default function Footer() {
           </div>
 
           {/* Social */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             <h3 className="font-semibold">Follow</h3>
             <div className="flex gap-4">
               {socialLinks.map(({ href, icon: Icon, label }) => (
