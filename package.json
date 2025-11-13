@@ -1,0 +1,31 @@
+{
+  "name": "lukeroes",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "check": "biome check --write .",
+    "dev": "pnpm -r dev",
+    "build": "pnpm -r build",
+    "check-types": "pnpm -r check-types",
+    "dev:native": "pnpm --filter native dev",
+    "dev:web": "pnpm --filter web dev",
+    "db:push": "pnpm --filter @lukeroes/db db:push",
+    "db:studio": "pnpm --filter @lukeroes/db db:studio",
+    "db:generate": "pnpm --filter @lukeroes/db db:generate",
+    "db:migrate": "pnpm --filter @lukeroes/db db:migrate"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.0",
+    "tsdown": "^0.15.5",
+    "@types/node": "^22.13.11"
+  },
+  "packageManager": "pnpm@10.13.1"
+}
