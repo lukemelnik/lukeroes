@@ -7,6 +7,7 @@ node_modules
 dist
 build
 *.tsbuildinfo
+.content-collections
 
 # Environment variables
 .env

@@ -1,24 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { SpotifyIcon } from "./icons/spotify-icon";
-import { AppleMusicIcon } from "./icons/apple-music-icon";
-import { InstagramIcon } from "./icons/instagram-icon";
-import { TiktokIcon } from "./icons/tiktok-icon";
-import { YoutubeIcon } from "./icons/youtube-icon";
+import { siteConfig } from "@/lib/site-config";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-
-  const socialLinks = [
-    { href: "https://open.spotify.com", icon: SpotifyIcon, label: "Spotify" },
-    {
-      href: "https://music.apple.com",
-      icon: AppleMusicIcon,
-      label: "Apple Music",
-    },
-    { href: "https://instagram.com", icon: InstagramIcon, label: "Instagram" },
-    { href: "https://tiktok.com", icon: TiktokIcon, label: "TikTok" },
-    { href: "https://youtube.com", icon: YoutubeIcon, label: "YouTube" },
-  ];
 
   const links = [
     { to: "/", label: "Home" },
@@ -61,18 +45,20 @@ export default function Footer() {
           <div className="space-y-2">
             <h3 className="font-semibold">Follow</h3>
             <div className="flex gap-4">
-              {socialLinks.map(({ href, icon: Icon, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={label}
-                >
-                  <Icon size={20} />
-                </a>
-              ))}
+              {siteConfig.socials
+                .filter((social) => social.href)
+                .map(({ key, href, icon: Icon, label }) => (
+                  <a
+                    key={key}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label={label}
+                  >
+                    <Icon size={20} />
+                  </a>
+                ))}
             </div>
           </div>
         </div>

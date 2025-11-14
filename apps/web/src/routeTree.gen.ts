@@ -18,7 +18,9 @@ import { Route as navVideosRouteImport } from './routes/(nav)/videos'
 import { Route as navTourRouteImport } from './routes/(nav)/tour'
 import { Route as navMusicRouteImport } from './routes/(nav)/music'
 import { Route as navLoginRouteImport } from './routes/(nav)/login'
+import { Route as navBlogIndexRouteImport } from './routes/(nav)/blog/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as navBlogSlugRouteImport } from './routes/(nav)/blog/$slug'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -64,10 +66,20 @@ const navLoginRoute = navLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => navRouteRoute,
 } as any)
+const navBlogIndexRoute = navBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
+} as any)
+const navBlogSlugRoute = navBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => navRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -79,7 +91,9 @@ export interface FileRoutesByFullPath {
   '/videos': typeof navVideosRoute
   '/': typeof navIndexRoute
   '/test/': typeof TestIndexRoute
+  '/blog/$slug': typeof navBlogSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/blog': typeof navBlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
@@ -89,7 +103,9 @@ export interface FileRoutesByTo {
   '/videos': typeof navVideosRoute
   '/': typeof navIndexRoute
   '/test': typeof TestIndexRoute
+  '/blog/$slug': typeof navBlogSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/blog': typeof navBlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -102,7 +118,9 @@ export interface FileRoutesById {
   '/(nav)/videos': typeof navVideosRoute
   '/(nav)/': typeof navIndexRoute
   '/test/': typeof TestIndexRoute
+  '/(nav)/blog/$slug': typeof navBlogSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/(nav)/blog/': typeof navBlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -115,7 +133,9 @@ export interface FileRouteTypes {
     | '/videos'
     | '/'
     | '/test/'
+    | '/blog/$slug'
     | '/api/auth/$'
+    | '/blog'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
@@ -125,7 +145,9 @@ export interface FileRouteTypes {
     | '/videos'
     | '/'
     | '/test'
+    | '/blog/$slug'
     | '/api/auth/$'
+    | '/blog'
   id:
     | '__root__'
     | '/(nav)'
@@ -137,7 +159,9 @@ export interface FileRouteTypes {
     | '/(nav)/videos'
     | '/(nav)/'
     | '/test/'
+    | '/(nav)/blog/$slug'
     | '/api/auth/$'
+    | '/(nav)/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -212,12 +236,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navLoginRouteImport
       parentRoute: typeof navRouteRoute
     }
+    '/(nav)/blog/': {
+      id: '/(nav)/blog/'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof navBlogIndexRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(nav)/blog/$slug': {
+      id: '/(nav)/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof navBlogSlugRouteImport
+      parentRoute: typeof navRouteRoute
     }
   }
 }
@@ -228,6 +266,8 @@ interface navRouteRouteChildren {
   navTourRoute: typeof navTourRoute
   navVideosRoute: typeof navVideosRoute
   navIndexRoute: typeof navIndexRoute
+  navBlogSlugRoute: typeof navBlogSlugRoute
+  navBlogIndexRoute: typeof navBlogIndexRoute
 }
 
 const navRouteRouteChildren: navRouteRouteChildren = {
@@ -236,6 +276,8 @@ const navRouteRouteChildren: navRouteRouteChildren = {
   navTourRoute: navTourRoute,
   navVideosRoute: navVideosRoute,
   navIndexRoute: navIndexRoute,
+  navBlogSlugRoute: navBlogSlugRoute,
+  navBlogIndexRoute: navBlogIndexRoute,
 }
 
 const navRouteRouteWithChildren = navRouteRoute._addFileChildren(

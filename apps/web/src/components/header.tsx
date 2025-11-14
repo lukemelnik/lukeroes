@@ -22,6 +22,7 @@ export default function Header() {
     { to: "/music", label: "Music" },
     { to: "/videos", label: "Videos" },
     { to: "/tour", label: "Tour" },
+    { to: "/blog", label: "Blog" },
   ]);
 
   const socialLinks = siteConfig.socials.filter(
