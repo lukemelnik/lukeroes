@@ -6,7 +6,7 @@ import TourSection from "@/components/sections/tour-section";
 import MailingListSection from "@/components/sections/mailing-list-section";
 import Footer from "@/components/footer";
 
-export const Route = createFileRoute("/")({ component: HomeComponent });
+export const Route = createFileRoute("/(nav)/")({ component: HomeComponent });
 
 function HomeComponent() {
   return (
@@ -16,7 +16,6 @@ function HomeComponent() {
       <VideosSection />
       <TourSection />
       <MailingListSection />
-      <Footer />
     </div>
   );
 }

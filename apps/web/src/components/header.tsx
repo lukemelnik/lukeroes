@@ -1,11 +1,7 @@
-import { Link } from "@tanstack/react-router";
+import { Link, linkOptions } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
-import { SpotifyIcon } from "./icons/spotify-icon";
-import { AppleMusicIcon } from "./icons/apple-music-icon";
-import { InstagramIcon } from "./icons/instagram-icon";
-import { TiktokIcon } from "./icons/tiktok-icon";
-import { YoutubeIcon } from "./icons/youtube-icon";
+import { siteConfig } from "@/lib/site-config";
 import { Button } from "./ui/button";
 
 export default function Header() {
@@ -21,24 +17,16 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const links = [
+  const links = linkOptions([
     { to: "/", label: "Home" },
     { to: "/music", label: "Music" },
     { to: "/videos", label: "Videos" },
     { to: "/tour", label: "Tour" },
-  ] as const;
+  ]);
 
-  const socialLinks = [
-    { href: "https://open.spotify.com", icon: SpotifyIcon, label: "Spotify" },
-    {
-      href: "https://music.apple.com",
-      icon: AppleMusicIcon,
-      label: "Apple Music",
-    },
-    { href: "https://instagram.com", icon: InstagramIcon, label: "Instagram" },
-    { href: "https://tiktok.com", icon: TiktokIcon, label: "TikTok" },
-    { href: "https://youtube.com", icon: YoutubeIcon, label: "YouTube" },
-  ] as const;
+  const socialLinks = siteConfig.socials.filter(
+    ({ href, icon }) => href && icon,
+  );
 
   return (
     <header
@@ -72,7 +60,7 @@ export default function Header() {
         {/* Center - Artist Name */}
         <div className="absolute left-1/2 -translate-x-1/2">
           <Link to="/" className="text-4xl font-bold tracking-tight">
-            <h1 className="mb-0 mt-3 p-0">LUKE ROES</h1>
+            <h1 className="mb-0 mt-3 p-0">{siteConfig.name.toUpperCase()}</h1>
           </Link>
         </div>
 
@@ -92,7 +80,7 @@ export default function Header() {
                 aria-label={label}
                 className="text-foreground"
               >
-                <Icon className="size-6" />
+                <Icon className="size-5" />
               </a>
             </Button>
           ))}
@@ -135,7 +123,7 @@ export default function Header() {
                 : "opacity-100 translate-y-0"
             }`}
           >
-            LUKE ROES
+            {siteConfig.name.toUpperCase()}
           </h1>
         </Link>
         <div className="w-10" /> {/* Spacer for centering */}

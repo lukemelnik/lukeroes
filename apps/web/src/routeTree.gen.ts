@@ -9,31 +9,60 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MusicRouteImport } from './routes/music'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as TestRouteRouteImport } from './routes/test/route'
+import { Route as navRouteRouteImport } from './routes/(nav)/route'
+import { Route as TestIndexRouteImport } from './routes/test/index'
+import { Route as navIndexRouteImport } from './routes/(nav)/index'
+import { Route as navVideosRouteImport } from './routes/(nav)/videos'
+import { Route as navTourRouteImport } from './routes/(nav)/tour'
+import { Route as navMusicRouteImport } from './routes/(nav)/music'
+import { Route as navLoginRouteImport } from './routes/(nav)/login'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const MusicRoute = MusicRouteImport.update({
-  id: '/music',
-  path: '/music',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const TestRouteRoute = TestRouteRouteImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const navRouteRoute = navRouteRouteImport.update({
+  id: '/(nav)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestIndexRoute = TestIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => TestRouteRoute,
+} as any)
+const navIndexRoute = navIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navVideosRoute = navVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navTourRoute = navTourRouteImport.update({
+  id: '/tour',
+  path: '/tour',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navMusicRoute = navMusicRouteImport.update({
+  id: '/music',
+  path: '/music',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navLoginRoute = navLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => navRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -42,59 +71,84 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/test': typeof TestRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
-  '/login': typeof LoginRoute
-  '/music': typeof MusicRoute
+  '/login': typeof navLoginRoute
+  '/music': typeof navMusicRoute
+  '/tour': typeof navTourRoute
+  '/videos': typeof navVideosRoute
+  '/': typeof navIndexRoute
+  '/test/': typeof TestIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/login': typeof LoginRoute
-  '/music': typeof MusicRoute
+  '/login': typeof navLoginRoute
+  '/music': typeof navMusicRoute
+  '/tour': typeof navTourRoute
+  '/videos': typeof navVideosRoute
+  '/': typeof navIndexRoute
+  '/test': typeof TestIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/(nav)': typeof navRouteRouteWithChildren
+  '/test': typeof TestRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
-  '/login': typeof LoginRoute
-  '/music': typeof MusicRoute
+  '/(nav)/login': typeof navLoginRoute
+  '/(nav)/music': typeof navMusicRoute
+  '/(nav)/tour': typeof navTourRoute
+  '/(nav)/videos': typeof navVideosRoute
+  '/(nav)/': typeof navIndexRoute
+  '/test/': typeof TestIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/music' | '/api/auth/$'
+  fullPaths:
+    | '/test'
+    | '/dashboard'
+    | '/login'
+    | '/music'
+    | '/tour'
+    | '/videos'
+    | '/'
+    | '/test/'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/music' | '/api/auth/$'
-  id: '__root__' | '/' | '/dashboard' | '/login' | '/music' | '/api/auth/$'
+  to:
+    | '/dashboard'
+    | '/login'
+    | '/music'
+    | '/tour'
+    | '/videos'
+    | '/'
+    | '/test'
+    | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/(nav)'
+    | '/test'
+    | '/dashboard'
+    | '/(nav)/login'
+    | '/(nav)/music'
+    | '/(nav)/tour'
+    | '/(nav)/videos'
+    | '/(nav)/'
+    | '/test/'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  navRouteRoute: typeof navRouteRouteWithChildren
+  TestRouteRoute: typeof TestRouteRouteWithChildren
   DashboardRoute: typeof DashboardRoute
-  LoginRoute: typeof LoginRoute
-  MusicRoute: typeof MusicRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/music': {
-      id: '/music'
-      path: '/music'
-      fullPath: '/music'
-      preLoaderRoute: typeof MusicRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -102,12 +156,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(nav)': {
+      id: '/(nav)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof navRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test/': {
+      id: '/test/'
+      path: '/'
+      fullPath: '/test/'
+      preLoaderRoute: typeof TestIndexRouteImport
+      parentRoute: typeof TestRouteRoute
+    }
+    '/(nav)/': {
+      id: '/(nav)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof navIndexRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/videos': {
+      id: '/(nav)/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof navVideosRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/tour': {
+      id: '/(nav)/tour'
+      path: '/tour'
+      fullPath: '/tour'
+      preLoaderRoute: typeof navTourRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/music': {
+      id: '/(nav)/music'
+      path: '/music'
+      fullPath: '/music'
+      preLoaderRoute: typeof navMusicRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/login': {
+      id: '/(nav)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof navLoginRouteImport
+      parentRoute: typeof navRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -119,11 +222,42 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface navRouteRouteChildren {
+  navLoginRoute: typeof navLoginRoute
+  navMusicRoute: typeof navMusicRoute
+  navTourRoute: typeof navTourRoute
+  navVideosRoute: typeof navVideosRoute
+  navIndexRoute: typeof navIndexRoute
+}
+
+const navRouteRouteChildren: navRouteRouteChildren = {
+  navLoginRoute: navLoginRoute,
+  navMusicRoute: navMusicRoute,
+  navTourRoute: navTourRoute,
+  navVideosRoute: navVideosRoute,
+  navIndexRoute: navIndexRoute,
+}
+
+const navRouteRouteWithChildren = navRouteRoute._addFileChildren(
+  navRouteRouteChildren,
+)
+
+interface TestRouteRouteChildren {
+  TestIndexRoute: typeof TestIndexRoute
+}
+
+const TestRouteRouteChildren: TestRouteRouteChildren = {
+  TestIndexRoute: TestIndexRoute,
+}
+
+const TestRouteRouteWithChildren = TestRouteRoute._addFileChildren(
+  TestRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  navRouteRoute: navRouteRouteWithChildren,
+  TestRouteRoute: TestRouteRouteWithChildren,
   DashboardRoute: DashboardRoute,
-  LoginRoute: LoginRoute,
-  MusicRoute: MusicRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

@@ -7,7 +7,7 @@ import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export const Route = createFileRoute("/music")({
+export const Route = createFileRoute("/(nav)/music")({
   component: MusicPageComponent,
 });
 
