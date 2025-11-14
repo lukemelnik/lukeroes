@@ -1,6 +1,7 @@
 import { SpotifyIcon } from "../icons/spotify-icon";
 import { AppleMusicIcon } from "../icons/apple-music-icon";
 import { YoutubeIcon } from "../icons/youtube-icon";
+import { Button } from "../ui/button";
 
 export default function HeroSection() {
   const streamingLinks = [
@@ -25,14 +26,14 @@ export default function HeroSection() {
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
       </div>
-      a{/* Content */}
-      <div className="relative h-full flex items-end justify-center pb-52 px-4">
-        <div className="text-center space-y-6 max-w-2xl">
-          <div className="space-y-2">
+      {/* Content */}
+      <div className="relative h-full flex items-end justify-center pb-20 sm:pb-52 px-4">
+        <div className="text-center space-y-2 max-w-2xl">
+          <div className="">
             <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
               New EP Out Now
             </p>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <h1 className="text-xl smtext-4xl md:text-6xl font-bold tracking-tight">
               Welcome To My Head
             </h1>
           </div>
@@ -40,16 +41,23 @@ export default function HeroSection() {
           {/* Streaming Links */}
           <div className="flex items-center justify-center gap-4">
             {streamingLinks.map(({ href, icon: Icon, label }) => (
-              <a
+              <Button
                 key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                variant="default"
+                asChild
+                className="rounded-full bg-primary/55 backdrop-blur-md
+                text-background hover:bg-foreground p-4 transition-all duration-500 md:px-6 md:py-3"
               >
-                <Icon size={20} />
-                <span className="font-medium">{label}</span>
-              </a>
+                <a
+                  href={href}
+                  className="rounded-full py-4 sm:p-6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon className="size-5 sm:size-6" />
+                  <span className="hidden md:inline">{label}</span>
+                </a>
+              </Button>
             ))}
           </div>
         </div>

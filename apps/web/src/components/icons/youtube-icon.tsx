@@ -4,17 +4,18 @@ interface YoutubeIconProps extends SVGProps<SVGSVGElement> {
   size?: number;
 }
 
-export function YoutubeIcon({ size = 24, ...props }: YoutubeIconProps) {
+export function YoutubeIcon({ size = 24, className, ...props }: YoutubeIconProps) {
   return (
     <svg
-      stroke="currentColor"
-      width={size}
-      height={size}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
       fill="currentColor"
+      stroke="currentColor"
       strokeWidth="0"
       role="img"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      width={size}
+      height={size}
       {...props}
     >
       <title>YouTube</title>

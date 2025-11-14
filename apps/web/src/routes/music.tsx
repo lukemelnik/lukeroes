@@ -312,7 +312,7 @@ function MusicPageComponent() {
 
                 {/* Expanded Track Info */}
                 {expandedMobileId === item.id && (
-                  <div className="border-t p-4 bg-accent/20">
+                  <div className="border-t p-4">
                     <div className="space-y-2">
                       {item.tracks.map((track) => (
                         <div
