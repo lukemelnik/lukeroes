@@ -23,44 +23,40 @@ interface Service {
 const services: Service[] = [
   {
     icon: <Sliders className="h-8 w-8" />,
-    title: "Mixing",
-    description:
-      "Get your tracks polished and radio-ready with professional mixing.",
-    price: "$300 - $800",
-    priceNote: "depending on project size",
+    title: "Mix & Master",
+    description: "Get your tracks polished and radio-ready.",
+    price: "$250 - $800",
+    priceNote: "depending on project track count",
     features: [
-      "Full mixdown with unlimited revisions",
-      "Stems preparation for mastering",
-      "Reference matching",
-      "1-2 week turnaround",
+      "Unlimited revisions",
+      "1 week turnaround",
+      "Vocal tuning (extra)",
+      "Digital master (extra)",
     ],
   },
   {
     icon: <Music className="h-8 w-8" />,
     title: "Production",
-    description:
-      "From idea to finished track - full production services for your project.",
+    description: "Take your song from a simple idea to a full production.",
     price: "$500",
     priceNote: "per day",
     features: [
-      "Arrangement & composition",
-      "Session musicians coordination",
-      "Sound design & programming",
-      "Collaborative or hands-off approach",
+      "Professional vocal production",
+      "Arrangement, composition & lyrics",
+      "Guitar, bass, synth and drum programming",
+      "Sound design and effects",
     ],
   },
   {
     icon: <MessageSquare className="h-8 w-8" />,
     title: "Consulting",
-    description:
-      "Get feedback and direction on your productions from an experienced ear.",
+    description: "Get feedback and direction on your productions.",
     price: "$75",
     priceNote: "per hour",
     features: [
       "Mix feedback & critique",
       "Production direction",
       "Career guidance",
-      "Video call or in-person",
     ],
   },
 ];
@@ -129,8 +125,7 @@ function ProductionPageComponent() {
                 Production Services
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground">
-                Bringing your music to life with professional production,
-                mixing, and personalized guidance.
+                Bringing your music to life
               </p>
             </div>
           </div>
@@ -197,7 +192,7 @@ function ProductionPageComponent() {
                   <ul className="space-y-2 text-sm text-muted-foreground flex-1">
                     {service.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-2">
-                        <span className="text-primary mt-1">-</span>
+                        <span className="text-primary">-</span>
                         <span>{feature}</span>
                       </li>
                     ))}
