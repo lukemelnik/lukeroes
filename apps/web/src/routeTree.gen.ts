@@ -16,6 +16,7 @@ import { Route as TestIndexRouteImport } from './routes/test/index'
 import { Route as navIndexRouteImport } from './routes/(nav)/index'
 import { Route as navVideosRouteImport } from './routes/(nav)/videos'
 import { Route as navTourRouteImport } from './routes/(nav)/tour'
+import { Route as navProductionRouteImport } from './routes/(nav)/production'
 import { Route as navMusicRouteImport } from './routes/(nav)/music'
 import { Route as navLoginRouteImport } from './routes/(nav)/login'
 import { Route as navBlogIndexRouteImport } from './routes/(nav)/blog/index'
@@ -56,6 +57,11 @@ const navTourRoute = navTourRouteImport.update({
   path: '/tour',
   getParentRoute: () => navRouteRoute,
 } as any)
+const navProductionRoute = navProductionRouteImport.update({
+  id: '/production',
+  path: '/production',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const navMusicRoute = navMusicRouteImport.update({
   id: '/music',
   path: '/music',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof navLoginRoute
   '/music': typeof navMusicRoute
+  '/production': typeof navProductionRoute
   '/tour': typeof navTourRoute
   '/videos': typeof navVideosRoute
   '/': typeof navIndexRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof navLoginRoute
   '/music': typeof navMusicRoute
+  '/production': typeof navProductionRoute
   '/tour': typeof navTourRoute
   '/videos': typeof navVideosRoute
   '/': typeof navIndexRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/(nav)/login': typeof navLoginRoute
   '/(nav)/music': typeof navMusicRoute
+  '/(nav)/production': typeof navProductionRoute
   '/(nav)/tour': typeof navTourRoute
   '/(nav)/videos': typeof navVideosRoute
   '/(nav)/': typeof navIndexRoute
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/music'
+    | '/production'
     | '/tour'
     | '/videos'
     | '/'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/music'
+    | '/production'
     | '/tour'
     | '/videos'
     | '/'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/(nav)/login'
     | '/(nav)/music'
+    | '/(nav)/production'
     | '/(nav)/tour'
     | '/(nav)/videos'
     | '/(nav)/'
@@ -222,6 +234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navTourRouteImport
       parentRoute: typeof navRouteRoute
     }
+    '/(nav)/production': {
+      id: '/(nav)/production'
+      path: '/production'
+      fullPath: '/production'
+      preLoaderRoute: typeof navProductionRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/(nav)/music': {
       id: '/(nav)/music'
       path: '/music'
@@ -263,6 +282,7 @@ declare module '@tanstack/react-router' {
 interface navRouteRouteChildren {
   navLoginRoute: typeof navLoginRoute
   navMusicRoute: typeof navMusicRoute
+  navProductionRoute: typeof navProductionRoute
   navTourRoute: typeof navTourRoute
   navVideosRoute: typeof navVideosRoute
   navIndexRoute: typeof navIndexRoute
@@ -273,6 +293,7 @@ interface navRouteRouteChildren {
 const navRouteRouteChildren: navRouteRouteChildren = {
   navLoginRoute: navLoginRoute,
   navMusicRoute: navMusicRoute,
+  navProductionRoute: navProductionRoute,
   navTourRoute: navTourRoute,
   navVideosRoute: navVideosRoute,
   navIndexRoute: navIndexRoute,
