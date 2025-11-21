@@ -46,7 +46,10 @@ function LinksPage() {
                   // Fallback to initials if image fails to load
                   const target = e.target as HTMLImageElement;
                   target.style.display = "none";
-                  target.parentElement!.innerHTML = `<div class="w-full h-full bg-primary/20 flex items-center justify-center text-2xl font-bold text-primary">${profile.name.split(" ").map((n) => n[0]).join("")}</div>`;
+                  target.parentElement!.innerHTML = `<div class="w-full h-full bg-primary/20 flex items-center justify-center text-2xl font-bold text-primary">${profile.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}</div>`;
                 }}
               />
             </div>
@@ -119,7 +122,7 @@ function LinksPage() {
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 w-full h-12 px-4 rounded-lg bg-card border border-border hover:bg-accent hover:border-primary/50 transition-all font-medium"
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="size-4" />
                   <span>{link.label}</span>
                   <ExternalLink className="w-4 h-4 ml-auto opacity-50" />
                 </a>
@@ -132,8 +135,8 @@ function LinksPage() {
                 to={link.href}
                 className="flex items-center justify-center gap-2 w-full h-12 px-4 rounded-lg bg-card border border-border hover:bg-accent hover:border-primary/50 transition-all font-medium"
               >
-                <Icon className="w-5 h-5" />
-                <span>{link.label}</span>
+                <Icon className="size-4" />
+                <span className="mt-0.75">{link.label}</span>
               </Link>
             );
           })}
@@ -168,10 +171,7 @@ function LinksPage() {
                 <Mail className="w-4 h-4" />
                 <span className="text-sm font-medium">Stay in the loop</span>
               </div>
-              <form
-                onSubmit={handleSubmit}
-                className="flex gap-2"
-              >
+              <form onSubmit={handleSubmit} className="flex gap-2">
                 <Input
                   type="email"
                   placeholder="Enter your email"

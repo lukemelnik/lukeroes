@@ -1,4 +1,4 @@
-import { Briefcase } from "lucide-react";
+import { BookOpenText, Briefcase, Disc, Disc3Icon, Mail } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 // Other useful icons: Music, Video, Calendar, BookOpen, Mail, ExternalLink, ShoppingBag, Ticket
 
@@ -33,9 +33,9 @@ export interface LinksConfig {
 
 export const linksConfig: LinksConfig = {
   profile: {
-    image: "/profile.jpg", // Add your profile image to public/profile.jpg
+    image: "/bg-desktop-dirty.jpg", // Add your profile image to public/profile.jpg
     name: "Luke Roes",
-    tagline: "Producer • Artist • Songwriter",
+    tagline: "Artist • Producer • Mixer",
   },
 
   // Set to null to hide, or configure a featured release
@@ -57,7 +57,19 @@ export const linksConfig: LinksConfig = {
     {
       label: "Work with Me",
       href: "/production",
-      icon: Briefcase,
+      icon: Disc3Icon,
+      external: false,
+    },
+    {
+      label: "Contact",
+      href: "/contact",
+      icon: Mail,
+      external: false,
+    },
+    {
+      label: "Blog",
+      href: "/blog",
+      icon: BookOpenText,
       external: false,
     },
     // Add more links as needed:
