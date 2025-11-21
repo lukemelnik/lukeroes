@@ -8,7 +8,7 @@ export const Route = createFileRoute("/(nav)/tour")({
 function RouteComponent() {
   return (
     <div>
-      <TourSection />
+      <TourSection showPastDates={false} />
     </div>
   );
 }
