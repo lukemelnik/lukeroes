@@ -20,6 +20,7 @@ import { Route as navTourRouteImport } from './routes/(nav)/tour'
 import { Route as navProductionRouteImport } from './routes/(nav)/production'
 import { Route as navMusicRouteImport } from './routes/(nav)/music'
 import { Route as navLoginRouteImport } from './routes/(nav)/login'
+import { Route as navContactRouteImport } from './routes/(nav)/contact'
 import { Route as navBlogIndexRouteImport } from './routes/(nav)/blog/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as navBlogSlugRouteImport } from './routes/(nav)/blog/$slug'
@@ -78,6 +79,11 @@ const navLoginRoute = navLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => navRouteRoute,
 } as any)
+const navContactRoute = navContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const navBlogIndexRoute = navBlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/test': typeof TestRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/links': typeof LinksRoute
+  '/contact': typeof navContactRoute
   '/login': typeof navLoginRoute
   '/music': typeof navMusicRoute
   '/production': typeof navProductionRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/links': typeof LinksRoute
+  '/contact': typeof navContactRoute
   '/login': typeof navLoginRoute
   '/music': typeof navMusicRoute
   '/production': typeof navProductionRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/test': typeof TestRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/links': typeof LinksRoute
+  '/(nav)/contact': typeof navContactRoute
   '/(nav)/login': typeof navLoginRoute
   '/(nav)/music': typeof navMusicRoute
   '/(nav)/production': typeof navProductionRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/test'
     | '/dashboard'
     | '/links'
+    | '/contact'
     | '/login'
     | '/music'
     | '/production'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
   to:
     | '/dashboard'
     | '/links'
+    | '/contact'
     | '/login'
     | '/music'
     | '/production'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/test'
     | '/dashboard'
     | '/links'
+    | '/(nav)/contact'
     | '/(nav)/login'
     | '/(nav)/music'
     | '/(nav)/production'
@@ -275,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navLoginRouteImport
       parentRoute: typeof navRouteRoute
     }
+    '/(nav)/contact': {
+      id: '/(nav)/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof navContactRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/(nav)/blog/': {
       id: '/(nav)/blog/'
       path: '/blog'
@@ -300,6 +319,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface navRouteRouteChildren {
+  navContactRoute: typeof navContactRoute
   navLoginRoute: typeof navLoginRoute
   navMusicRoute: typeof navMusicRoute
   navProductionRoute: typeof navProductionRoute
@@ -311,6 +331,7 @@ interface navRouteRouteChildren {
 }
 
 const navRouteRouteChildren: navRouteRouteChildren = {
+  navContactRoute: navContactRoute,
   navLoginRoute: navLoginRoute,
   navMusicRoute: navMusicRoute,
   navProductionRoute: navProductionRoute,

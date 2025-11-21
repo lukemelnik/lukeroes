@@ -18,12 +18,12 @@ export default function Header() {
   }, []);
 
   const links = linkOptions([
-    { to: "/", label: "Home" },
     { to: "/music", label: "Music" },
     { to: "/videos", label: "Videos" },
     { to: "/tour", label: "Tour" },
     { to: "/production", label: "Production" },
     { to: "/blog", label: "Blog" },
+    { to: "/contact", label: "Contact" },
   ]);
 
   const socialLinks = siteConfig.socials.filter(
@@ -37,7 +37,7 @@ export default function Header() {
       {/* Desktop Header */}
       <div className="hidden md:flex items-center justify-between px-6 py-4">
         {/* Left - Navigation Links */}
-        <nav className="flex gap-6 text-lg font-heading font-medium ">
+        <nav className="flex gap-3 text-lg font-heading font-medium ">
           {links.map(({ to, label }) => (
             <Link
               key={to}
