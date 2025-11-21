@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LinksRouteImport } from './routes/links'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as TestRouteRouteImport } from './routes/test/route'
 import { Route as navRouteRouteImport } from './routes/(nav)/route'
@@ -24,6 +25,11 @@ import { Route as navBlogIndexRouteImport } from './routes/(nav)/blog/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as navBlogSlugRouteImport } from './routes/(nav)/blog/$slug'
 
+const LinksRoute = LinksRouteImport.update({
+  id: '/links',
+  path: '/links',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -97,6 +103,7 @@ const navBlogSlugRoute = navBlogSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/test': typeof TestRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
+  '/links': typeof LinksRoute
   '/contact': typeof navContactRoute
   '/login': typeof navLoginRoute
   '/music': typeof navMusicRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
+  '/links': typeof LinksRoute
   '/contact': typeof navContactRoute
   '/login': typeof navLoginRoute
   '/music': typeof navMusicRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/(nav)': typeof navRouteRouteWithChildren
   '/test': typeof TestRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
+  '/links': typeof LinksRoute
   '/(nav)/contact': typeof navContactRoute
   '/(nav)/login': typeof navLoginRoute
   '/(nav)/music': typeof navMusicRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/test'
     | '/dashboard'
+    | '/links'
     | '/contact'
     | '/login'
     | '/music'
@@ -159,6 +169,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
+    | '/links'
     | '/contact'
     | '/login'
     | '/music'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/(nav)'
     | '/test'
     | '/dashboard'
+    | '/links'
     | '/(nav)/contact'
     | '/(nav)/login'
     | '/(nav)/music'
@@ -192,11 +204,19 @@ export interface RootRouteChildren {
   navRouteRoute: typeof navRouteRouteWithChildren
   TestRouteRoute: typeof TestRouteRouteWithChildren
   DashboardRoute: typeof DashboardRoute
+  LinksRoute: typeof LinksRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/links': {
+      id: '/links'
+      path: '/links'
+      fullPath: '/links'
+      preLoaderRoute: typeof LinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   navRouteRoute: navRouteRouteWithChildren,
   TestRouteRoute: TestRouteRouteWithChildren,
   DashboardRoute: DashboardRoute,
+  LinksRoute: LinksRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
