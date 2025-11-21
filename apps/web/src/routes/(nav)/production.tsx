@@ -1,11 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Music, Sliders, MessageSquare } from "lucide-react";
 import { AudioComparisonSection } from "@/components/audio-comparison";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { ContactForm } from "@/components/contact-form";
 
 export const Route = createFileRoute("/(nav)/production")({
   component: ProductionPageComponent,
@@ -237,56 +234,7 @@ function ProductionPageComponent() {
             Have a project in mind? Send me a message and I'll get back to you
             within 24 hours.
           </p>
-          <form
-            action="https://formspree.io/f/your-form-id"
-            method="POST"
-            className="space-y-4"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="Your name"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="project">Project Type</Label>
-              <Input
-                id="project"
-                name="project"
-                type="text"
-                placeholder="e.g. Mixing, Production, Consulting"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea
-                id="message"
-                name="message"
-                placeholder="Tell me about your project..."
-                rows={4}
-                required
-              />
-            </div>
-            <Button type="submit" size="lg" className="w-full">
-              Send Message
-            </Button>
-          </form>
+          <ContactForm showProjectField />
         </div>
       </section>
     </div>
