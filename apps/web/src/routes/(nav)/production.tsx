@@ -22,7 +22,7 @@ const services: Service[] = [
     icon: <Sliders className="h-8 w-8" />,
     title: "Mix & Master",
     description: "Get your tracks polished and radio-ready.",
-    price: "$250 - $800",
+    price: "$250 - $650",
     priceNote: "depending on project track count",
     features: [
       "Unlimited revisions",
@@ -118,11 +118,13 @@ function ProductionPageComponent() {
         <div className="container relative mx-auto px-4 md:px-6 py-16">
           <div className="flex justify-end">
             <div className="max-w-xl text-right">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">
-                Production Services
+              <h1 className="flex flex-col text-4xl md:text-6xl font-bold mb-4">
+                <span>Let's Make</span>
+                <span> a Record</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground">
-                Bringing your music to life
+              <p className="text-lg md:text-xl max-w-84 text-muted-foreground">
+                I'll help you take your songs from good to{" "}
+                <strong>great</strong>.
               </p>
             </div>
           </div>
@@ -159,9 +161,12 @@ function ProductionPageComponent() {
       {/* Pricing Section */}
       <section className="py-16 px-4 md:px-6 bg-muted/30">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             Pricing
           </h2>
+          <p className="text-center text-sm text-muted-foreground mb-12">
+            All prices are in CAD. Taxes not included.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {services.map((service) => (
               <Card
