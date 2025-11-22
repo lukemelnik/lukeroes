@@ -11,14 +11,25 @@ interface ContactFormProps {
   showProjectField?: boolean;
 }
 
+const ContactFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.email("Invalid email address"),
+  message: z.string().min(1, "Message is required"),
+  project: z.string().optional(),
+});
+
+type ContactFormInput = z.infer<typeof ContactFormSchema>;
+
+const defaultValues: ContactFormInput = {
+  name: "",
+  email: "",
+  message: "",
+  project: "",
+};
+
 export function ContactForm({ showProjectField = true }: ContactFormProps) {
   const form = useForm({
-    defaultValues: {
-      name: "",
-      email: "",
-      message: "",
-      project: "",
-    },
+    defaultValues,
     onSubmit: async ({ value }) => {
       try {
         await sendContact({
@@ -30,7 +41,7 @@ export function ContactForm({ showProjectField = true }: ContactFormProps) {
           },
         });
         toast.success(
-          "Thanks for your message! I'll get back to you within 24 hours."
+          "Thanks for your message! I'll get back to you within 24 hours.",
         );
         form.reset();
       } catch (error) {
@@ -38,12 +49,7 @@ export function ContactForm({ showProjectField = true }: ContactFormProps) {
       }
     },
     validators: {
-      onSubmit: z.object({
-        name: z.string().min(1, "Name is required"),
-        email: z.string().email("Invalid email address"),
-        message: z.string().min(1, "Message is required"),
-        project: z.string().optional(),
-      }),
+      onSubmit: ContactFormSchema,
     },
   });
 
@@ -128,7 +134,6 @@ export function ContactForm({ showProjectField = true }: ContactFormProps) {
             <Textarea
               id={field.name}
               name={field.name}
-              placeholder="Tell me about your project..."
               rows={4}
               value={field.state.value}
               onBlur={field.handleBlur}
