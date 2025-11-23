@@ -10,70 +10,10 @@ import { Play, Info } from "lucide-react";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
-
-interface MusicItem {
-  id: string;
-  title: string;
-  type: "Single" | "Album" | "EP";
-  artwork: string;
-  releaseDate: string;
-  streamUrl: string;
-  spotify?: string;
-  appleMusic?: string;
-  youtube?: string;
-}
-
-const mockMusicData: MusicItem[] = [
-  {
-    id: "1",
-    title: "Latest Single",
-    type: "Single",
-    artwork: "https://placehold.co/400x400/1a1a1a/white?text=Single",
-    releaseDate: "2024",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-    appleMusic: "https://music.apple.com",
-    youtube: "https://youtube.com",
-  },
-  {
-    id: "2",
-    title: "Debut Album",
-    type: "Album",
-    artwork: "https://placehold.co/400x400/2a2a2a/white?text=Album",
-    releaseDate: "2023",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-    appleMusic: "https://music.apple.com",
-  },
-  {
-    id: "3",
-    title: "Summer EP",
-    type: "EP",
-    artwork: "https://placehold.co/400x400/3a3a3a/white?text=EP",
-    releaseDate: "2023",
-    streamUrl: "#",
-    youtube: "https://youtube.com",
-  },
-  {
-    id: "4",
-    title: "Previous Single",
-    type: "Single",
-    artwork: "https://placehold.co/400x400/4a4a4a/white?text=Single",
-    releaseDate: "2022",
-    streamUrl: "#",
-  },
-  {
-    id: "5",
-    title: "Acoustic Sessions",
-    type: "EP",
-    artwork: "https://placehold.co/400x400/5a5a5a/white?text=EP",
-    releaseDate: "2022",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-  },
-];
+import { useMusicSuspense } from "@/hooks/use-music";
 
 export default function MusicSection() {
+  const { data: musicData } = useMusicSuspense();
   return (
     <section className="w-full py-16 px-4 md:px-6">
       <div className="container mx-auto">
@@ -92,7 +32,7 @@ export default function MusicSection() {
           className="w-full"
         >
           <CarouselContent>
-            {mockMusicData.map((item) => (
+            {musicData.map((item) => (
               <CarouselItem
                 key={item.id}
                 className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"

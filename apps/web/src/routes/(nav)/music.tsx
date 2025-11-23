@@ -1,111 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  useMusicSuspense,
+  type MusicRelease,
+} from "@/hooks/use-music";
+import { musicQueryOptions } from "@/hooks/use-music";
 
 export const Route = createFileRoute("/(nav)/music")({
   component: MusicPageComponent,
+  loader: ({ context }) => {
+    context.queryClient.ensureQueryData(musicQueryOptions);
+  },
 });
 
-interface Track {
-  number: number;
-  title: string;
-  duration: string;
-}
-
-interface MusicItem {
-  id: string;
-  title: string;
-  type: "Single" | "Album" | "EP";
-  artwork: string;
-  releaseDate: string;
-  streamUrl: string;
-  spotify?: string;
-  appleMusic?: string;
-  youtube?: string;
-  tracks: Track[];
-}
-
-const mockMusicData: MusicItem[] = [
-  {
-    id: "1",
-    title: "Latest Single",
-    type: "Single",
-    artwork: "https://placehold.co/400x400/1a1a1a/white?text=Single",
-    releaseDate: "2024",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-    appleMusic: "https://music.apple.com",
-    youtube: "https://youtube.com",
-    tracks: [{ number: 1, title: "Latest Single", duration: "3:45" }],
-  },
-  {
-    id: "2",
-    title: "Debut Album",
-    type: "Album",
-    artwork: "https://placehold.co/400x400/2a2a2a/white?text=Album",
-    releaseDate: "2023",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-    appleMusic: "https://music.apple.com",
-    tracks: [
-      { number: 1, title: "Opening Track", duration: "4:12" },
-      { number: 2, title: "Second Song", duration: "3:58" },
-      { number: 3, title: "Interlude", duration: "1:30" },
-      { number: 4, title: "Best Track", duration: "4:45" },
-      { number: 5, title: "Slow Jam", duration: "5:20" },
-      { number: 6, title: "Upbeat Anthem", duration: "3:15" },
-      { number: 7, title: "Emotional Ballad", duration: "4:30" },
-      { number: 8, title: "Closing Song", duration: "4:05" },
-    ],
-  },
-  {
-    id: "3",
-    title: "Summer EP",
-    type: "EP",
-    artwork: "https://placehold.co/400x400/3a3a3a/white?text=EP",
-    releaseDate: "2023",
-    streamUrl: "#",
-    youtube: "https://youtube.com",
-    tracks: [
-      { number: 1, title: "Summer Vibes", duration: "3:22" },
-      { number: 2, title: "Beach Day", duration: "3:48" },
-      { number: 3, title: "Sunset Drive", duration: "4:15" },
-      { number: 4, title: "Late Night", duration: "3:55" },
-    ],
-  },
-  {
-    id: "4",
-    title: "Previous Single",
-    type: "Single",
-    artwork: "https://placehold.co/400x400/4a4a4a/white?text=Single",
-    releaseDate: "2022",
-    streamUrl: "#",
-    tracks: [{ number: 1, title: "Previous Single", duration: "3:30" }],
-  },
-  {
-    id: "5",
-    title: "Acoustic Sessions",
-    type: "EP",
-    artwork: "https://placehold.co/400x400/5a5a5a/white?text=EP",
-    releaseDate: "2022",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-    tracks: [
-      { number: 1, title: "Unplugged Version", duration: "4:05" },
-      { number: 2, title: "Stripped Down", duration: "3:40" },
-      { number: 3, title: "Raw Emotion", duration: "4:25" },
-    ],
-  },
-];
-
 function MusicPageComponent() {
-  const [selectedRelease, setSelectedRelease] = useState<MusicItem>(
-    mockMusicData[0],
+  const { data: musicData } = useMusicSuspense();
+  const [selectedRelease, setSelectedRelease] = useState<MusicRelease>(
+    musicData[0],
   );
   const [expandedMobileId, setExpandedMobileId] = useState<string | null>(null);
 
@@ -199,7 +116,7 @@ function MusicPageComponent() {
           <div className="col-span-2">
             <ScrollArea className="h-[calc(100vh-8rem)]">
               <div className="grid grid-cols-2 gap-6 pr-4 pb-8">
-                {mockMusicData.map((item) => (
+                {musicData.map((item) => (
                   <Card
                     key={item.id}
                     className={`overflow-hidden group cursor-pointer hover:shadow-lg transition-all ${
@@ -237,7 +154,7 @@ function MusicPageComponent() {
 
         {/* Mobile Layout */}
         <div className="md:hidden space-y-6">
-          {mockMusicData.map((item) => (
+          {musicData.map((item) => (
             <Card key={item.id} className="overflow-hidden">
               <CardContent className="p-0">
                 <div
