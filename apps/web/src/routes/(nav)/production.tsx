@@ -111,7 +111,7 @@ function ProductionPageComponent() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/studio.jpeg')" }}
         >
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-linear-to-b from- background/80 to-background" />
         </div>
 
         {/* Content */}
@@ -159,7 +159,7 @@ function ProductionPageComponent() {
       )}
 
       {/* Pricing Section */}
-      <section className="py-16 px-4 md:px-6 bg-muted/30">
+      <section className="py-16 px-4 md:px-6">
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             Pricing
