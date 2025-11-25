@@ -11,17 +11,17 @@ export interface StreamingLinks {
 }
 
 export interface ApiTrack {
-  id: number | string;
+  id: number;
   trackNumber: number;
   title: string;
   artist: string;
-  duration: string | null;
+  duration: number | null;
   isrc: string | null;
   lyrics?: string | null;
 }
 
 export interface ApiRelease {
-  id: number | string;
+  id: number;
   title: string;
   artist: string;
   type: ReleaseType;

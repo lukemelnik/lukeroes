@@ -1,13 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
-import type { MusicResponse } from "@/lib/music-types";
+import type { ApiRelease, MusicResponse } from "@/lib/music-types";
 import { musicSeedData } from "@/lib/music-seed-data";
 
 export type { ApiRelease } from "@/lib/music-types";
 
-const SHOW_SEED = true;
+const SHOW_SEED = false;
 
 export const getMusic = createServerFn().handler(
-  async (): Promise<MusicResponse> => {
+  async (): Promise<ApiRelease[] | undefined> => {
     // Dynamic import to ensure Node.js modules only load on server
     const { getMusicReleases } = await import("@/lib/music-cache");
     try {
@@ -17,10 +17,9 @@ export const getMusic = createServerFn().handler(
         return [...musicSeedData, ...data?.apiReleases];
       }
 
-      return data;
+      return data.apiReleases;
     } catch (e) {
       console.warn("Music API unavailable, using seed data instead:", e);
-      return { releases: SHOW_SEED ? musicSeedData : [] };
     }
   },
 );

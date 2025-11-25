@@ -1,8 +1,4 @@
-import {
-  queryOptions,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, skipToken, useQuery } from "@tanstack/react-query";
 import { getMusic } from "@/functions/get-music";
 import type {
   ApiRelease,
@@ -11,59 +7,32 @@ import type {
   MusicResponse,
 } from "@/lib/music-types";
 import { createServerFn } from "@tanstack/react-start";
-import { musicSeedData } from "@/lib/music-seed-data";
+import z from "zod/v4";
+import { getReleaseDetailsById } from "@/lib/music-cache";
 
 export type { ApiRelease, ApiTrack, ApiReleaseDetails, MusicResponse };
 
-export const musicQueryOptions = queryOptions<MusicResponse>({
+export const musicQueryOptions = queryOptions<ApiRelease[] | undefined>({
   queryKey: ["music"],
   queryFn: () => getMusic(),
   staleTime: 1000 * 60 * 5, // 5 minutes on client
 });
 
-export function useMusic() {
-  return useQuery(musicQueryOptions);
-}
+const GetReleaseInputSchema = z.object({ releaseId: z.number() });
 
-export function useMusicSuspense() {
-  return useSuspenseQuery(musicQueryOptions);
-}
-
-const getReleaseDetails = createServerFn().handler(
-  async (ctx): Promise<ApiReleaseDetails | null> => {
-    const releaseId = (ctx as { data?: string | number | null }).data;
-    if (!releaseId) {
-      return null;
-    }
-
-    try {
-      const { getReleaseDetailsById } = await import("@/lib/music-cache");
-      const details = await getReleaseDetailsById(releaseId);
-      if (details) {
-        return details;
-      }
-    } catch (error) {
-      console.warn("Falling back to seed release for details:", error);
-    }
-
-    const release = musicSeedData.find((r) => r.id === releaseId);
-    return release ?? null;
-  },
-);
-
-export const releaseDetailsQueryOptions = (releaseId: string | number | null) =>
-  queryOptions<ApiReleaseDetails | null>({
-    queryKey: ["release", releaseId],
-    queryFn: async () => {
-      if (!releaseId) {
-        return null;
-      }
-      return getReleaseDetails({ data: releaseId });
-    },
-    enabled: !!releaseId,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+const getReleaseDetails = createServerFn({ method: "GET" })
+  .inputValidator(GetReleaseInputSchema)
+  .handler(async ({ data }) => {
+    const details = await getReleaseDetailsById(data.releaseId);
+    if (!details) throw new Error("Release information not found");
+    return details;
   });
 
-export function useReleaseDetails(releaseId: string | number | null) {
-  return useQuery(releaseDetailsQueryOptions(releaseId));
-}
+export const releaseDetailsQueryOptions = (releaseId: number | null) =>
+  queryOptions<ApiReleaseDetails | undefined>({
+    queryKey: ["release", releaseId],
+    queryFn: releaseId
+      ? () => getReleaseDetails({ data: { releaseId } })
+      : skipToken,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });

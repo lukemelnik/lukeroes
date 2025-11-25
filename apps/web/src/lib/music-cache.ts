@@ -144,7 +144,7 @@ export async function getMusicReleases(): Promise<MusicResponse> {
 
 export async function getReleaseDetailsById(
   releaseId: string | number,
-): Promise<ApiReleaseDetails | null> {
+): Promise<ApiReleaseDetails | undefined> {
   const apiUrl = process.env.SONGKEEPER_API_URL;
   const accessKey = process.env.SONGKEEPER_ACCESS_KEY;
 
@@ -169,13 +169,13 @@ export async function getReleaseDetailsById(
   });
 
   if (response.status === 404) {
-    return null;
+    return undefined;
   }
 
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status}`);
   }
 
-  const json = (await response.json()) as { release: ApiReleaseDetails };
-  return json.release ?? null;
+  const json = (await response.json()) as { apiRelease: ApiReleaseDetails };
+  return json.apiRelease;
 }

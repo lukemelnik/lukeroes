@@ -8,12 +8,8 @@ import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  useMusicSuspense,
-  useReleaseDetails,
-  type ApiTrack,
-} from "@/hooks/use-music";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { releaseDetailsQueryOptions, type ApiTrack } from "@/hooks/use-music";
 import { musicQueryOptions } from "@/hooks/use-music";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -22,6 +18,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Spinner } from "@/components/ui/spinner";
+import { msToMMSS } from "@/lib/utils";
 
 function MusicErrorComponent({ error: _error }: { error: unknown }) {
   const router = useRouter();
@@ -93,23 +90,22 @@ function ArtworkImage({ src, alt, className }: ArtworkImageProps) {
 }
 
 function MusicPageComponent() {
-  const { data: releases } = useMusicSuspense();
-
-  const [selectedReleaseId, setSelectedReleaseId] = useState<string | null>(
+  const { data: releases } = useQuery(musicQueryOptions);
+  console.log("RELEASES DATA", releases);
+  const [selectedReleaseId, setSelectedReleaseId] = useState<number | null>(
     null,
   );
 
   useEffect(() => {
     if (!selectedReleaseId && releases && releases.length > 0) {
-      setSelectedReleaseId(String(releases[0].id));
+      setSelectedReleaseId(releases[0].id);
     }
   }, [releases, selectedReleaseId]);
 
-  const { data: detailedRelease, isLoading: isLoadingDetails } =
-    useReleaseDetails(selectedReleaseId);
-  const selectedRelease = releases.find(
-    (r) => String(r.id) === selectedReleaseId,
+  const { data: detailedRelease, isLoading: isLoadingDetails } = useQuery(
+    releaseDetailsQueryOptions(selectedReleaseId),
   );
+  const selectedRelease = releases?.find((r) => r.id === selectedReleaseId);
   const tracksForSelected: ApiTrack[] =
     detailedRelease?.tracks ?? selectedRelease?.tracks ?? [];
 
@@ -229,7 +225,7 @@ function MusicPageComponent() {
                             </div>
                             <div className="flex items-center">
                               <span className="text-sm text-muted-foreground mr-2">
-                                {track.duration ?? "—"}
+                                {msToMMSS(track.duration) ?? "—"}
                               </span>
                               <CollapsibleTrigger asChild>
                                 <Button
@@ -283,7 +279,7 @@ function MusicPageComponent() {
                         ? "opacity-80 blur-[0.5px]"
                         : ""
                     }`}
-                    onClick={() => setSelectedReleaseId(String(item.id))}
+                    onClick={() => setSelectedReleaseId(item.id)}
                   >
                     <CardContent className="p-6 flex flex-col items-center">
                       <div className="w-2/3 space-y-2">
@@ -328,7 +324,7 @@ function MusicPageComponent() {
                         : String(item.id);
                     setExpandedMobileId(newId);
                     if (newId) {
-                      setSelectedReleaseId(newId);
+                      setSelectedReleaseId(item.id);
                     }
                   }}
                 >
@@ -431,7 +427,7 @@ function MusicPageComponent() {
                                   <span>{track.title}</span>
                                 </div>
                                 <span className="text-muted-foreground">
-                                  {track.duration ?? "—"}
+                                  {msToMMSS(track.duration) ?? "—"}
                                 </span>
                               </div>
                             ))}
