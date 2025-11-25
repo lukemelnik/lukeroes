@@ -20,15 +20,15 @@ interface Service {
 const services: Service[] = [
   {
     icon: <Sliders className="h-8 w-8" />,
-    title: "Mix & Master",
+    title: "Mix",
     description: "Get your tracks polished and radio-ready.",
     price: "$250 - $650",
     priceNote: "depending on project track count",
     features: [
       "Unlimited revisions",
       "1 week turnaround",
-      "Vocal tuning (extra)",
-      "Digital master (extra)",
+      "Optional Vocal tuning (extra)",
+      "Optional digital master (extra)",
     ],
   },
   {
