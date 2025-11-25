@@ -8,9 +8,7 @@ import { musicQueryOptions } from "@/hooks/use-music";
 
 export const Route = createFileRoute("/(nav)/")({
   component: HomeComponent,
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(musicQueryOptions);
-  },
+  loader: ({ context }) => context.queryClient.ensureQueryData(musicQueryOptions),
 });
 
 function HomeComponent() {

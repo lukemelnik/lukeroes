@@ -1,30 +1,142 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Music, FileText } from "lucide-react";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { RefreshCcw } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useMusicSuspense,
-  type MusicRelease,
+  useReleaseDetails,
+  type ApiTrack,
 } from "@/hooks/use-music";
 import { musicQueryOptions } from "@/hooks/use-music";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Spinner } from "@/components/ui/spinner";
+
+function MusicErrorComponent({ error: _error }: { error: unknown }) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  let message = "Looks like we can't find the music right now.";
+
+  async function handleRetry() {
+    await queryClient.invalidateQueries({ queryKey: ["music"] });
+    await queryClient.refetchQueries({ queryKey: ["music"] });
+    await router.invalidate();
+  }
+
+  return (
+    <div className="w-full min-h-[60vh] flex items-center justify-center px-4">
+      <Card className="max-w-md w-full text-center p-6">
+        <CardContent className="space-y-4 p-0">
+          <div className="text-2xl font-bold">Oops!</div>
+          <p className="text-muted-foreground">
+            {message || "Looks like we can't find the music right now."}
+          </p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <Button onClick={handleRetry}>
+              <RefreshCcw className="mr-2 h-4 w-4" /> Try again
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/(nav)/music")({
   component: MusicPageComponent,
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(musicQueryOptions);
-  },
+  errorComponent: MusicErrorComponent,
+  loader: ({ context }) => context.queryClient.prefetchQuery(musicQueryOptions),
 });
 
-function MusicPageComponent() {
-  const { data: musicData } = useMusicSuspense();
-  const [selectedRelease, setSelectedRelease] = useState<MusicRelease>(
-    musicData[0],
+type ArtworkImageProps = {
+  src?: string;
+  alt?: string;
+  className?: string;
+};
+
+function ArtworkImage({ src, alt, className }: ArtworkImageProps) {
+  const [hasError, setHasError] = useState(!src);
+
+  useEffect(() => {
+    setHasError(!src);
+  }, [src]);
+
+  if (hasError) {
+    return (
+      <div
+        className={`flex items-center justify-center rounded bg-muted/20 ${className}`}
+      >
+        <Music className="text-muted-foreground/50 w-1/3 h-1/3" />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={() => setHasError(true)}
+    />
   );
+}
+
+function MusicPageComponent() {
+  const { data: releases } = useMusicSuspense();
+
+  const [selectedReleaseId, setSelectedReleaseId] = useState<string | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (!selectedReleaseId && releases && releases.length > 0) {
+      setSelectedReleaseId(String(releases[0].id));
+    }
+  }, [releases, selectedReleaseId]);
+
+  const { data: detailedRelease, isLoading: isLoadingDetails } =
+    useReleaseDetails(selectedReleaseId);
+  const selectedRelease = releases.find(
+    (r) => String(r.id) === selectedReleaseId,
+  );
+  const tracksForSelected: ApiTrack[] =
+    detailedRelease?.tracks ?? selectedRelease?.tracks ?? [];
+
   const [expandedMobileId, setExpandedMobileId] = useState<string | null>(null);
+
+  if (!releases || releases.length === 0) {
+    return (
+      <div className="w-full min-h-[60vh] flex items-center justify-center px-4">
+        <Card className="max-w-md w-full text-center p-6">
+          <CardContent className="space-y-4 p-0">
+            <div className="text-2xl font-bold">No music yet</div>
+            <p className="text-muted-foreground">
+              Check back soon for releases.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!selectedRelease) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <Spinner className="h-8 w-8" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen py-8 px-4 md:px-6">
@@ -37,8 +149,8 @@ function MusicPageComponent() {
               <CardContent className="p-6 flex flex-col items-center">
                 <div className="w-2/3 space-y-4">
                   <div className="aspect-square">
-                    <img
-                      src={selectedRelease.artwork}
+                    <ArtworkImage
+                      src={selectedRelease.artworkFileKey ?? undefined}
                       alt={selectedRelease.title}
                       className="object-cover w-full h-full rounded"
                     />
@@ -48,15 +160,18 @@ function MusicPageComponent() {
                       {selectedRelease.title}
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      {selectedRelease.type} · {selectedRelease.releaseDate}
+                      {selectedRelease.type} ·{" "}
+                      {new Date(selectedRelease.releaseDate).toLocaleDateString(
+                        "en-US",
+                      )}
                     </p>
                   </div>
 
                   {/* Streaming Links */}
                   <div className="flex gap-3">
-                    {selectedRelease.spotify && (
+                    {selectedRelease.streamingLinks?.spotify && (
                       <a
-                        href={selectedRelease.spotify}
+                        href={selectedRelease.streamingLinks.spotify}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-primary transition-colors"
@@ -65,9 +180,9 @@ function MusicPageComponent() {
                         <SpotifyIcon size={24} />
                       </a>
                     )}
-                    {selectedRelease.appleMusic && (
+                    {selectedRelease.streamingLinks?.appleMusic && (
                       <a
-                        href={selectedRelease.appleMusic}
+                        href={selectedRelease.streamingLinks.appleMusic}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-primary transition-colors"
@@ -76,9 +191,9 @@ function MusicPageComponent() {
                         <AppleMusicIcon size={24} />
                       </a>
                     )}
-                    {selectedRelease.youtube && (
+                    {selectedRelease.streamingLinks?.youtube && (
                       <a
-                        href={selectedRelease.youtube}
+                        href={selectedRelease.streamingLinks.youtube}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-primary transition-colors"
@@ -90,22 +205,66 @@ function MusicPageComponent() {
                   </div>
 
                   {/* Tracklist */}
-                  <div>
-                    <div className="space-y-1">
-                      {selectedRelease.tracks.map((track) => (
-                        <div
-                          key={track.number}
-                          className="flex items-center justify-between text-sm hover:bg-accent/50 rounded transition-colors"
+                  <div className="space-y-1 w-full">
+                    {isLoadingDetails &&
+                    (!tracksForSelected || tracksForSelected.length === 0) ? (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Spinner className="h-4 w-4" />
+                        <span>Loading tracklist...</span>
+                      </div>
+                    ) : tracksForSelected.length > 0 ? (
+                      (tracksForSelected ?? []).map((track) => (
+                        <Collapsible
+                          key={
+                            track.id ?? `${track.trackNumber}-${track.title}`
+                          }
+                          className="w-full"
                         >
-                          <div className="flex items-center gap-3">
-                            <span>{track.title}</span>
+                          <div className="flex items-center justify-between hover:bg-accent/50 rounded transition-colors pr-1">
+                            <div className="flex items-center gap-3 p-1">
+                              <span className="text-xs text-muted-foreground">
+                                {track.trackNumber.toString().padStart(2, "0")}
+                              </span>
+                              <span className="text-sm">{track.title}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <span className="text-sm text-muted-foreground mr-2">
+                                {track.duration ?? "—"}
+                              </span>
+                              <CollapsibleTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                >
+                                  <FileText className="h-4 w-4" />
+                                  <span className="sr-only">Toggle Lyrics</span>
+                                </Button>
+                              </CollapsibleTrigger>
+                            </div>
                           </div>
-                          <span className="text-muted-foreground">
-                            {track.duration}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                          <CollapsibleContent>
+                            <div className="p-3 my-1 rounded-md border bg-muted/40">
+                              {isLoadingDetails && !detailedRelease ? (
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <Spinner className="h-4 w-4" />
+                                  <span>Loading lyrics...</span>
+                                </div>
+                              ) : (
+                                <p className="text-sm whitespace-pre-wrap text-muted-foreground">
+                                  {track.lyrics?.trim() ||
+                                    "Lyrics not available."}
+                                </p>
+                              )}
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Tracklist not available.
+                      </p>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -116,21 +275,21 @@ function MusicPageComponent() {
           <div className="col-span-2">
             <ScrollArea className="h-[calc(100vh-8rem)]">
               <div className="grid grid-cols-2 gap-6 pr-4 pb-8">
-                {musicData.map((item) => (
+                {releases.map((item) => (
                   <Card
                     key={item.id}
                     className={`overflow-hidden group cursor-pointer hover:shadow-lg transition-all ${
-                      selectedRelease.id !== item.id
-                        ? "opacity-60 blur-[0.5px]"
+                      selectedReleaseId !== item.id
+                        ? "opacity-80 blur-[0.5px]"
                         : ""
                     }`}
-                    onClick={() => setSelectedRelease(item)}
+                    onClick={() => setSelectedReleaseId(String(item.id))}
                   >
                     <CardContent className="p-6 flex flex-col items-center">
                       <div className="w-2/3 space-y-2">
                         <div className="aspect-square mb-2">
-                          <img
-                            src={item.artwork}
+                          <ArtworkImage
+                            src={item.artworkFileKey ?? undefined}
                             alt={item.title}
                             className="object-cover w-full h-full rounded"
                           />
@@ -140,7 +299,10 @@ function MusicPageComponent() {
                             {item.title}
                           </h3>
                           <p className="text-sm text-muted-foreground">
-                            {item.type} · {item.releaseDate}
+                            {item.type} ·{" "}
+                            {new Date(item.releaseDate).toLocaleDateString(
+                              "en-US",
+                            )}
                           </p>
                         </div>
                       </div>
@@ -154,20 +316,25 @@ function MusicPageComponent() {
 
         {/* Mobile Layout */}
         <div className="md:hidden space-y-6">
-          {musicData.map((item) => (
+          {releases.map((item) => (
             <Card key={item.id} className="overflow-hidden">
               <CardContent className="p-0">
                 <div
                   className="cursor-pointer"
-                  onClick={() =>
-                    setExpandedMobileId(
-                      expandedMobileId === item.id ? null : item.id,
-                    )
-                  }
+                  onClick={() => {
+                    const newId =
+                      expandedMobileId === String(item.id)
+                        ? null
+                        : String(item.id);
+                    setExpandedMobileId(newId);
+                    if (newId) {
+                      setSelectedReleaseId(newId);
+                    }
+                  }}
                 >
                   <div className="p-4 flex flex-col items-center">
-                    <img
-                      src={item.artwork}
+                    <ArtworkImage
+                      src={item.artworkFileKey ?? undefined}
                       alt={item.title}
                       className="w-2/3 aspect-square rounded object-cover mb-4"
                     />
@@ -176,13 +343,14 @@ function MusicPageComponent() {
                         {item.title}
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        {item.type} · {item.releaseDate}
+                        {item.type} ·{" "}
+                        {new Date(item.releaseDate).toLocaleDateString("en-US")}
                       </p>
                     </div>
                     <div className="flex gap-3 mb-2">
-                      {item.spotify && (
+                      {item.streamingLinks?.spotify && (
                         <a
-                          href={item.spotify}
+                          href={item.streamingLinks.spotify}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-muted-foreground hover:text-primary transition-colors"
@@ -192,9 +360,9 @@ function MusicPageComponent() {
                           <SpotifyIcon size={20} />
                         </a>
                       )}
-                      {item.appleMusic && (
+                      {item.streamingLinks?.appleMusic && (
                         <a
-                          href={item.appleMusic}
+                          href={item.streamingLinks.appleMusic}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-muted-foreground hover:text-primary transition-colors"
@@ -204,9 +372,9 @@ function MusicPageComponent() {
                           <AppleMusicIcon size={20} />
                         </a>
                       )}
-                      {item.youtube && (
+                      {item.streamingLinks?.youtube && (
                         <a
-                          href={item.youtube}
+                          href={item.streamingLinks.youtube}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-muted-foreground hover:text-primary transition-colors"
@@ -218,7 +386,7 @@ function MusicPageComponent() {
                       )}
                     </div>
                     <div className="text-muted-foreground">
-                      {expandedMobileId === item.id ? (
+                      {expandedMobileId === String(item.id) ? (
                         <ChevronUp className="w-5 h-5" />
                       ) : (
                         <ChevronDown className="w-5 h-5" />
@@ -228,23 +396,49 @@ function MusicPageComponent() {
                 </div>
 
                 {/* Expanded Track Info */}
-                {expandedMobileId === item.id && (
+                {expandedMobileId === String(item.id) && (
                   <div className="border-t p-4">
-                    <div className="space-y-2">
-                      {item.tracks.map((track) => (
-                        <div
-                          key={track.number}
-                          className="flex items-center justify-between text-sm hover:bg-accent/50 rounded transition-colors"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span>{track.title}</span>
+                    {isLoadingDetails &&
+                    selectedReleaseId === item.id &&
+                    (!detailedRelease || !detailedRelease.tracks.length) ? (
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                        <Skeleton className="h-4 w-full" />
+                      </div>
+                    ) : (
+                      (() => {
+                        const tracks: ApiTrack[] =
+                          detailedRelease && detailedRelease.id === item.id
+                            ? detailedRelease.tracks
+                            : (item.tracks ?? []);
+                        return (
+                          <div className="space-y-2">
+                            {tracks.map((track) => (
+                              <div
+                                key={
+                                  track.id ??
+                                  `${track.trackNumber}-${track.title}`
+                                }
+                                className="flex items-center justify-between text-sm hover:bg-accent/50 rounded transition-colors"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <span className="text-xs text-muted-foreground">
+                                    {track.trackNumber
+                                      .toString()
+                                      .padStart(2, "0")}
+                                  </span>
+                                  <span>{track.title}</span>
+                                </div>
+                                <span className="text-muted-foreground">
+                                  {track.duration ?? "—"}
+                                </span>
+                              </div>
+                            ))}
                           </div>
-                          <span className="text-muted-foreground">
-                            {track.duration}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                        );
+                      })()
+                    )}
                   </div>
                 )}
               </CardContent>

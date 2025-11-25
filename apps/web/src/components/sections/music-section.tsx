@@ -13,7 +13,8 @@ import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { useMusicSuspense } from "@/hooks/use-music";
 
 export default function MusicSection() {
-  const { data: musicData } = useMusicSuspense();
+  const { data } = useMusicSuspense();
+  const releases = data?.releases ?? [];
   return (
     <section className="w-full py-16 px-4 md:px-6">
       <div className="container mx-auto">
@@ -32,7 +33,7 @@ export default function MusicSection() {
           className="w-full"
         >
           <CarouselContent>
-            {musicData.map((item) => (
+            {releases.map((item) => (
               <CarouselItem
                 key={item.id}
                 className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
@@ -41,13 +42,20 @@ export default function MusicSection() {
                   <CardContent className="p-0">
                     <div className="relative aspect-square">
                       <img
-                        src={item.artwork}
+                        src={item.artworkFileKey ?? ""}
                         alt={item.title}
                         className="object-cover w-full h-full"
                       />
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <a
-                          href={item.streamUrl}
+                          href={
+                            item.streamingLinks?.spotify ??
+                            item.streamingLinks?.appleMusic ??
+                            item.streamingLinks?.youtube ??
+                            item.streamingLinks?.soundcloud ??
+                            item.streamingLinks?.bandcamp ??
+                            "#"
+                          }
                           className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:scale-110 transition-transform"
                         >
                           <Play className="w-8 h-8 fill-primary-foreground text-primary-foreground ml-1" />
@@ -65,9 +73,9 @@ export default function MusicSection() {
                       </div>
                       <div className="flex items-center justify-between pt-2">
                         <div className="flex gap-3">
-                          {item.spotify && (
+                          {item.streamingLinks?.spotify && (
                             <a
-                              href={item.spotify}
+                              href={item.streamingLinks.spotify}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-muted-foreground hover:text-primary transition-colors"
@@ -76,9 +84,9 @@ export default function MusicSection() {
                               <SpotifyIcon size={20} />
                             </a>
                           )}
-                          {item.appleMusic && (
+                          {item.streamingLinks?.appleMusic && (
                             <a
-                              href={item.appleMusic}
+                              href={item.streamingLinks.appleMusic}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-muted-foreground hover:text-primary transition-colors"
@@ -87,9 +95,9 @@ export default function MusicSection() {
                               <AppleMusicIcon size={20} />
                             </a>
                           )}
-                          {item.youtube && (
+                          {item.streamingLinks?.youtube && (
                             <a
-                              href={item.youtube}
+                              href={item.streamingLinks.youtube}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-muted-foreground hover:text-primary transition-colors"
@@ -107,7 +115,7 @@ export default function MusicSection() {
                           </a>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {item.releaseDate}
+                          {new Date(item.releaseDate).toLocaleDateString("en-US")}
                         </p>
                       </div>
                     </div>

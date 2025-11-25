@@ -1,4 +1,4 @@
-import { BookOpenText, Briefcase, Disc, Disc3Icon, Mail } from "lucide-react";
+import { BookOpenText, Disc3Icon, Mail } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 // Other useful icons: Music, Video, Calendar, BookOpen, Mail, ExternalLink, ShoppingBag, Ticket
 
