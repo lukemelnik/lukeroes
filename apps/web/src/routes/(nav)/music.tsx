@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronDown, ChevronUp, Music, FileText } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText } from "lucide-react";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Spinner } from "@/components/ui/spinner";
 import { msToMMSS } from "@/lib/utils";
+import { ArtworkImage } from "@/components/artwork-image";
 
 function MusicErrorComponent({ error: _error }: { error: unknown }) {
   const router = useRouter();
@@ -55,39 +56,6 @@ export const Route = createFileRoute("/(nav)/music")({
   errorComponent: MusicErrorComponent,
   loader: ({ context }) => context.queryClient.prefetchQuery(musicQueryOptions),
 });
-
-type ArtworkImageProps = {
-  src?: string;
-  alt?: string;
-  className?: string;
-};
-
-function ArtworkImage({ src, alt, className }: ArtworkImageProps) {
-  const [hasError, setHasError] = useState(!src);
-
-  useEffect(() => {
-    setHasError(!src);
-  }, [src]);
-
-  if (hasError) {
-    return (
-      <div
-        className={`flex items-center justify-center rounded bg-muted/20 ${className}`}
-      >
-        <Music className="text-muted-foreground/50 w-1/3 h-1/3" />
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={src}
-      alt={alt}
-      className={className}
-      onError={() => setHasError(true)}
-    />
-  );
-}
 
 function MusicPageComponent() {
   const { data: releases } = useQuery(musicQueryOptions);
