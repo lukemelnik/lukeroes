@@ -2,7 +2,6 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import { musicSeedData } from "./music-seed-data";
 import type { MusicRelease } from "./music-types";
 
 export type { MusicRelease, Track } from "./music-types";
@@ -95,19 +94,7 @@ export async function getMusicReleases(): Promise<MusicRelease[]> {
     return memoryCache.data;
   }
 
-  // 2. If memory is empty (cold start), load from file
-  if (!memoryCache) {
-    const fileCache = readFromFile();
-    if (fileCache) {
-      memoryCache = fileCache;
-      // If loaded cache is still valid, return it
-      if (!isExpired(fileCache)) {
-        return fileCache.data;
-      }
-    }
-  }
-
-  // 3. Cache is expired or doesn't exist - try to fetch from API
+  // 2. Try to fetch fresh data from API
   try {
     const freshData = await fetchFromApi();
     const updatedCache = updateCache(freshData);
@@ -115,14 +102,15 @@ export async function getMusicReleases(): Promise<MusicRelease[]> {
   } catch (error) {
     console.warn("Failed to fetch from API:", error);
 
-    // 4. API failed - return stale cache if we have it
-    if (memoryCache) {
-      console.warn("Returning stale cache data");
-      return memoryCache.data;
+    // 3. API failed - fall back to file cache
+    const fileCache = readFromFile();
+    if (fileCache) {
+      memoryCache = fileCache;
+      console.warn("Returning file cache data");
+      return fileCache.data;
     }
 
-    // 5. No cache at all - fall back to seed data
-    console.warn("No cache available, returning seed data");
-    return musicSeedData;
+    // 4. No cache file exists - error out
+    throw new Error("No cached data available and API is unreachable");
   }
 }
