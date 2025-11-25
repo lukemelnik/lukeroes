@@ -90,23 +90,24 @@ function updateCache(data: MusicRelease[]): CacheData {
 }
 
 export async function getMusicReleases(): Promise<MusicRelease[]> {
-  // 1. Check memory cache first
+  // 1. If memory cache exists and is not expired, return it immediately
   if (memoryCache && !isExpired(memoryCache)) {
     return memoryCache.data;
   }
 
-  // 2. If memory is empty or expired, check file cache
+  // 2. If memory is empty (cold start), load from file
   if (!memoryCache) {
     const fileCache = readFromFile();
     if (fileCache) {
       memoryCache = fileCache;
+      // If loaded cache is still valid, return it
       if (!isExpired(fileCache)) {
         return fileCache.data;
       }
     }
   }
 
-  // 3. Cache is expired or doesn't exist, try to fetch new data
+  // 3. Cache is expired or doesn't exist - try to fetch from API
   try {
     const freshData = await fetchFromApi();
     const updatedCache = updateCache(freshData);
@@ -114,21 +115,13 @@ export async function getMusicReleases(): Promise<MusicRelease[]> {
   } catch (error) {
     console.warn("Failed to fetch from API:", error);
 
-    // 4. If fetch fails but we have stale cache, return it
+    // 4. API failed - return stale cache if we have it
     if (memoryCache) {
       console.warn("Returning stale cache data");
       return memoryCache.data;
     }
 
-    // 5. Try to load from file one more time as last resort
-    const fileCache = readFromFile();
-    if (fileCache) {
-      memoryCache = fileCache;
-      console.warn("Returning stale file cache data");
-      return fileCache.data;
-    }
-
-    // 6. Fall back to seed data (ensures app works without API config)
+    // 5. No cache at all - fall back to seed data
     console.warn("No cache available, returning seed data");
     return musicSeedData;
   }
