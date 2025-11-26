@@ -73,6 +73,7 @@ function MusicPageComponent() {
   const { data: detailedRelease, isLoading: isLoadingDetails } = useQuery(
     releaseDetailsQueryOptions(selectedReleaseId),
   );
+  console.log("DETAILED RELEASE", detailedRelease);
   const selectedRelease = releases?.find((r) => r.id === selectedReleaseId);
   const tracksForSelected: ApiTrack[] =
     detailedRelease?.tracks ?? selectedRelease?.tracks ?? [];
@@ -114,7 +115,7 @@ function MusicPageComponent() {
                 <div className="w-2/3 space-y-4">
                   <div className="aspect-square">
                     <ArtworkImage
-                      src={selectedRelease.artworkFileKey ?? undefined}
+                      src={selectedRelease.artworkPublicUrl ?? undefined}
                       alt={selectedRelease.title}
                       className="object-cover w-full h-full rounded"
                     />
@@ -253,7 +254,7 @@ function MusicPageComponent() {
                       <div className="w-2/3 space-y-2">
                         <div className="aspect-square mb-2">
                           <ArtworkImage
-                            src={item.artworkFileKey ?? undefined}
+                            src={item.artworkPublicUrl ?? undefined}
                             alt={item.title}
                             className="object-cover w-full h-full rounded"
                           />
@@ -298,7 +299,7 @@ function MusicPageComponent() {
                 >
                   <div className="p-4 flex flex-col items-center">
                     <ArtworkImage
-                      src={item.artworkFileKey ?? undefined}
+                      src={item.artworkPublicUrl ?? undefined}
                       alt={item.title}
                       className="w-2/3 aspect-square rounded object-cover mb-4"
                     />

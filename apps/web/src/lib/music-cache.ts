@@ -9,7 +9,7 @@ export type { MusicResponse, ApiReleaseDetails } from "./music-types";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CACHE_DIR = join(__dirname, "../../.cache");
 const CACHE_FILE = join(CACHE_DIR, "music-data.json");
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL_MS = 0; // 1 hour
 
 interface CacheData {
   fetchedAt: string;
@@ -129,13 +129,13 @@ export async function getMusicReleases(): Promise<MusicResponse> {
   } catch (error) {
     console.warn("Failed to fetch from API:", error);
 
-    // 3. API failed - fall back to file cache
-    const fileCache = readFromFile();
-    if (fileCache && Array.isArray(fileCache.data.apiReleases)) {
-      memoryCache = fileCache;
-      console.warn("Returning file cache data");
-      return fileCache.data;
-    }
+    // 3. API failed - fall back to file cache DISABLED FOR NOW
+    // const fileCache = readFromFile();
+    // if (fileCache && Array.isArray(fileCache.data.apiReleases)) {
+    //   memoryCache = fileCache;
+    //   console.warn("Returning file cache data");
+    //   return fileCache.data;
+    // }
 
     // 4. No cache file exists - error out
     throw new Error("No cached data available and API is unreachable");

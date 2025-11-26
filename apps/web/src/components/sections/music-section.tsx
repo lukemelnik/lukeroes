@@ -43,7 +43,7 @@ export default function MusicSection() {
                   <CardContent className="p-0">
                     <div className="relative aspect-square">
                       <ArtworkImage
-                        src={item.artworkFileKey ?? undefined}
+                        src={item.artworkPublicUrl ?? undefined}
                         alt={item.title}
                         className="object-cover w-full h-full"
                       />

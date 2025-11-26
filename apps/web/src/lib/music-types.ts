@@ -30,6 +30,7 @@ export interface ApiRelease {
   catalogNumber: string | null;
   status: string | null;
   artworkFileKey: string | null;
+  artworkPublicUrl: string | null;
   streamingLinks: StreamingLinks;
   tracks?: ApiTrack[];
 }
