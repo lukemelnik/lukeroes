@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Music, Sliders, MessageSquare } from "lucide-react";
 import { AudioComparisonSection } from "@/components/audio-comparison";
@@ -131,6 +132,12 @@ function ProductionPageComponent() {
         </div>
       </section>
 
+      <div className="container mx-auto px-4 md:px-6 py-8 flex justify-end">
+        <Button asChild size="lg">
+          <a href="#contact">Get in touch</a>
+        </Button>
+      </div>
+
       {/* Hear the Difference Section */}
       {SHOW_AUDIO_COMPARISON && (
         <section className="py-16 px-4 md:px-6">
@@ -230,7 +237,7 @@ function ProductionPageComponent() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 px-4 md:px-6 bg-muted/30">
+      <section id="contact" className="py-16 px-4 md:px-6 bg-muted/30">
         <div className="container mx-auto max-w-xl">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             Let's Work Together

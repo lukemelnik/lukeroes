@@ -1,7 +1,7 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { Link, createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronDown, ChevronUp, FileText } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
@@ -9,14 +9,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { releaseDetailsQueryOptions, type ApiTrack } from "@/hooks/use-music";
+import { type ApiTrack } from "@/hooks/use-music";
 import { musicQueryOptions } from "@/hooks/use-music";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Spinner } from "@/components/ui/spinner";
 import { msToMMSS } from "@/lib/utils";
 import { ArtworkImage } from "@/components/artwork-image";
@@ -51,7 +45,7 @@ function MusicErrorComponent({ error: _error }: { error: unknown }) {
   );
 }
 
-export const Route = createFileRoute("/(nav)/music")({
+export const Route = createFileRoute("/(nav)/music/")({
   component: MusicPageComponent,
   errorComponent: MusicErrorComponent,
   loader: ({ context }) => context.queryClient.prefetchQuery(musicQueryOptions),
@@ -59,7 +53,6 @@ export const Route = createFileRoute("/(nav)/music")({
 
 function MusicPageComponent() {
   const { data: releases } = useQuery(musicQueryOptions);
-  console.log("RELEASES DATA", releases);
   const [selectedReleaseId, setSelectedReleaseId] = useState<number | null>(
     null,
   );
@@ -70,13 +63,8 @@ function MusicPageComponent() {
     }
   }, [releases, selectedReleaseId]);
 
-  const { data: detailedRelease, isLoading: isLoadingDetails } = useQuery(
-    releaseDetailsQueryOptions(selectedReleaseId),
-  );
-  console.log("DETAILED RELEASE", detailedRelease);
   const selectedRelease = releases?.find((r) => r.id === selectedReleaseId);
-  const tracksForSelected: ApiTrack[] =
-    detailedRelease?.tracks ?? selectedRelease?.tracks ?? [];
+  const tracksForSelected: ApiTrack[] = selectedRelease?.tracks ?? [];
 
   const [expandedMobileId, setExpandedMobileId] = useState<string | null>(null);
 
@@ -133,97 +121,71 @@ function MusicPageComponent() {
                   </div>
 
                   {/* Streaming Links */}
-                  <div className="flex gap-3">
-                    {selectedRelease.streamingLinks?.spotify && (
-                      <a
-                        href={selectedRelease.streamingLinks.spotify}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                        aria-label="Listen on Spotify"
-                      >
-                        <SpotifyIcon size={24} />
-                      </a>
-                    )}
-                    {selectedRelease.streamingLinks?.appleMusic && (
-                      <a
-                        href={selectedRelease.streamingLinks.appleMusic}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                        aria-label="Listen on Apple Music"
-                      >
-                        <AppleMusicIcon size={24} />
-                      </a>
-                    )}
-                    {selectedRelease.streamingLinks?.youtube && (
-                      <a
-                        href={selectedRelease.streamingLinks.youtube}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                        aria-label="Watch on YouTube"
-                      >
-                        <YoutubeIcon size={24} />
-                      </a>
-                    )}
+                  <div className="flex items-center justify-between gap-3 w-full">
+                    <div className="flex gap-3">
+                      {selectedRelease.streamingLinks?.spotify && (
+                        <a
+                          href={selectedRelease.streamingLinks.spotify}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-primary transition-colors"
+                          aria-label="Listen on Spotify"
+                        >
+                          <SpotifyIcon size={24} />
+                        </a>
+                      )}
+                      {selectedRelease.streamingLinks?.appleMusic && (
+                        <a
+                          href={selectedRelease.streamingLinks.appleMusic}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-primary transition-colors"
+                          aria-label="Listen on Apple Music"
+                        >
+                          <AppleMusicIcon size={24} />
+                        </a>
+                      )}
+                      {selectedRelease.streamingLinks?.youtube && (
+                        <a
+                          href={selectedRelease.streamingLinks.youtube}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-primary transition-colors"
+                          aria-label="Watch on YouTube"
+                        >
+                          <YoutubeIcon size={24} />
+                        </a>
+                      )}
+                    </div>
+                    <Link
+                      to="/music/$releaseId"
+                      params={{ releaseId: selectedRelease.id.toString() }}
+                      aria-label="View release details"
+                    >
+                      <Button size="sm">Details</Button>
+                    </Link>
                   </div>
 
                   {/* Tracklist */}
                   <div className="space-y-1 w-full">
-                    {isLoadingDetails &&
-                    (!tracksForSelected || tracksForSelected.length === 0) ? (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Spinner className="h-4 w-4" />
-                        <span>Loading tracklist...</span>
-                      </div>
-                    ) : tracksForSelected.length > 0 ? (
-                      (tracksForSelected ?? []).map((track) => (
-                        <Collapsible
+                    {tracksForSelected.length > 0 ? (
+                      tracksForSelected.map((track) => (
+                        <div
                           key={
                             track.id ?? `${track.trackNumber}-${track.title}`
                           }
-                          className="w-full"
+                          className="flex items-center justify-between rounded transition-colors pr-1 hover:bg-accent/50"
                         >
-                          <div className="flex items-center justify-between hover:bg-accent/50 rounded transition-colors pr-1">
-                            <div className="flex items-center gap-3 p-1">
-                              <span className="text-xs text-muted-foreground">
-                                {track.trackNumber.toString().padStart(2, "0")}
-                              </span>
-                              <span className="text-sm">{track.title}</span>
-                            </div>
-                            <div className="flex items-center">
-                              <span className="text-sm text-muted-foreground mr-2">
-                                {msToMMSS(track.duration) ?? "—"}
-                              </span>
-                              <CollapsibleTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-7 w-7"
-                                >
-                                  <FileText className="h-4 w-4" />
-                                  <span className="sr-only">Toggle Lyrics</span>
-                                </Button>
-                              </CollapsibleTrigger>
-                            </div>
+                          <div className="flex items-center gap-3 p-1">
+                            <span className="text-xs text-muted-foreground">
+                              {track.trackNumber.toString().padStart(2, "0")}
+                            </span>
+                            <span className="text-sm">{track.title}</span>
                           </div>
-                          <CollapsibleContent>
-                            <div className="p-3 my-1 rounded-md border bg-muted/40">
-                              {isLoadingDetails && !detailedRelease ? (
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                  <Spinner className="h-4 w-4" />
-                                  <span>Loading lyrics...</span>
-                                </div>
-                              ) : (
-                                <p className="text-sm whitespace-pre-wrap text-muted-foreground">
-                                  {track.lyrics?.trim() ||
-                                    "Lyrics not available."}
-                                </p>
-                              )}
-                            </div>
-                          </CollapsibleContent>
-                        </Collapsible>
+                          <span className="text-sm text-muted-foreground mr-2">
+                            {msToMMSS(track.duration) ?? "—"}
+                          </span>
+                        </div>
                       ))
                     ) : (
                       <p className="text-sm text-muted-foreground">
@@ -312,43 +274,55 @@ function MusicPageComponent() {
                         {new Date(item.releaseDate).toLocaleDateString("en-US")}
                       </p>
                     </div>
-                    <div className="flex gap-3 mb-2">
-                      {item.streamingLinks?.spotify && (
-                        <a
-                          href={item.streamingLinks.spotify}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-primary transition-colors"
-                          aria-label="Listen on Spotify"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <SpotifyIcon size={20} />
-                        </a>
-                      )}
-                      {item.streamingLinks?.appleMusic && (
-                        <a
-                          href={item.streamingLinks.appleMusic}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-primary transition-colors"
-                          aria-label="Listen on Apple Music"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <AppleMusicIcon size={20} />
-                        </a>
-                      )}
-                      {item.streamingLinks?.youtube && (
-                        <a
-                          href={item.streamingLinks.youtube}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-primary transition-colors"
-                          aria-label="Watch on YouTube"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <YoutubeIcon size={20} />
-                        </a>
-                      )}
+                    <div className="flex items-center justify-between gap-3 mb-2 w-full">
+                      <div className="flex gap-3">
+                        {item.streamingLinks?.spotify && (
+                          <a
+                            href={item.streamingLinks.spotify}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors"
+                            aria-label="Listen on Spotify"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <SpotifyIcon size={20} />
+                          </a>
+                        )}
+                        {item.streamingLinks?.appleMusic && (
+                          <a
+                            href={item.streamingLinks.appleMusic}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors"
+                            aria-label="Listen on Apple Music"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <AppleMusicIcon size={20} />
+                          </a>
+                        )}
+                        {item.streamingLinks?.youtube && (
+                          <a
+                            href={item.streamingLinks.youtube}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors"
+                            aria-label="Watch on YouTube"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <YoutubeIcon size={20} />
+                          </a>
+                        )}
+                      </div>
+                      <Link
+                        to="/music/$releaseId"
+                        params={{ releaseId: item.id.toString() }}
+                        aria-label="View release details"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Button variant="outline" size="sm">
+                          Details
+                        </Button>
+                      </Link>
                     </div>
                     <div className="text-muted-foreground">
                       {expandedMobileId === String(item.id) ? (
@@ -363,47 +337,26 @@ function MusicPageComponent() {
                 {/* Expanded Track Info */}
                 {expandedMobileId === String(item.id) && (
                   <div className="border-t p-4">
-                    {isLoadingDetails &&
-                    selectedReleaseId === item.id &&
-                    (!detailedRelease || !detailedRelease.tracks.length) ? (
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-5/6" />
-                        <Skeleton className="h-4 w-full" />
-                      </div>
-                    ) : (
-                      (() => {
-                        const tracks: ApiTrack[] =
-                          detailedRelease && detailedRelease.id === item.id
-                            ? detailedRelease.tracks
-                            : (item.tracks ?? []);
-                        return (
-                          <div className="space-y-2">
-                            {tracks.map((track) => (
-                              <div
-                                key={
-                                  track.id ??
-                                  `${track.trackNumber}-${track.title}`
-                                }
-                                className="flex items-center justify-between text-sm hover:bg-accent/50 rounded transition-colors"
-                              >
-                                <div className="flex items-center gap-3">
-                                  <span className="text-xs text-muted-foreground">
-                                    {track.trackNumber
-                                      .toString()
-                                      .padStart(2, "0")}
-                                  </span>
-                                  <span>{track.title}</span>
-                                </div>
-                                <span className="text-muted-foreground">
-                                  {msToMMSS(track.duration) ?? "—"}
-                                </span>
-                              </div>
-                            ))}
+                    <div className="space-y-2">
+                      {(item.tracks ?? []).map((track) => (
+                        <div
+                          key={
+                            track.id ?? `${track.trackNumber}-${track.title}`
+                          }
+                          className="flex items-center justify-between text-sm hover:bg-accent/50 rounded transition-colors"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs text-muted-foreground">
+                              {track.trackNumber.toString().padStart(2, "0")}
+                            </span>
+                            <span>{track.title}</span>
                           </div>
-                        );
-                      })()
-                    )}
+                          <span className="text-muted-foreground">
+                            {msToMMSS(track.duration) ?? "—"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </CardContent>

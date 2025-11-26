@@ -6,13 +6,15 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Info } from "lucide-react";
+import { Play } from "lucide-react";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { musicQueryOptions } from "@/hooks/use-music";
 import { useQuery } from "@tanstack/react-query";
 import { ArtworkImage } from "@/components/artwork-image";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
 export default function MusicSection() {
   const { data: releases } = useQuery(musicQueryOptions);
@@ -39,15 +41,15 @@ export default function MusicSection() {
                 key={item.id}
                 className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
               >
-                <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                   <CardContent className="p-0">
-                    <div className="relative aspect-square">
+                    <div className="relative aspect-square group/artwork cursor-pointer">
                       <ArtworkImage
                         src={item.artworkPublicUrl ?? undefined}
                         alt={item.title}
                         className="object-cover w-full h-full"
                       />
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="absolute inset-0 opacity-0 group-hover/artwork:opacity-100 transition-opacity flex items-center justify-center">
                         <a
                           href={
                             item.streamingLinks?.spotify ??
@@ -73,7 +75,7 @@ export default function MusicSection() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between pt-2">
-                        <div className="flex gap-3">
+                        <div className="flex items-center gap-3">
                           {item.streamingLinks?.spotify && (
                             <a
                               href={item.streamingLinks.spotify}
@@ -107,13 +109,15 @@ export default function MusicSection() {
                               <YoutubeIcon size={20} />
                             </a>
                           )}
-                          <a
-                            href={`/music/${item.id}`}
-                            className="text-muted-foreground hover:text-primary transition-colors"
+                          <Link
+                            to="/music/$releaseId"
+                            params={{ releaseId: item.id.toString() }}
                             aria-label="Release info"
                           >
-                            <Info size={20} />
-                          </a>
+                            <Button size="sm" variant="outline">
+                              Details
+                            </Button>
+                          </Link>
                         </div>
                         <p className="text-sm text-muted-foreground">
                           {new Date(item.releaseDate).toLocaleDateString(
