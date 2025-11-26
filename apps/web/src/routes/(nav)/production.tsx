@@ -123,20 +123,17 @@ function ProductionPageComponent() {
                 <span>Let's Make</span>
                 <span> a Record</span>
               </h1>
-              <p className="text-lg md:text-xl max-w-84 text-muted-foreground">
+              <p className="text-lg -mt-3 md:text-xl max-w-84 text-muted-foreground">
                 I'll help you take your songs from good to{" "}
                 <strong>great</strong>.
               </p>
+              <Button className="mt-2" asChild size="lg">
+                <a href="#contact">Get in touch</a>
+              </Button>
             </div>
           </div>
         </div>
       </section>
-
-      <div className="container mx-auto px-4 md:px-6 py-8 flex justify-end">
-        <Button asChild size="lg">
-          <a href="#contact">Get in touch</a>
-        </Button>
-      </div>
 
       {/* Hear the Difference Section */}
       {SHOW_AUDIO_COMPARISON && (
