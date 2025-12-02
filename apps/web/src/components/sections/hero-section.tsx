@@ -10,6 +10,10 @@ export default function HeroSection() {
   const { data: releases } = useQuery(musicQueryOptions);
   const mostRecentRelease = releases?.[0];
 
+  const TITLE_LENGTH_THRESHOLD = 12;
+  const titleIsLong =
+    (mostRecentRelease?.title.length ?? 0) > TITLE_LENGTH_THRESHOLD;
+
   const streamingLinks = mostRecentRelease
     ? [
         mostRecentRelease.streamingLinks?.spotify && {
@@ -43,7 +47,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/5" />
       </div>
       {/* Content */}
-      <div className="relative h-full flex items-end justify-center pb-20 sm:pb-52 px-4">
+      <div className="relative h-full flex items-end  pb-10 sm:pb-20 px-4">
         {mostRecentRelease && (
           <div className="flex flex-col items-center max-w-4xl w-full">
             {/* New Release Label */}
@@ -67,7 +71,9 @@ export default function HeroSection() {
 
               {/* Title and Streaming Links */}
               <div className="flex flex-col justify-center ">
-                <h1 className="text-2xl md:text-6xl font-bold tracking-tight">
+                <h1
+                  className={`font-bold tracking-tight ${titleIsLong ? "text-xl md:text-5xl mb-1 md:mb-2" : "text-2xl md:text-6xl"}`}
+                >
                   {mostRecentRelease.title}
                 </h1>
 
