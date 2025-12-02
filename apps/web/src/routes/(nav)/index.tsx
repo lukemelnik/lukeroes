@@ -4,9 +4,12 @@ import MusicSection from "@/components/sections/music-section";
 import VideosSection from "@/components/sections/videos-section";
 import TourSection from "@/components/sections/tour-section";
 import MailingListSection from "@/components/sections/mailing-list-section";
-import Footer from "@/components/footer";
+import { musicQueryOptions } from "@/hooks/use-music";
 
-export const Route = createFileRoute("/(nav)/")({ component: HomeComponent });
+export const Route = createFileRoute("/(nav)/")({
+  component: HomeComponent,
+  loader: ({ context }) => context.queryClient.ensureQueryData(musicQueryOptions),
+});
 
 function HomeComponent() {
   return (

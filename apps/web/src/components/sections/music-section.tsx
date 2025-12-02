@@ -6,74 +6,18 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Info } from "lucide-react";
+import { Play } from "lucide-react";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
-
-interface MusicItem {
-  id: string;
-  title: string;
-  type: "Single" | "Album" | "EP";
-  artwork: string;
-  releaseDate: string;
-  streamUrl: string;
-  spotify?: string;
-  appleMusic?: string;
-  youtube?: string;
-}
-
-const mockMusicData: MusicItem[] = [
-  {
-    id: "1",
-    title: "Latest Single",
-    type: "Single",
-    artwork: "https://placehold.co/400x400/1a1a1a/white?text=Single",
-    releaseDate: "2024",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-    appleMusic: "https://music.apple.com",
-    youtube: "https://youtube.com",
-  },
-  {
-    id: "2",
-    title: "Debut Album",
-    type: "Album",
-    artwork: "https://placehold.co/400x400/2a2a2a/white?text=Album",
-    releaseDate: "2023",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-    appleMusic: "https://music.apple.com",
-  },
-  {
-    id: "3",
-    title: "Summer EP",
-    type: "EP",
-    artwork: "https://placehold.co/400x400/3a3a3a/white?text=EP",
-    releaseDate: "2023",
-    streamUrl: "#",
-    youtube: "https://youtube.com",
-  },
-  {
-    id: "4",
-    title: "Previous Single",
-    type: "Single",
-    artwork: "https://placehold.co/400x400/4a4a4a/white?text=Single",
-    releaseDate: "2022",
-    streamUrl: "#",
-  },
-  {
-    id: "5",
-    title: "Acoustic Sessions",
-    type: "EP",
-    artwork: "https://placehold.co/400x400/5a5a5a/white?text=EP",
-    releaseDate: "2022",
-    streamUrl: "#",
-    spotify: "https://open.spotify.com",
-  },
-];
+import { musicQueryOptions } from "@/hooks/use-music";
+import { useQuery } from "@tanstack/react-query";
+import { ArtworkImage } from "@/components/artwork-image";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
 export default function MusicSection() {
+  const { data: releases } = useQuery(musicQueryOptions);
   return (
     <section className="w-full py-16 px-4 md:px-6">
       <div className="container mx-auto">
@@ -92,22 +36,29 @@ export default function MusicSection() {
           className="w-full"
         >
           <CarouselContent>
-            {mockMusicData.map((item) => (
+            {releases?.map((item) => (
               <CarouselItem
                 key={item.id}
                 className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
               >
-                <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                   <CardContent className="p-0">
-                    <div className="relative aspect-square">
-                      <img
-                        src={item.artwork}
+                    <div className="relative aspect-square group/artwork cursor-pointer">
+                      <ArtworkImage
+                        src={item.artworkPublicUrl ?? undefined}
                         alt={item.title}
                         className="object-cover w-full h-full"
                       />
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="absolute inset-0 opacity-0 group-hover/artwork:opacity-100 transition-opacity flex items-center justify-center">
                         <a
-                          href={item.streamUrl}
+                          href={
+                            item.streamingLinks?.spotify ??
+                            item.streamingLinks?.appleMusic ??
+                            item.streamingLinks?.youtube ??
+                            item.streamingLinks?.soundcloud ??
+                            item.streamingLinks?.bandcamp ??
+                            "#"
+                          }
                           className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:scale-110 transition-transform"
                         >
                           <Play className="w-8 h-8 fill-primary-foreground text-primary-foreground ml-1" />
@@ -124,10 +75,10 @@ export default function MusicSection() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between pt-2">
-                        <div className="flex gap-3">
-                          {item.spotify && (
+                        <div className="flex items-center gap-3">
+                          {item.streamingLinks?.spotify && (
                             <a
-                              href={item.spotify}
+                              href={item.streamingLinks.spotify}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-muted-foreground hover:text-primary transition-colors"
@@ -136,9 +87,9 @@ export default function MusicSection() {
                               <SpotifyIcon size={20} />
                             </a>
                           )}
-                          {item.appleMusic && (
+                          {item.streamingLinks?.appleMusic && (
                             <a
-                              href={item.appleMusic}
+                              href={item.streamingLinks.appleMusic}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-muted-foreground hover:text-primary transition-colors"
@@ -147,9 +98,9 @@ export default function MusicSection() {
                               <AppleMusicIcon size={20} />
                             </a>
                           )}
-                          {item.youtube && (
+                          {item.streamingLinks?.youtube && (
                             <a
-                              href={item.youtube}
+                              href={item.streamingLinks.youtube}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-muted-foreground hover:text-primary transition-colors"
@@ -158,16 +109,20 @@ export default function MusicSection() {
                               <YoutubeIcon size={20} />
                             </a>
                           )}
-                          <a
-                            href={`/music/${item.id}`}
-                            className="text-muted-foreground hover:text-primary transition-colors"
+                          <Link
+                            to="/music/$releaseId"
+                            params={{ releaseId: item.id.toString() }}
                             aria-label="Release info"
                           >
-                            <Info size={20} />
-                          </a>
+                            <Button size="sm" variant="outline">
+                              Details
+                            </Button>
+                          </Link>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {item.releaseDate}
+                          {new Date(item.releaseDate).toLocaleDateString(
+                            "en-US",
+                          )}
                         </p>
                       </div>
                     </div>

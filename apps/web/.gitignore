@@ -53,8 +53,7 @@ next-env.d.ts
 
 # Other
 dev-dist
-
+.cache
 .wrangler
 .dev.vars*
-
 .open-next

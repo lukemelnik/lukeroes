@@ -1,95 +1,118 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useVideos, videosQueryOptions } from "@/hooks/use-videos";
+import { Spinner } from "@/components/ui/spinner";
+import type { ApiVideo } from "@/hooks/use-videos";
+import { Button } from "@/components/ui/button";
+import { RefreshCcw } from "lucide-react";
 
 export const Route = createFileRoute("/(nav)/videos")({
   component: VideosPageComponent,
+  loader: async ({ context }) => {
+    try {
+      await context.queryClient.prefetchQuery(videosQueryOptions);
+    } catch (err) {
+      console.warn("Prefetch videos failed; will retry on client", err);
+    }
+    return null;
+  },
 });
 
-interface Video {
-  id: string;
-  title: string;
-  youtubeId: string;
-  releaseDate: string;
-  duration: string;
-  description?: string;
-}
-
-const mockVideoData: Video[] = [
-  {
-    id: "1",
-    title: "Latest Music Video",
-    youtubeId: "dQw4w9WgXcQ", // Replace with your actual YouTube video ID
-    releaseDate: "2024",
-    duration: "3:45",
-    description: "The official music video for my latest single",
-  },
-  {
-    id: "2",
-    title: "Behind The Scenes",
-    youtubeId: "dQw4w9WgXcQ", // Replace with your actual YouTube video ID
-    releaseDate: "2024",
-    duration: "8:12",
-    description: "A look behind the scenes of the album recording process",
-  },
-  {
-    id: "3",
-    title: "Live Performance",
-    youtubeId: "dQw4w9WgXcQ", // Replace with your actual YouTube video ID
-    releaseDate: "2023",
-    duration: "4:30",
-    description: "Live performance from my hometown show",
-  },
-  {
-    id: "4",
-    title: "Acoustic Session",
-    youtubeId: "dQw4w9WgXcQ", // Replace with your actual YouTube video ID
-    releaseDate: "2023",
-    duration: "3:55",
-  },
-  {
-    id: "5",
-    title: "Studio Diary",
-    youtubeId: "dQw4w9WgXcQ", // Replace with your actual YouTube video ID
-    releaseDate: "2023",
-    duration: "6:20",
-  },
-  {
-    id: "6",
-    title: "Tour Vlog",
-    youtubeId: "dQw4w9WgXcQ", // Replace with your actual YouTube video ID
-    releaseDate: "2022",
-    duration: "10:15",
-  },
-];
-
 function VideosPageComponent() {
-  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
-  const [featuredVideo] = useState<Video>(mockVideoData[0]);
-  const otherVideos = mockVideoData.filter((v) => v.id !== featuredVideo.id);
+  const {
+    data: videos,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    isRefetching,
+  } = useVideos();
+  const [isClient, setIsClient] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<ApiVideo | null>(null);
+  const [featuredVideo, setFeaturedVideo] = useState<ApiVideo | null>(null);
+  const otherVideos = useMemo(
+    () =>
+      videos && featuredVideo
+        ? videos.filter((v) => v.id !== featuredVideo.id)
+        : [],
+    [videos, featuredVideo],
+  );
+
+  useEffect(() => setIsClient(true), []);
+  useEffect(() => {
+    if (videos && videos.length > 0) {
+      setFeaturedVideo((current) => current ?? videos[0]);
+    }
+  }, [videos]);
 
   const getThumbnailUrl = (youtubeId: string) => {
     return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
   };
+
+  if (!isClient || isLoading) {
+    return (
+      <div className="w-full min-h-[60vh] flex items-center justify-center">
+        <Spinner className="h-8 w-8" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full min-h-[60vh] flex items-center justify-center px-4">
+        <Card className="max-w-md w-full text-center p-6">
+          <CardContent className="space-y-4 p-0">
+            <div className="text-2xl font-bold">Videos unavailable</div>
+            <p className="text-muted-foreground">
+              {error instanceof Error
+                ? error.message
+                : "Could not load videos right now."}
+            </p>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <Button onClick={() => refetch()} disabled={isRefetching}>
+                <RefreshCcw className="mr-2 h-4 w-4" />
+                {isRefetching ? "Retrying..." : "Try again"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!videos || videos.length === 0 || !featuredVideo) {
+    return (
+      <div className="w-full min-h-[60vh] flex items-center justify-center px-4">
+        <Card className="max-w-md w-full text-center p-6">
+          <CardContent className="space-y-4 p-0">
+            <div className="text-2xl font-bold">No videos yet</div>
+            <p className="text-muted-foreground">Check back soon for videos.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="py-8 px-4 md:px-6">
       <div className="mx-auto max-w-7xl">
         {/* Featured Video */}
         <div className="mb-8 max-w-4xl mx-auto">
-          <Card className="group cursor-pointer" onClick={() => setSelectedVideo(featuredVideo)}>
+          <Card
+            className="group cursor-pointer"
+            onClick={() => setSelectedVideo(featuredVideo)}
+          >
             <CardContent className="p-0">
               <div className="relative aspect-video">
                 <img
-                  src={getThumbnailUrl(featuredVideo.youtubeId)}
+                  src={
+                    featuredVideo.thumbnailUrl ||
+                    getThumbnailUrl(featuredVideo.youtubeId)
+                  }
                   alt={featuredVideo.title}
                   className="w-full object-cover"
                 />
@@ -98,19 +121,20 @@ function VideosPageComponent() {
                     <Play className="w-12 h-12 fill-current" />
                   </div>
                 </div>
-                <div className="absolute bottom-4 right-4 bg-black/80 px-2 py-1 rounded text-sm">
-                  {featuredVideo.duration}
-                </div>
               </div>
               <div className="p-6">
                 <h2 className="font-bold text-2xl mb-2">
                   {featuredVideo.title}
                 </h2>
-                <p className="text-sm text-muted-foreground mb-2">
-                  {featuredVideo.releaseDate}
-                </p>
+                {featuredVideo.publishedAt && (
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {new Date(featuredVideo.publishedAt).toLocaleDateString(
+                      "en-US",
+                    )}
+                  </p>
+                )}
                 {featuredVideo.description && (
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground line-clamp-3">
                     {featuredVideo.description}
                   </p>
                 )}
@@ -133,7 +157,9 @@ function VideosPageComponent() {
                   <CardContent className="p-0">
                     <div className="relative aspect-video">
                       <img
-                        src={getThumbnailUrl(video.youtubeId)}
+                        src={
+                          video.thumbnailUrl || getThumbnailUrl(video.youtubeId)
+                        }
                         alt={video.title}
                         className="w-full h-full object-cover"
                       />
@@ -142,17 +168,18 @@ function VideosPageComponent() {
                           <Play className="w-8 h-8 fill-current" />
                         </div>
                       </div>
-                      <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs">
-                        {video.duration}
-                      </div>
                     </div>
                     <div className="p-4">
                       <h3 className="font-semibold text-lg mb-1 line-clamp-2">
                         {video.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {video.releaseDate}
-                      </p>
+                      {video.publishedAt && (
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(video.publishedAt).toLocaleDateString(
+                            "en-US",
+                          )}
+                        </p>
+                      )}
                       {video.description && (
                         <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
                           {video.description}
@@ -168,11 +195,11 @@ function VideosPageComponent() {
       </div>
 
       {/* Video Modal */}
-      <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
-        <DialogContent className="max-w-5xl p-0">
-          <DialogHeader className="p-6 pb-0">
-            <DialogTitle>{selectedVideo?.title}</DialogTitle>
-          </DialogHeader>
+      <Dialog
+        open={!!selectedVideo}
+        onOpenChange={() => setSelectedVideo(null)}
+      >
+        <DialogContent className="md:min-w-4xl max-w-6xl p-0">
           <div className="aspect-video w-full">
             {selectedVideo && (
               <iframe
@@ -184,11 +211,6 @@ function VideosPageComponent() {
               />
             )}
           </div>
-          {selectedVideo?.description && (
-            <div className="p-6 pt-4">
-              <p className="text-muted-foreground">{selectedVideo.description}</p>
-            </div>
-          )}
         </DialogContent>
       </Dialog>
     </div>

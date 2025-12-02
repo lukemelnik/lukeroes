@@ -1,10 +1,7 @@
-import { useState } from "react";
 import {
   Command,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
 } from "@/components/ui/command";
 import { X } from "lucide-react";

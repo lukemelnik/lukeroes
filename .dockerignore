@@ -1,0 +1,56 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs (will be created during build)
+dist
+build
+*.tsbuildinfo
+.content-collections
+
+# Environment variables
+.env
+.env*.local
+
+# IDEs and editors
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# Git
+.git
+.gitignore
+.github
+
+# Turbo
+.turbo
+
+# Better-T-Stack
+.alchemy
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+*.tgz
+.cache
+tmp
+temp
+README.md
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Database files (will be in volume)
+*.db
+*.db-shm
+*.db-wal

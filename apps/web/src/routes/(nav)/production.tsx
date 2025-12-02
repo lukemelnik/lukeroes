@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Music, Sliders, MessageSquare } from "lucide-react";
 import { AudioComparisonSection } from "@/components/audio-comparison";
@@ -20,15 +21,15 @@ interface Service {
 const services: Service[] = [
   {
     icon: <Sliders className="h-8 w-8" />,
-    title: "Mix & Master",
+    title: "Mix",
     description: "Get your tracks polished and radio-ready.",
     price: "$250 - $650",
     priceNote: "depending on project track count",
     features: [
       "Unlimited revisions",
       "1 week turnaround",
-      "Vocal tuning (extra)",
-      "Digital master (extra)",
+      "Optional Vocal tuning (extra)",
+      "Optional digital master (extra)",
     ],
   },
   {
@@ -122,10 +123,13 @@ function ProductionPageComponent() {
                 <span>Let's Make</span>
                 <span> a Record</span>
               </h1>
-              <p className="text-lg md:text-xl max-w-84 text-muted-foreground">
+              <p className="text-lg -mt-3 md:text-xl max-w-84 text-muted-foreground">
                 I'll help you take your songs from good to{" "}
                 <strong>great</strong>.
               </p>
+              <Button className="mt-2" asChild size="lg">
+                <a href="#contact">Get in touch</a>
+              </Button>
             </div>
           </div>
         </div>
@@ -230,7 +234,7 @@ function ProductionPageComponent() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 px-4 md:px-6 bg-muted/30">
+      <section id="contact" className="py-16 px-4 md:px-6 bg-muted/30">
         <div className="container mx-auto max-w-xl">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             Let's Work Together

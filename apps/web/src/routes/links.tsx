@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ExternalLink, Mail } from "lucide-react";
 import { useState } from "react";
 
@@ -9,13 +10,38 @@ import { siteConfig } from "@/lib/site-config";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
+import { musicQueryOptions } from "@/hooks/use-music";
+import { ArtworkImage } from "@/components/artwork-image";
 
 export const Route = createFileRoute("/links")({
   component: LinksPage,
 });
 
 function LinksPage() {
-  const { profile, featured, links, showMailingList } = linksConfig;
+  const { profile, links, showMailingList } = linksConfig;
+  const { data: releases } = useQuery(musicQueryOptions);
+  const featuredRelease = releases?.[0];
+
+  const streamingLinks = featuredRelease
+    ? [
+        featuredRelease.streamingLinks?.spotify && {
+          href: featuredRelease.streamingLinks.spotify,
+          icon: SpotifyIcon,
+          label: "Spotify",
+        },
+        featuredRelease.streamingLinks?.appleMusic && {
+          href: featuredRelease.streamingLinks.appleMusic,
+          icon: AppleMusicIcon,
+          label: "Apple Music",
+        },
+        featuredRelease.streamingLinks?.youtube && {
+          href: featuredRelease.streamingLinks.youtube,
+          icon: YoutubeIcon,
+          label: "YouTube",
+        },
+      ].filter(Boolean)
+    : [];
+
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,47 +87,39 @@ function LinksPage() {
         </div>
 
         {/* Featured Release */}
-        {featured && (
+        {featuredRelease && (
           <div className="bg-card rounded-lg p-4 border border-border">
-            <div className="flex gap-4">
+            <div className="flex gap-4 items-center">
               <div className="relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
-                <img
-                  src={featured.image}
-                  alt={featured.title}
+                <ArtworkImage
+                  src={featuredRelease.artworkPublicUrl ?? undefined}
+                  alt={featuredRelease.title}
                   className="w-full h-full object-cover"
                 />
-                {featured.isNew && (
-                  <span className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded font-medium">
-                    NEW
-                  </span>
-                )}
               </div>
               <div className="flex flex-col justify-center space-y-2">
-                <div>
-                  <h2 className="font-semibold">{featured.title}</h2>
-                  {featured.subtitle && (
-                    <p className="text-sm text-muted-foreground">
-                      {featured.subtitle}
-                    </p>
-                  )}
+                <div className="flex items-start justify-between gap-2">
+                  <h2 className="font-semibold">{featuredRelease.title}</h2>
+                  <span className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-semibold tracking-widest uppercase">
+                    New {featuredRelease.type}
+                  </span>
                 </div>
-                <div className="flex gap-2">
-                  {featured.streamingLinks.map((link) => (
-                    <a
-                      key={link.platform}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-1.5 rounded-full bg-muted hover:bg-muted/80 transition-colors"
-                    >
-                      {link.platform === "spotify" && <SpotifyIcon size={18} />}
-                      {link.platform === "appleMusic" && (
-                        <AppleMusicIcon size={18} />
-                      )}
-                      {link.platform === "youtube" && <YoutubeIcon size={18} />}
-                    </a>
-                  ))}
-                </div>
+                {streamingLinks.length > 0 && (
+                  <div className="flex gap-2">
+                    {streamingLinks.map(({ href, icon: Icon, label }) => (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+                      >
+                        <Icon size={18} />
+                        <span className="sr-only">{label}</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
