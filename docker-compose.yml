@@ -1,0 +1,46 @@
+services:
+  app:
+    image: ghcr.io/lukeroes/lukeroes:latest
+    env_file:
+      - /opt/lukeroes-config/.env
+    networks:
+      - web
+    volumes:
+      - lukeroes-data:/app/data
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    labels:
+      - "traefik.enable=true"
+      # HTTPS Router
+      - "traefik.http.routers.lukeroes.rule=Host(`lukeroes.com`)"
+      - "traefik.http.routers.lukeroes.entrypoints=websecure"
+      - "traefik.http.routers.lukeroes.tls=true"
+      - "traefik.http.routers.lukeroes.tls.certresolver=myresolver"
+      # This port must match the INTERNAL port of the container
+      - "traefik.http.services.lukeroes.loadbalancer.server.port=3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 40s
+
+networks:
+  web:
+    external: true
+
+volumes:
+  lukeroes-data:
