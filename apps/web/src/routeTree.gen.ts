@@ -15,6 +15,7 @@ import { Route as TestRouteRouteImport } from './routes/test/route'
 import { Route as navRouteRouteImport } from './routes/(nav)/route'
 import { Route as TestIndexRouteImport } from './routes/test/index'
 import { Route as navIndexRouteImport } from './routes/(nav)/index'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as navVideosRouteImport } from './routes/(nav)/videos'
 import { Route as navTourRouteImport } from './routes/(nav)/tour'
 import { Route as navProductionRouteImport } from './routes/(nav)/production'
@@ -54,6 +55,11 @@ const navIndexRoute = navIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => navRouteRoute,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const navVideosRoute = navVideosRouteImport.update({
   id: '/videos',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/production': typeof navProductionRoute
   '/tour': typeof navTourRoute
   '/videos': typeof navVideosRoute
+  '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
   '/test/': typeof TestIndexRoute
   '/blog/$slug': typeof navBlogSlugRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/production': typeof navProductionRoute
   '/tour': typeof navTourRoute
   '/videos': typeof navVideosRoute
+  '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
   '/test': typeof TestIndexRoute
   '/blog/$slug': typeof navBlogSlugRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/(nav)/production': typeof navProductionRoute
   '/(nav)/tour': typeof navTourRoute
   '/(nav)/videos': typeof navVideosRoute
+  '/api/health': typeof ApiHealthRoute
   '/(nav)/': typeof navIndexRoute
   '/test/': typeof TestIndexRoute
   '/(nav)/blog/$slug': typeof navBlogSlugRoute
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/production'
     | '/tour'
     | '/videos'
+    | '/api/health'
     | '/'
     | '/test/'
     | '/blog/$slug'
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/production'
     | '/tour'
     | '/videos'
+    | '/api/health'
     | '/'
     | '/test'
     | '/blog/$slug'
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/(nav)/production'
     | '/(nav)/tour'
     | '/(nav)/videos'
+    | '/api/health'
     | '/(nav)/'
     | '/test/'
     | '/(nav)/blog/$slug'
@@ -217,6 +229,7 @@ export interface RootRouteChildren {
   TestRouteRoute: typeof TestRouteRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   LinksRoute: typeof LinksRoute
+  ApiHealthRoute: typeof ApiHealthRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -263,6 +276,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof navIndexRouteImport
       parentRoute: typeof navRouteRoute
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(nav)/videos': {
       id: '/(nav)/videos'
@@ -384,6 +404,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestRouteRoute: TestRouteRouteWithChildren,
   DashboardRoute: DashboardRoute,
   LinksRoute: LinksRoute,
+  ApiHealthRoute: ApiHealthRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
