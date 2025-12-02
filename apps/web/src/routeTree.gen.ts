@@ -11,9 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LinksRouteImport } from './routes/links'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as TestRouteRouteImport } from './routes/test/route'
 import { Route as navRouteRouteImport } from './routes/(nav)/route'
-import { Route as TestIndexRouteImport } from './routes/test/index'
 import { Route as navIndexRouteImport } from './routes/(nav)/index'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as navVideosRouteImport } from './routes/(nav)/videos'
@@ -37,19 +35,9 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TestRouteRoute = TestRouteRouteImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const navRouteRoute = navRouteRouteImport.update({
   id: '/(nav)',
   getParentRoute: () => rootRouteImport,
-} as any)
-const TestIndexRoute = TestIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => TestRouteRoute,
 } as any)
 const navIndexRoute = navIndexRouteImport.update({
   id: '/',
@@ -113,7 +101,6 @@ const navBlogSlugRoute = navBlogSlugRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/test': typeof TestRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/links': typeof LinksRoute
   '/contact': typeof navContactRoute
@@ -123,7 +110,6 @@ export interface FileRoutesByFullPath {
   '/videos': typeof navVideosRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
-  '/test/': typeof TestIndexRoute
   '/blog/$slug': typeof navBlogSlugRoute
   '/music/$releaseId': typeof navMusicReleaseIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -140,7 +126,6 @@ export interface FileRoutesByTo {
   '/videos': typeof navVideosRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
-  '/test': typeof TestIndexRoute
   '/blog/$slug': typeof navBlogSlugRoute
   '/music/$releaseId': typeof navMusicReleaseIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -150,7 +135,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(nav)': typeof navRouteRouteWithChildren
-  '/test': typeof TestRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/links': typeof LinksRoute
   '/(nav)/contact': typeof navContactRoute
@@ -160,7 +144,6 @@ export interface FileRoutesById {
   '/(nav)/videos': typeof navVideosRoute
   '/api/health': typeof ApiHealthRoute
   '/(nav)/': typeof navIndexRoute
-  '/test/': typeof TestIndexRoute
   '/(nav)/blog/$slug': typeof navBlogSlugRoute
   '/(nav)/music/$releaseId': typeof navMusicReleaseIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -170,7 +153,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/test'
     | '/dashboard'
     | '/links'
     | '/contact'
@@ -180,7 +162,6 @@ export interface FileRouteTypes {
     | '/videos'
     | '/api/health'
     | '/'
-    | '/test/'
     | '/blog/$slug'
     | '/music/$releaseId'
     | '/api/auth/$'
@@ -197,7 +178,6 @@ export interface FileRouteTypes {
     | '/videos'
     | '/api/health'
     | '/'
-    | '/test'
     | '/blog/$slug'
     | '/music/$releaseId'
     | '/api/auth/$'
@@ -206,7 +186,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/(nav)'
-    | '/test'
     | '/dashboard'
     | '/links'
     | '/(nav)/contact'
@@ -216,7 +195,6 @@ export interface FileRouteTypes {
     | '/(nav)/videos'
     | '/api/health'
     | '/(nav)/'
-    | '/test/'
     | '/(nav)/blog/$slug'
     | '/(nav)/music/$releaseId'
     | '/api/auth/$'
@@ -226,7 +204,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   navRouteRoute: typeof navRouteRouteWithChildren
-  TestRouteRoute: typeof TestRouteRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   LinksRoute: typeof LinksRoute
   ApiHealthRoute: typeof ApiHealthRoute
@@ -249,26 +226,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(nav)': {
       id: '/(nav)'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof navRouteRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/test/': {
-      id: '/test/'
-      path: '/'
-      fullPath: '/test/'
-      preLoaderRoute: typeof TestIndexRouteImport
-      parentRoute: typeof TestRouteRoute
     }
     '/(nav)/': {
       id: '/(nav)/'
@@ -387,21 +350,8 @@ const navRouteRouteWithChildren = navRouteRoute._addFileChildren(
   navRouteRouteChildren,
 )
 
-interface TestRouteRouteChildren {
-  TestIndexRoute: typeof TestIndexRoute
-}
-
-const TestRouteRouteChildren: TestRouteRouteChildren = {
-  TestIndexRoute: TestIndexRoute,
-}
-
-const TestRouteRouteWithChildren = TestRouteRoute._addFileChildren(
-  TestRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   navRouteRoute: navRouteRouteWithChildren,
-  TestRouteRoute: TestRouteRouteWithChildren,
   DashboardRoute: DashboardRoute,
   LinksRoute: LinksRoute,
   ApiHealthRoute: ApiHealthRoute,
