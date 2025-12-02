@@ -127,15 +127,10 @@ function VideosPageComponent() {
                   {featuredVideo.title}
                 </h2>
                 {featuredVideo.publishedAt && (
-                  <p className="text-sm text-muted-foreground mb-2">
+                  <p className="text-sm text-muted-foreground">
                     {new Date(featuredVideo.publishedAt).toLocaleDateString(
                       "en-US",
                     )}
-                  </p>
-                )}
-                {featuredVideo.description && (
-                  <p className="text-muted-foreground line-clamp-3">
-                    {featuredVideo.description}
                   </p>
                 )}
               </div>
@@ -178,11 +173,6 @@ function VideosPageComponent() {
                           {new Date(video.publishedAt).toLocaleDateString(
                             "en-US",
                           )}
-                        </p>
-                      )}
-                      {video.description && (
-                        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                          {video.description}
                         </p>
                       )}
                     </div>
