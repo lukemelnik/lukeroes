@@ -1,0 +1,162 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { allPosts } from "content-collections";
+import { WritingHero } from "@/components/writing/writing-hero";
+import { PostCard } from "@/components/writing/post-card";
+import { useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import { z } from "zod";
+
+const searchSchema = z.object({
+  tag: z.string().optional(),
+});
+
+export const Route = createFileRoute("/(nav)/writing/")({
+  component: WritingIndex,
+  validateSearch: searchSchema,
+});
+
+function WritingIndex() {
+  const navigate = useNavigate();
+  const { tag: selectedTag } = Route.useSearch();
+
+  // Filter out drafts in production
+  const publishedPosts = allPosts
+    .filter((post) => {
+      if (import.meta.env.DEV) {
+        return true; // Show all posts in development
+      }
+      return !post.draft; // Hide drafts in production
+    })
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  // Get all unique tags from published posts
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    publishedPosts.forEach((post) => {
+      post.tags?.forEach((tag) => tagSet.add(tag));
+    });
+    return Array.from(tagSet).sort();
+  }, [publishedPosts]);
+
+  // Filter posts by selected tag
+  const filteredPosts = useMemo(() => {
+    if (!selectedTag) return publishedPosts;
+    return publishedPosts.filter((post) => post.tags?.includes(selectedTag));
+  }, [publishedPosts, selectedTag]);
+
+  const latestPost = filteredPosts[0];
+  const remainingPosts = filteredPosts.slice(1);
+
+  const handleTagClick = (tag: string) => {
+    if (selectedTag === tag) {
+      // If clicking the same tag, clear the filter
+      navigate({ to: "/writing", search: {} });
+    } else {
+      // Set the new tag filter
+      navigate({ to: "/writing", search: { tag } });
+    }
+  };
+
+  const clearFilter = () => {
+    navigate({ to: "/writing", search: {} });
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-12 max-w-6xl">
+      {/* Tag Filter */}
+      {allTags.length > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-3">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              Filter by topic
+            </h3>
+            {selectedTag && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilter}
+                className="h-7 text-xs"
+              >
+                <X className="size-3 mr-1" />
+                Clear filter
+              </Button>
+            )}
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {allTags.map((tag) => {
+              const isActive = selectedTag === tag;
+              const postCount = publishedPosts.filter((p) =>
+                p.tags?.includes(tag),
+              ).length;
+
+              return (
+                <button
+                  key={tag}
+                  onClick={() => handleTagClick(tag)}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                    isActive
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted hover:bg-muted/80 text-foreground"
+                  }`}
+                >
+                  {tag}
+                  <span className="ml-1.5 text-xs opacity-70">
+                    ({postCount})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Posts */}
+      {filteredPosts.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground mb-4">
+            {selectedTag
+              ? `No posts found with tag "${selectedTag}"`
+              : "No posts yet. Check back soon!"}
+          </p>
+          {selectedTag && (
+            <Button variant="outline" onClick={clearFilter}>
+              Show all posts
+            </Button>
+          )}
+        </div>
+      ) : (
+        <>
+          {latestPost && (
+            <WritingHero
+              title={latestPost.title}
+              summary={latestPost.summary}
+              date={latestPost.date}
+              slug={latestPost.slug}
+              tags={latestPost.tags}
+              draft={latestPost.draft}
+              readingTime={latestPost.readingTime}
+            />
+          )}
+
+          {remainingPosts.length > 0 && (
+            <div className="grid md:grid-cols-2 gap-6">
+              {remainingPosts.map((post) => (
+                <PostCard
+                  key={post._meta.path}
+                  title={post.title}
+                  summary={post.summary}
+                  date={post.date}
+                  slug={post.slug}
+                  tags={post.tags}
+                  draft={post.draft}
+                  readingTime={post.readingTime}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

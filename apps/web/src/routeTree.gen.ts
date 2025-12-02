@@ -19,11 +19,11 @@ import { Route as navTourRouteImport } from './routes/(nav)/tour'
 import { Route as navProductionRouteImport } from './routes/(nav)/production'
 import { Route as navLoginRouteImport } from './routes/(nav)/login'
 import { Route as navContactRouteImport } from './routes/(nav)/contact'
+import { Route as navWritingIndexRouteImport } from './routes/(nav)/writing/index'
 import { Route as navMusicIndexRouteImport } from './routes/(nav)/music/index'
-import { Route as navBlogIndexRouteImport } from './routes/(nav)/blog/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as navWritingSlugRouteImport } from './routes/(nav)/writing/$slug'
 import { Route as navMusicReleaseIdRouteImport } from './routes/(nav)/music/$releaseId'
-import { Route as navBlogSlugRouteImport } from './routes/(nav)/blog/$slug'
 
 const LinksRoute = LinksRouteImport.update({
   id: '/links',
@@ -74,14 +74,14 @@ const navContactRoute = navContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => navRouteRoute,
 } as any)
+const navWritingIndexRoute = navWritingIndexRouteImport.update({
+  id: '/writing/',
+  path: '/writing/',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const navMusicIndexRoute = navMusicIndexRouteImport.update({
   id: '/music/',
   path: '/music/',
-  getParentRoute: () => navRouteRoute,
-} as any)
-const navBlogIndexRoute = navBlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
   getParentRoute: () => navRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -89,14 +89,14 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const navWritingSlugRoute = navWritingSlugRouteImport.update({
+  id: '/writing/$slug',
+  path: '/writing/$slug',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const navMusicReleaseIdRoute = navMusicReleaseIdRouteImport.update({
   id: '/music/$releaseId',
   path: '/music/$releaseId',
-  getParentRoute: () => navRouteRoute,
-} as any)
-const navBlogSlugRoute = navBlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
   getParentRoute: () => navRouteRoute,
 } as any)
 
@@ -110,11 +110,11 @@ export interface FileRoutesByFullPath {
   '/videos': typeof navVideosRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
-  '/blog/$slug': typeof navBlogSlugRoute
   '/music/$releaseId': typeof navMusicReleaseIdRoute
+  '/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/blog': typeof navBlogIndexRoute
   '/music': typeof navMusicIndexRoute
+  '/writing': typeof navWritingIndexRoute
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
@@ -126,11 +126,11 @@ export interface FileRoutesByTo {
   '/videos': typeof navVideosRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
-  '/blog/$slug': typeof navBlogSlugRoute
   '/music/$releaseId': typeof navMusicReleaseIdRoute
+  '/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/blog': typeof navBlogIndexRoute
   '/music': typeof navMusicIndexRoute
+  '/writing': typeof navWritingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -144,11 +144,11 @@ export interface FileRoutesById {
   '/(nav)/videos': typeof navVideosRoute
   '/api/health': typeof ApiHealthRoute
   '/(nav)/': typeof navIndexRoute
-  '/(nav)/blog/$slug': typeof navBlogSlugRoute
   '/(nav)/music/$releaseId': typeof navMusicReleaseIdRoute
+  '/(nav)/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/(nav)/blog/': typeof navBlogIndexRoute
   '/(nav)/music/': typeof navMusicIndexRoute
+  '/(nav)/writing/': typeof navWritingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -162,11 +162,11 @@ export interface FileRouteTypes {
     | '/videos'
     | '/api/health'
     | '/'
-    | '/blog/$slug'
     | '/music/$releaseId'
+    | '/writing/$slug'
     | '/api/auth/$'
-    | '/blog'
     | '/music'
+    | '/writing'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
@@ -178,11 +178,11 @@ export interface FileRouteTypes {
     | '/videos'
     | '/api/health'
     | '/'
-    | '/blog/$slug'
     | '/music/$releaseId'
+    | '/writing/$slug'
     | '/api/auth/$'
-    | '/blog'
     | '/music'
+    | '/writing'
   id:
     | '__root__'
     | '/(nav)'
@@ -195,11 +195,11 @@ export interface FileRouteTypes {
     | '/(nav)/videos'
     | '/api/health'
     | '/(nav)/'
-    | '/(nav)/blog/$slug'
     | '/(nav)/music/$releaseId'
+    | '/(nav)/writing/$slug'
     | '/api/auth/$'
-    | '/(nav)/blog/'
     | '/(nav)/music/'
+    | '/(nav)/writing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -282,18 +282,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navContactRouteImport
       parentRoute: typeof navRouteRoute
     }
+    '/(nav)/writing/': {
+      id: '/(nav)/writing/'
+      path: '/writing'
+      fullPath: '/writing'
+      preLoaderRoute: typeof navWritingIndexRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/(nav)/music/': {
       id: '/(nav)/music/'
       path: '/music'
       fullPath: '/music'
       preLoaderRoute: typeof navMusicIndexRouteImport
-      parentRoute: typeof navRouteRoute
-    }
-    '/(nav)/blog/': {
-      id: '/(nav)/blog/'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof navBlogIndexRouteImport
       parentRoute: typeof navRouteRoute
     }
     '/api/auth/$': {
@@ -303,18 +303,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(nav)/writing/$slug': {
+      id: '/(nav)/writing/$slug'
+      path: '/writing/$slug'
+      fullPath: '/writing/$slug'
+      preLoaderRoute: typeof navWritingSlugRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/(nav)/music/$releaseId': {
       id: '/(nav)/music/$releaseId'
       path: '/music/$releaseId'
       fullPath: '/music/$releaseId'
       preLoaderRoute: typeof navMusicReleaseIdRouteImport
-      parentRoute: typeof navRouteRoute
-    }
-    '/(nav)/blog/$slug': {
-      id: '/(nav)/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof navBlogSlugRouteImport
       parentRoute: typeof navRouteRoute
     }
   }
@@ -327,10 +327,10 @@ interface navRouteRouteChildren {
   navTourRoute: typeof navTourRoute
   navVideosRoute: typeof navVideosRoute
   navIndexRoute: typeof navIndexRoute
-  navBlogSlugRoute: typeof navBlogSlugRoute
   navMusicReleaseIdRoute: typeof navMusicReleaseIdRoute
-  navBlogIndexRoute: typeof navBlogIndexRoute
+  navWritingSlugRoute: typeof navWritingSlugRoute
   navMusicIndexRoute: typeof navMusicIndexRoute
+  navWritingIndexRoute: typeof navWritingIndexRoute
 }
 
 const navRouteRouteChildren: navRouteRouteChildren = {
@@ -340,10 +340,10 @@ const navRouteRouteChildren: navRouteRouteChildren = {
   navTourRoute: navTourRoute,
   navVideosRoute: navVideosRoute,
   navIndexRoute: navIndexRoute,
-  navBlogSlugRoute: navBlogSlugRoute,
   navMusicReleaseIdRoute: navMusicReleaseIdRoute,
-  navBlogIndexRoute: navBlogIndexRoute,
+  navWritingSlugRoute: navWritingSlugRoute,
   navMusicIndexRoute: navMusicIndexRoute,
+  navWritingIndexRoute: navWritingIndexRoute,
 }
 
 const navRouteRouteWithChildren = navRouteRoute._addFileChildren(

@@ -32,19 +32,11 @@ export function PostCard({
       }`}
     >
       <CardHeader>
-        <Link
-          to="/blog/$slug"
-          params={{ slug }}
-          className="block"
-        >
+        <Link to="/writing/$slug" params={{ slug }} className="block">
           <h2
-            className={`font-bold mb-2 ${
-              isFeatured ? "text-3xl" : "text-2xl"
-            }`}
+            className={`font-bold mb-2 ${isFeatured ? "text-3xl" : "text-2xl"}`}
           >
-            <span className="squiggly-underline">
-              {title}
-            </span>
+            <span className="squiggly-underline">{title}</span>
             {draft && (
               <span className="ml-2 text-sm text-muted-foreground">
                 (Draft)
@@ -72,10 +64,7 @@ export function PostCard({
         {tags && tags.length > 0 && (
           <div className="flex gap-2 flex-wrap">
             {tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-1 bg-muted rounded-md text-xs"
-              >
+              <span key={tag} className="px-2 py-1 bg-muted rounded-md text-xs">
                 {tag}
               </span>
             ))}
@@ -87,7 +76,7 @@ export function PostCard({
         <p className="text-muted-foreground mb-4">{summary}</p>
 
         <Link
-          to="/blog/$slug"
+          to="/writing/$slug"
           params={{ slug }}
           className="inline-block text-sm font-medium hover:underline"
         >

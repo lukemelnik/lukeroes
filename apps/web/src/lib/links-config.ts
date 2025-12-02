@@ -67,8 +67,8 @@ export const linksConfig: LinksConfig = {
       external: false,
     },
     {
-      label: "Blog",
-      href: "/blog",
+      label: "Writing",
+      href: "/writing",
       icon: BookOpenText,
       external: false,
     },

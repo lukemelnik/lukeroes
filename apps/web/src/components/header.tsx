@@ -22,7 +22,7 @@ export default function Header() {
     { to: "/videos", label: "Videos" },
     { to: "/tour", label: "Tour" },
     { to: "/production", label: "Production" },
-    { to: "/blog", label: "Blog" },
+    { to: "/writing", label: "Writing" },
     { to: "/contact", label: "Contact" },
   ]);
 

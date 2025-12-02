@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Clock } from "lucide-react";
 
-interface BlogHeroProps {
+interface WritingHeroProps {
   title: string;
   summary: string;
   date: string;
@@ -11,7 +11,7 @@ interface BlogHeroProps {
   readingTime?: number;
 }
 
-export function BlogHero({
+export function WritingHero({
   title,
   summary,
   date,
@@ -19,7 +19,7 @@ export function BlogHero({
   tags,
   draft,
   readingTime,
-}: BlogHeroProps) {
+}: WritingHeroProps) {
   return (
     <div className="relative rounded-xl overflow-hidden mb-8">
       {/* Gradient background */}
@@ -34,15 +34,9 @@ export function BlogHero({
             </div>
           )}
 
-          <Link
-            to="/blog/$slug"
-            params={{ slug }}
-            className="group block"
-          >
+          <Link to="/writing/$slug" params={{ slug }} className="group block">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="squiggly-underline">
-                {title}
-              </span>
+              <span className="squiggly-underline">{title}</span>
             </h1>
           </Link>
 
@@ -75,12 +69,10 @@ export function BlogHero({
             </div>
           )}
 
-          <p className="text-lg text-muted-foreground mb-6">
-            {summary}
-          </p>
+          <p className="text-lg text-muted-foreground mb-6">{summary}</p>
 
           <Link
-            to="/blog/$slug"
+            to="/writing/$slug"
             params={{ slug }}
             className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
           >

@@ -1,11 +1,11 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { MDXContent } from "@content-collections/mdx/react";
-import { BlogSidebar } from "@/components/blog/blog-sidebar";
+import { WritingSidebar } from "@/components/writing/writing-sidebar";
 import { Clock } from "lucide-react";
-import { CustomComponent } from "@/routes/(nav)/blog/-components/custom-component";
+import { CustomComponent } from "@/routes/(nav)/writing/-components/custom-component";
 
-export const Route = createFileRoute("/(nav)/blog/$slug")({
+export const Route = createFileRoute("/(nav)/writing/$slug")({
   loader: ({ params }) => {
     const post = allPosts.find((p) => p.slug === params.slug);
 
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/(nav)/blog/$slug")({
 
     return { post };
   },
-  component: BlogPost,
+  component: WritingPost,
 });
 
 // Custom components for MDX content
@@ -96,7 +96,7 @@ const components = {
   CustomComponent,
 };
 
-function BlogPost() {
+function WritingPost() {
   const { post } = Route.useLoaderData();
 
   // Get recent posts for sidebar (exclude current post)
@@ -168,7 +168,7 @@ function BlogPost() {
 
         {/* Sidebar */}
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <BlogSidebar currentSlug={post.slug} recentPosts={recentPosts} />
+          <WritingSidebar currentSlug={post.slug} recentPosts={recentPosts} />
         </div>
       </div>
     </div>

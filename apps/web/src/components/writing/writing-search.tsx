@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/command";
 import { X } from "lucide-react";
 
-interface BlogSearchProps {
+interface WritingSearchProps {
   tags: string[];
   activeTags: string[];
   onTagToggle: (tag: string) => void;
@@ -14,13 +14,13 @@ interface BlogSearchProps {
   onSearchChange: (query: string) => void;
 }
 
-export function BlogSearch({
+export function WritingSearch({
   tags,
   activeTags,
   onTagToggle,
   searchQuery,
   onSearchChange,
-}: BlogSearchProps) {
+}: WritingSearchProps) {
   return (
     <div className="space-y-4 mb-8">
       {/* Search Input */}
@@ -55,9 +55,7 @@ export function BlogSearch({
                   }`}
                 >
                   {tag}
-                  {isActive && (
-                    <X className="inline-block ml-1 size-3" />
-                  )}
+                  {isActive && <X className="inline-block ml-1 size-3" />}
                 </button>
               );
             })}

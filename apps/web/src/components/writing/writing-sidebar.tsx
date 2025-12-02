@@ -6,12 +6,15 @@ interface Post {
   slug: string;
 }
 
-interface BlogSidebarProps {
+interface WritingSidebarProps {
   currentSlug: string;
   recentPosts: Post[];
 }
 
-export function BlogSidebar({ currentSlug, recentPosts }: BlogSidebarProps) {
+export function WritingSidebar({
+  currentSlug,
+  recentPosts,
+}: WritingSidebarProps) {
   return (
     <aside className="space-y-6">
       {/* Recent Posts */}
@@ -28,14 +31,12 @@ export function BlogSidebar({ currentSlug, recentPosts }: BlogSidebarProps) {
                 }`}
               >
                 <Link
-                  to="/blog/$slug"
+                  to="/writing/$slug"
                   params={{ slug: post.slug }}
                   className="group block"
                 >
                   <h4 className="font-medium mb-1 text-sm">
-                    <span className="squiggly-underline">
-                      {post.title}
-                    </span>
+                    <span className="squiggly-underline">{post.title}</span>
                     {isCurrent && (
                       <span className="ml-2 text-xs text-muted-foreground">
                         (Current)
@@ -56,10 +57,10 @@ export function BlogSidebar({ currentSlug, recentPosts }: BlogSidebarProps) {
         </div>
       </div>
 
-      {/* Back to Blog */}
+      {/* Back to Writing */}
       <div className="pt-4 border-t border-border">
         <Link
-          to="/blog"
+          to="/writing"
           className="text-sm font-medium hover:underline inline-flex items-center"
         >
           ← Back to all posts
