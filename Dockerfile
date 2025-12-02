@@ -44,9 +44,6 @@ RUN pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/apps/web/dist ./apps/web/dist
 COPY --from=builder /app/packages ./packages
 
-# Create directory for SQLite database with proper permissions
-RUN mkdir -p /app/data && chown -R node:node /app/data
-
 # Switch to non-root user
 USER node
 
@@ -60,7 +57,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # Set environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV DATABASE_URL=file:///app/data/lukeroes.db
 
 # Start the application
 CMD ["pnpm", "--filter", "web", "serve"]

@@ -6,8 +6,7 @@ import * as schema from "@lukeroes/db/schema/auth";
 
 export const auth = betterAuth<BetterAuthOptions>({
 	database: drizzleAdapter(db, {
-		provider: "sqlite",
-
+		provider: "pg",
 		schema: schema,
 	}),
 	trustedOrigins: [process.env.CORS_ORIGIN || ""],
