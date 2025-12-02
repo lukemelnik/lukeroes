@@ -112,6 +112,9 @@ function MusicPageComponent() {
                     <h2 className="font-bold text-2xl mb-1">
                       {selectedRelease.title}
                     </h2>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {selectedRelease.artist}
+                    </p>
                     <p className="text-sm text-muted-foreground">
                       {selectedRelease.type} ·{" "}
                       {new Date(selectedRelease.releaseDate).toLocaleDateString(
@@ -225,6 +228,9 @@ function MusicPageComponent() {
                           <h3 className="font-semibold text-lg truncate">
                             {item.title}
                           </h3>
+                          <p className="text-sm text-muted-foreground truncate">
+                            {item.artist}
+                          </p>
                           <p className="text-sm text-muted-foreground">
                             {item.type} ·{" "}
                             {new Date(item.releaseDate).toLocaleDateString(
@@ -269,6 +275,9 @@ function MusicPageComponent() {
                       <h3 className="font-semibold text-lg mb-1">
                         {item.title}
                       </h3>
+                      <p className="text-sm text-muted-foreground mb-1">
+                        {item.artist}
+                      </p>
                       <p className="text-sm text-muted-foreground">
                         {item.type} ·{" "}
                         {new Date(item.releaseDate).toLocaleDateString("en-US")}

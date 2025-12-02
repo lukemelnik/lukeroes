@@ -157,6 +157,9 @@ function ReleaseDetailPage() {
                   </div>
                   <div>
                     <h1 className="font-bold text-2xl mb-1">{release.title}</h1>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {release.artist}
+                    </p>
                     <p className="text-sm text-muted-foreground">
                       {release.type} · {formatDate(release.releaseDate)}
                     </p>

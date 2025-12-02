@@ -67,10 +67,15 @@ export default function MusicSection() {
                     </div>
                     <div className="p-4 space-y-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-semibold text-lg truncate">
-                          {item.title}
-                        </h3>
-                        <span className="text-xs text-muted-foreground">
+                        <div className="flex flex-col gap-1 min-w-0">
+                          <h3 className="font-semibold text-lg truncate">
+                            {item.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground truncate">
+                            {item.artist}
+                          </p>
+                        </div>
+                        <span className="text-xs text-muted-foreground shrink-0 ml-2">
                           {item.type}
                         </span>
                       </div>
