@@ -18,7 +18,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml ./
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy only source code and necessary config files
+# Copy source code and config files
 COPY apps/web ./apps/web
 COPY packages ./packages
 COPY biome.json ./
@@ -27,7 +27,7 @@ COPY biome.json ./
 WORKDIR /app/apps/web
 
 # Clean any existing build artifacts and caches
-RUN rm -rf dist .tanstack .vite node_modules/.vite node_modules/.cache
+RUN rm -rf .output .tanstack .vite dist node_modules/.vite node_modules/.cache
 
 # Accept build arguments
 ARG VITE_API_URL
@@ -39,19 +39,19 @@ ENV VITE_APP_URL=$VITE_APP_URL
 ENV NODE_ENV=production
 ENV VITE_BUILD_TARGET=production
 
-# Build with increased memory
+# Ensure clean, deterministic build with increased memory for Nitro bundling
 RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build && \
     echo "Build completed. Checking output..." && \
-    ls -la dist/ && \
-    ls -la dist/server/ && \
-    test -f dist/server/server.js || (echo "ERROR: dist/server/server.js not found!" && exit 1)
+    ls -la .output/ && \
+    ls -la .output/server/ && \
+    test -f .output/server/index.mjs || (echo "ERROR: .output/server/index.mjs not found!" && exit 1)
 
 # Expose port
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3000/api/health || exit 1
 
 # Start the application
-CMD ["node", "dist/server/server.js"]
+CMD ["node", ".output/server/index.mjs"]
