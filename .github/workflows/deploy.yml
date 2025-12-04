@@ -54,6 +54,10 @@ jobs:
 
             cd /opt/lukeroes
 
+            # Pull latest changes from repo
+            echo "Pulling the latest code from repository..."
+            git pull
+
             # Login to GitHub Container Registry
             echo "Logging in to GitHub Container Registry..."
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
