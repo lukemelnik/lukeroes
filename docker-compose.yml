@@ -15,7 +15,7 @@ services:
       retries: 5
 
   app:
-    image: ghcr.io/lukeroes/lukeroes:latest
+    image: ghcr.io/lukemelnik/lukeroes:latest
     env_file:
       - /opt/lukeroes-config/.env
     networks:
@@ -48,7 +48,13 @@ services:
       # This port must match the INTERNAL port of the container
       - "traefik.http.services.lukeroes.loadbalancer.server.port=3000"
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})",
+        ]
       interval: 30s
       timeout: 30s
       retries: 3
