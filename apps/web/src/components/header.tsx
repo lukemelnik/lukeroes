@@ -138,7 +138,7 @@ export default function Header() {
 
       {/* Mobile Dropdown Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t text-center bg-background min-h-[calc(100vh-60px)] flex flex-col items-center justify-center">
+        <div className="md:hidden border-t text-center bg-background min-h-[calc(100vh-60px)] flex flex-col items-center pt-10">
           <nav className="flex flex-col items-center px-4 py-2">
             {links.map(({ to, label }) => (
               <Link
