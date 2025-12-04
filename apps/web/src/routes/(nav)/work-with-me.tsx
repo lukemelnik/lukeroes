@@ -5,7 +5,7 @@ import { Music, Sliders, MessageSquare } from "lucide-react";
 import { AudioComparisonSection } from "@/components/audio-comparison";
 import { ContactForm } from "@/components/contact-form";
 
-export const Route = createFileRoute("/(nav)/production")({
+export const Route = createFileRoute("/(nav)/work-with-me")({
   component: ProductionPageComponent,
 });
 
@@ -28,7 +28,7 @@ const services: Service[] = [
     features: [
       "Unlimited revisions",
       "1 week turnaround",
-      "Optional Vocal tuning (extra)",
+      "Optional vocal tuning (extra)",
       "Optional digital master (extra)",
     ],
   },
@@ -54,7 +54,8 @@ const services: Service[] = [
     features: [
       "Mix feedback & critique",
       "Production direction",
-      "Career guidance",
+      "DAW optimization (Logic, Ableton)",
+      "Home studio setup",
     ],
   },
 ];
@@ -123,11 +124,7 @@ function ProductionPageComponent() {
                 <span>Let's Make</span>
                 <span> a Record</span>
               </h1>
-              <p className="text-lg -mt-3 md:text-xl max-w-84 text-muted-foreground">
-                I'll help you take your songs from good to{" "}
-                <strong>great</strong>.
-              </p>
-              <Button className="mt-2" asChild size="lg">
+              <Button className="" asChild size="lg">
                 <a href="#contact">Get in touch</a>
               </Button>
             </div>

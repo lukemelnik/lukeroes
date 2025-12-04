@@ -14,9 +14,9 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as navRouteRouteImport } from './routes/(nav)/route'
 import { Route as navIndexRouteImport } from './routes/(nav)/index'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as navWorkWithMeRouteImport } from './routes/(nav)/work-with-me'
 import { Route as navVideosRouteImport } from './routes/(nav)/videos'
 import { Route as navTourRouteImport } from './routes/(nav)/tour'
-import { Route as navProductionRouteImport } from './routes/(nav)/production'
 import { Route as navLoginRouteImport } from './routes/(nav)/login'
 import { Route as navContactRouteImport } from './routes/(nav)/contact'
 import { Route as navWritingIndexRouteImport } from './routes/(nav)/writing/index'
@@ -49,6 +49,11 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
   path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const navWorkWithMeRoute = navWorkWithMeRouteImport.update({
+  id: '/work-with-me',
+  path: '/work-with-me',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const navVideosRoute = navVideosRouteImport.update({
   id: '/videos',
   path: '/videos',
@@ -57,11 +62,6 @@ const navVideosRoute = navVideosRouteImport.update({
 const navTourRoute = navTourRouteImport.update({
   id: '/tour',
   path: '/tour',
-  getParentRoute: () => navRouteRoute,
-} as any)
-const navProductionRoute = navProductionRouteImport.update({
-  id: '/production',
-  path: '/production',
   getParentRoute: () => navRouteRoute,
 } as any)
 const navLoginRoute = navLoginRouteImport.update({
@@ -105,9 +105,9 @@ export interface FileRoutesByFullPath {
   '/links': typeof LinksRoute
   '/contact': typeof navContactRoute
   '/login': typeof navLoginRoute
-  '/production': typeof navProductionRoute
   '/tour': typeof navTourRoute
   '/videos': typeof navVideosRoute
+  '/work-with-me': typeof navWorkWithMeRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
   '/music/$releaseId': typeof navMusicReleaseIdRoute
@@ -121,9 +121,9 @@ export interface FileRoutesByTo {
   '/links': typeof LinksRoute
   '/contact': typeof navContactRoute
   '/login': typeof navLoginRoute
-  '/production': typeof navProductionRoute
   '/tour': typeof navTourRoute
   '/videos': typeof navVideosRoute
+  '/work-with-me': typeof navWorkWithMeRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
   '/music/$releaseId': typeof navMusicReleaseIdRoute
@@ -139,9 +139,9 @@ export interface FileRoutesById {
   '/links': typeof LinksRoute
   '/(nav)/contact': typeof navContactRoute
   '/(nav)/login': typeof navLoginRoute
-  '/(nav)/production': typeof navProductionRoute
   '/(nav)/tour': typeof navTourRoute
   '/(nav)/videos': typeof navVideosRoute
+  '/(nav)/work-with-me': typeof navWorkWithMeRoute
   '/api/health': typeof ApiHealthRoute
   '/(nav)/': typeof navIndexRoute
   '/(nav)/music/$releaseId': typeof navMusicReleaseIdRoute
@@ -157,9 +157,9 @@ export interface FileRouteTypes {
     | '/links'
     | '/contact'
     | '/login'
-    | '/production'
     | '/tour'
     | '/videos'
+    | '/work-with-me'
     | '/api/health'
     | '/'
     | '/music/$releaseId'
@@ -173,9 +173,9 @@ export interface FileRouteTypes {
     | '/links'
     | '/contact'
     | '/login'
-    | '/production'
     | '/tour'
     | '/videos'
+    | '/work-with-me'
     | '/api/health'
     | '/'
     | '/music/$releaseId'
@@ -190,9 +190,9 @@ export interface FileRouteTypes {
     | '/links'
     | '/(nav)/contact'
     | '/(nav)/login'
-    | '/(nav)/production'
     | '/(nav)/tour'
     | '/(nav)/videos'
+    | '/(nav)/work-with-me'
     | '/api/health'
     | '/(nav)/'
     | '/(nav)/music/$releaseId'
@@ -247,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(nav)/work-with-me': {
+      id: '/(nav)/work-with-me'
+      path: '/work-with-me'
+      fullPath: '/work-with-me'
+      preLoaderRoute: typeof navWorkWithMeRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/(nav)/videos': {
       id: '/(nav)/videos'
       path: '/videos'
@@ -259,13 +266,6 @@ declare module '@tanstack/react-router' {
       path: '/tour'
       fullPath: '/tour'
       preLoaderRoute: typeof navTourRouteImport
-      parentRoute: typeof navRouteRoute
-    }
-    '/(nav)/production': {
-      id: '/(nav)/production'
-      path: '/production'
-      fullPath: '/production'
-      preLoaderRoute: typeof navProductionRouteImport
       parentRoute: typeof navRouteRoute
     }
     '/(nav)/login': {
@@ -323,9 +323,9 @@ declare module '@tanstack/react-router' {
 interface navRouteRouteChildren {
   navContactRoute: typeof navContactRoute
   navLoginRoute: typeof navLoginRoute
-  navProductionRoute: typeof navProductionRoute
   navTourRoute: typeof navTourRoute
   navVideosRoute: typeof navVideosRoute
+  navWorkWithMeRoute: typeof navWorkWithMeRoute
   navIndexRoute: typeof navIndexRoute
   navMusicReleaseIdRoute: typeof navMusicReleaseIdRoute
   navWritingSlugRoute: typeof navWritingSlugRoute
@@ -336,9 +336,9 @@ interface navRouteRouteChildren {
 const navRouteRouteChildren: navRouteRouteChildren = {
   navContactRoute: navContactRoute,
   navLoginRoute: navLoginRoute,
-  navProductionRoute: navProductionRoute,
   navTourRoute: navTourRoute,
   navVideosRoute: navVideosRoute,
+  navWorkWithMeRoute: navWorkWithMeRoute,
   navIndexRoute: navIndexRoute,
   navMusicReleaseIdRoute: navMusicReleaseIdRoute,
   navWritingSlugRoute: navWritingSlugRoute,

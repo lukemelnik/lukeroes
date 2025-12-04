@@ -21,7 +21,7 @@ export default function Header() {
     { to: "/music", label: "Music" },
     { to: "/videos", label: "Videos" },
     { to: "/tour", label: "Tour" },
-    { to: "/production", label: "Production" },
+    { to: "/work-with-me", label: "Work With Me" },
     { to: "/writing", label: "Writing" },
     { to: "/contact", label: "Contact" },
   ]);
@@ -37,25 +37,30 @@ export default function Header() {
       {/* Desktop Header */}
       <div className="hidden md:flex items-center justify-between px-6 py-4">
         {/* Left - Navigation Links */}
-        <nav className="flex gap-3 text-lg font-heading font-medium ">
-          {links.map(({ to, label }) => (
-            <Link
-              key={to}
-              to={to}
-              className="text-xl transition-colors mt-2 uppercase hover:text-foreground/80 inline-block"
-              activeProps={{
-                className: "text-foreground",
-              }}
-            >
-              {({ isActive }) => (
-                <span
-                  className="squiggly-underline"
-                  data-status={isActive ? "active" : undefined}
-                >
-                  {label}
-                </span>
+        <nav className="flex gap-2 text-lg font-heading font-medium ">
+          {links.map(({ to, label }, index) => (
+            <>
+              <Link
+                key={to}
+                to={to}
+                className="text-xl transition-colors mt-2 uppercase hover:text-foreground/80 inline-block"
+                activeProps={{
+                  className: "text-foreground",
+                }}
+              >
+                {({ isActive }) => (
+                  <span
+                    className="squiggly-underline"
+                    data-status={isActive ? "active" : undefined}
+                  >
+                    {label}
+                  </span>
+                )}
+              </Link>
+              {index < links.length - 1 && (
+                <span className="text-primary mt-2 text-xl">•</span>
               )}
-            </Link>
+            </>
           ))}
         </nav>
 
