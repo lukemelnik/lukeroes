@@ -136,7 +136,7 @@ function ReleaseDetailPage() {
           <div className="md:col-span-1">
             <Card className="sticky top-6">
               <CardContent className="p-6 flex flex-col items-center">
-                <div className="w-2/3 space-y-4">
+                <div className="md:w-2/3 space-y-4">
                   <div className="aspect-square">
                     <ArtworkImage
                       src={release.artworkPublicUrl ?? undefined}
