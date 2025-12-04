@@ -265,12 +265,9 @@ function ReleaseDetailPage() {
                     <Card>
                       <CardContent className="p-4">
                         {selectedTrack.song.lyrics?.trim() ? (
-                          <div
-                            className="text-base leading-relaxed whitespace-pre-wrap [&>p]:mb-4 [&>p:last-child]:mb-0"
-                            dangerouslySetInnerHTML={{
-                              __html: selectedTrack.song.lyrics,
-                            }}
-                          />
+                          <p className="text-base leading-relaxed whitespace-pre-wrap">
+                            {selectedTrack.song.lyrics}
+                          </p>
                         ) : (
                           <p className="text-muted-foreground text-sm">
                             Lyrics not available.
