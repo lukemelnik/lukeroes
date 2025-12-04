@@ -34,9 +34,7 @@ export const Route = createFileRoute("/(nav)/music/$releaseId")({
   component: ReleaseDetailPage,
 });
 
-function formatContributors(
-  contributors?: ApiContribution[] | null,
-): string[] {
+function formatContributors(contributors?: ApiContribution[] | null): string[] {
   if (!contributors || contributors.length === 0) return [];
 
   return contributors.map((entry) => {
@@ -129,18 +127,9 @@ function ReleaseDetailPage() {
           <Link to="/music">
             <Button variant="ghost" size="sm">
               <ChevronLeft className="mr-2 h-4 w-4" />
-              Back to music
+              Back to all music
             </Button>
           </Link>
-          <div className="text-sm text-muted-foreground">
-            {release.releaseLabel && (
-              <span className="mr-3">Label: {release.releaseLabel}</span>
-            )}
-            {release.distributor && (
-              <span className="mr-3">Distributor: {release.distributor}</span>
-            )}
-            <span>Released {formatDate(release.releaseDate)}</span>
-          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -241,7 +230,8 @@ function ReleaseDetailPage() {
               <CardContent className="p-6 space-y-6">
                 <div className="flex flex-col gap-2">
                   <p className="text-xs uppercase text-muted-foreground">
-                    Track {selectedTrack.trackNumber.toString().padStart(2, "0")}
+                    Track{" "}
+                    {selectedTrack.trackNumber.toString().padStart(2, "0")}
                   </p>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                     <div>
@@ -276,7 +266,7 @@ function ReleaseDetailPage() {
                       <CardContent className="p-4">
                         {selectedTrack.song.lyrics?.trim() ? (
                           <div
-                            className="prose prose-sm max-w-none dark:prose-invert"
+                            className="text-base leading-relaxed whitespace-pre-wrap [&>p]:mb-4 [&>p:last-child]:mb-0"
                             dangerouslySetInnerHTML={{
                               __html: selectedTrack.song.lyrics,
                             }}
@@ -286,20 +276,21 @@ function ReleaseDetailPage() {
                             Lyrics not available.
                           </p>
                         )}
-                        <p className="text-xs text-muted-foreground mt-3">
-                          {selectedTrack.song.isInstrumental
-                            ? "This track is marked as instrumental."
-                            : "Contains vocals"}
-                        </p>
                       </CardContent>
                     </Card>
                   </TabsContent>
 
                   <TabsContent value="credits" className="mt-4">
                     <div className="grid md:grid-cols-2 gap-4">
-                      <CreditSection title="Songwriters" entries={songwriterList} />
+                      <CreditSection
+                        title="Songwriters"
+                        entries={songwriterList}
+                      />
                       <CreditSection title="Credits" entries={creditList} />
-                      <CreditSection title="Master Owners" entries={masterOwners} />
+                      <CreditSection
+                        title="Master Owners"
+                        entries={masterOwners}
+                      />
                       <CreditSection
                         title="Non-featured Performers"
                         entries={performers}
@@ -309,19 +300,55 @@ function ReleaseDetailPage() {
 
                   <TabsContent value="info" className="mt-4 space-y-4">
                     <div className="grid md:grid-cols-2 gap-4 text-sm">
-                      <InfoRow label="Primary Genre" value={selectedTrack.recording.primaryGenre} />
-                      <InfoRow label="Secondary Genre" value={selectedTrack.recording.secondaryGenre} />
-                      <InfoRow label="BPM" value={selectedTrack.recording.bpm} />
-                      <InfoRow label="Key" value={selectedTrack.recording.keySignature} />
-                      <InfoRow label="Time Signature" value={selectedTrack.recording.timeSignature} />
-                      <InfoRow label="Studio" value={selectedTrack.recording.studio} />
-                      <InfoRow label="Recording Date" value={formatDate(selectedTrack.recording.recordingDate)} />
-                      <InfoRow label="First Release" value={formatDate(selectedTrack.recording.dateOfFirstRelease)} />
-                      <InfoRow label="Country of Recording" value={selectedTrack.recording.countryOfRecording} />
-                      <InfoRow label="Country of Mastering" value={selectedTrack.recording.countryOfMastering} />
+                      <InfoRow
+                        label="Primary Genre"
+                        value={selectedTrack.recording.primaryGenre}
+                      />
+                      <InfoRow
+                        label="Secondary Genre"
+                        value={selectedTrack.recording.secondaryGenre}
+                      />
+                      <InfoRow
+                        label="BPM"
+                        value={selectedTrack.recording.bpm}
+                      />
+                      <InfoRow
+                        label="Key"
+                        value={selectedTrack.recording.keySignature}
+                      />
+                      <InfoRow
+                        label="Time Signature"
+                        value={selectedTrack.recording.timeSignature}
+                      />
+                      <InfoRow
+                        label="Studio"
+                        value={selectedTrack.recording.studio}
+                      />
+                      <InfoRow
+                        label="Recording Date"
+                        value={formatDate(
+                          selectedTrack.recording.recordingDate,
+                        )}
+                      />
+                      <InfoRow
+                        label="First Release"
+                        value={formatDate(
+                          selectedTrack.recording.dateOfFirstRelease,
+                        )}
+                      />
+                      <InfoRow
+                        label="Country of Recording"
+                        value={selectedTrack.recording.countryOfRecording}
+                      />
+                      <InfoRow
+                        label="Country of Mastering"
+                        value={selectedTrack.recording.countryOfMastering}
+                      />
                       <InfoRow
                         label="Explicit Lyrics"
-                        value={formatBoolean(selectedTrack.recording.hasExplicitLyrics)}
+                        value={formatBoolean(
+                          selectedTrack.recording.hasExplicitLyrics,
+                        )}
                       />
                       <InfoRow
                         label="Language"
@@ -331,10 +358,7 @@ function ReleaseDetailPage() {
                         label="Work Type"
                         value={selectedTrack.song.workType}
                       />
-                      <InfoRow
-                        label="ISWC"
-                        value={selectedTrack.song.iswc}
-                      />
+                      <InfoRow label="ISWC" value={selectedTrack.song.iswc} />
                       <InfoRow
                         label="Copyright Year"
                         value={selectedTrack.song.copyrightYear}
@@ -342,8 +366,14 @@ function ReleaseDetailPage() {
                     </div>
                     <div className="grid md:grid-cols-2 gap-4 text-sm">
                       <InfoRow label="UPC" value={release.upc} />
-                      <InfoRow label="Catalog Number" value={release.catalogNumber} />
-                      <InfoRow label="Distribution Date" value={formatDate(release.distributionDate)} />
+                      <InfoRow
+                        label="Catalog Number"
+                        value={release.catalogNumber}
+                      />
+                      <InfoRow
+                        label="Distribution Date"
+                        value={formatDate(release.distributionDate)}
+                      />
                       <InfoRow
                         label="First Release Countries"
                         value={
@@ -368,7 +398,13 @@ function ReleaseDetailPage() {
   );
 }
 
-function CreditSection({ title, entries }: { title: string; entries: string[] }) {
+function CreditSection({
+  title,
+  entries,
+}: {
+  title: string;
+  entries: string[];
+}) {
   return (
     <Card>
       <CardContent className="p-4 space-y-2">
@@ -402,9 +438,7 @@ function InfoRow({
         {label}
       </span>
       <span className="font-medium">
-        {value === null || value === undefined || value === ""
-          ? "—"
-          : value}
+        {value === null || value === undefined || value === "" ? "—" : value}
       </span>
     </div>
   );
