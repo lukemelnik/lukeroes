@@ -22,7 +22,6 @@ RUN pnpm install --frozen-lockfile
 COPY apps/web ./apps/web
 COPY packages ./packages
 COPY biome.json ./
-COPY turbo.json ./
 
 # Build the application
 WORKDIR /app/apps/web
