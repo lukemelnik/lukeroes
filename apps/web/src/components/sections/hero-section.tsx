@@ -40,7 +40,7 @@ export default function HeroSection() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('/bg-desktop-dirty.jpg')",
+          backgroundImage: "url('/bg-desktop-dirty.webp')",
         }}
       >
         {/* Gradient Overlay */}
