@@ -19,7 +19,8 @@ export const getMusic = createServerFn().handler(
 
       return data.apiReleases;
     } catch (e) {
-      console.warn("Music API unavailable, using seed data instead:", e);
+      console.warn("Music API unavailable, returning empty array:", e);
+      return [];
     }
   },
 );
