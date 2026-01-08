@@ -3,6 +3,7 @@ import { render } from "@react-email/components";
 import { z } from "zod";
 import { ContactEmail } from "@/emails/contact-email";
 import { transporter } from "@/lib/email";
+import { shouldBlockSubmission } from "@/lib/spam-detection";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -17,6 +18,10 @@ export const sendContact = createServerFn({ method: "POST" })
   .inputValidator(contactSchema)
   .handler(async ({ data }) => {
     const { name, email, message, project } = data;
+
+    if (shouldBlockSubmission(name)) {
+      return { success: true };
+    }
 
     const emailHtml = await render(
       ContactEmail({ name, email, message, project }),
