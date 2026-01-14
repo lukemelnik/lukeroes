@@ -24,22 +24,10 @@ function LinksPage() {
 
   const streamingLinks = featuredRelease
     ? [
-        featuredRelease.streamingLinks?.spotify && {
-          href: featuredRelease.streamingLinks.spotify,
-          icon: SpotifyIcon,
-          label: "Spotify",
-        },
-        featuredRelease.streamingLinks?.appleMusic && {
-          href: featuredRelease.streamingLinks.appleMusic,
-          icon: AppleMusicIcon,
-          label: "Apple Music",
-        },
-        featuredRelease.streamingLinks?.youtube && {
-          href: featuredRelease.streamingLinks.youtube,
-          icon: YoutubeIcon,
-          label: "YouTube",
-        },
-      ].filter(Boolean)
+        { href: featuredRelease.streamingLinks?.spotify, icon: SpotifyIcon, label: "Spotify" },
+        { href: featuredRelease.streamingLinks?.appleMusic, icon: AppleMusicIcon, label: "Apple Music" },
+        { href: featuredRelease.streamingLinks?.youtube, icon: YoutubeIcon, label: "YouTube" },
+      ].filter((link): link is { href: string; icon: typeof SpotifyIcon; label: string } => !!link.href)
     : [];
 
   const [email, setEmail] = useState("");

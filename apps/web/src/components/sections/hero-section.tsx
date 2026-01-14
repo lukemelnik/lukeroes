@@ -16,22 +16,10 @@ export default function HeroSection() {
 
   const streamingLinks = mostRecentRelease
     ? [
-        mostRecentRelease.streamingLinks?.spotify && {
-          href: mostRecentRelease.streamingLinks.spotify,
-          icon: SpotifyIcon,
-          label: "Spotify",
-        },
-        mostRecentRelease.streamingLinks?.appleMusic && {
-          href: mostRecentRelease.streamingLinks.appleMusic,
-          icon: AppleMusicIcon,
-          label: "Apple Music",
-        },
-        mostRecentRelease.streamingLinks?.youtube && {
-          href: mostRecentRelease.streamingLinks.youtube,
-          icon: YoutubeIcon,
-          label: "YouTube",
-        },
-      ].filter(Boolean)
+        { href: mostRecentRelease.streamingLinks?.spotify, icon: SpotifyIcon, label: "Spotify" },
+        { href: mostRecentRelease.streamingLinks?.appleMusic, icon: AppleMusicIcon, label: "Apple Music" },
+        { href: mostRecentRelease.streamingLinks?.youtube, icon: YoutubeIcon, label: "YouTube" },
+      ].filter((link): link is { href: string; icon: typeof SpotifyIcon; label: string } => !!link.href)
     : [];
 
   return (
