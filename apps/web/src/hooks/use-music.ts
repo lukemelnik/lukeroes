@@ -8,24 +8,18 @@ import { createServerFn } from "@tanstack/react-start";
 import z from "zod/v4";
 import { getReleaseDetailsById } from "@/lib/music-cache";
 
-// Re-export the generated summary type
 export type { ReleaseSummary };
 
-// WORKAROUND: The deployed Songkeeper API currently uses z.unknown() for contribution
-// fields (songwriters, credits, etc.), which generates 'unknown' in the OpenAPI spec.
-// TanStack Start infers '{}' for these, causing type conflicts.
-//
-// After deploying the Songkeeper schema fix (ContributionSchema instead of z.unknown()),
-// run `pnpm generate:api` and then:
-// 1. Delete this Contribution type and ReleaseDetail override
-// 2. Change the import to: import type { ReleaseSummary, ReleaseDetail } from "@/generated/songkeeper";
-// 3. Add ReleaseDetail to the re-export
-type Contribution = {
-	name?: string | null;
-	role?: string | null;
-	contribution?: string | null;
-	share?: number | null;
+// WORKAROUND: Remove after deploying songkeeper/pull/254
+// The .passthrough() in ContributionSchema generates [key: string]: unknown
+// which conflicts with TanStack Start's type inference ({} vs unknown)
+type StripIndexSignature<T> = {
+	[K in keyof T as string extends K ? never : K]: T[K];
 };
+
+type CleanContribution = StripIndexSignature<
+	GeneratedReleaseDetail["tracks"][number]["song"]["songwriters"][number]
+>;
 
 export type ReleaseDetail = Omit<GeneratedReleaseDetail, "tracks"> & {
 	tracks: Array<
@@ -34,15 +28,15 @@ export type ReleaseDetail = Omit<GeneratedReleaseDetail, "tracks"> & {
 				GeneratedReleaseDetail["tracks"][number]["song"],
 				"songwriters"
 			> & {
-				songwriters?: Contribution[] | null;
+				songwriters: CleanContribution[];
 			};
 			recording: Omit<
 				GeneratedReleaseDetail["tracks"][number]["recording"],
 				"credits" | "masterOwners" | "nonFeaturedPerformers"
 			> & {
-				credits?: Contribution[] | null;
-				masterOwners?: Contribution[] | null;
-				nonFeaturedPerformers?: Contribution[] | null;
+				credits: CleanContribution[];
+				masterOwners: CleanContribution[];
+				nonFeaturedPerformers: CleanContribution[];
 			};
 		}
 	>;

@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { getApiV1Releases, getApiV1ReleasesById, type Options } from '../sdk.gen';
-import type { GetApiV1ReleasesByIdData, GetApiV1ReleasesByIdError, GetApiV1ReleasesByIdResponse, GetApiV1ReleasesData, GetApiV1ReleasesError, GetApiV1ReleasesResponse } from '../types.gen';
+import { getApiV1Artists, getApiV1ArtistsById, getApiV1Releases, getApiV1ReleasesById, type Options } from '../sdk.gen';
+import type { GetApiV1ArtistsByIdData, GetApiV1ArtistsByIdError, GetApiV1ArtistsByIdResponse, GetApiV1ArtistsData, GetApiV1ArtistsError, GetApiV1ArtistsResponse, GetApiV1ReleasesByIdData, GetApiV1ReleasesByIdError, GetApiV1ReleasesByIdResponse, GetApiV1ReleasesData, GetApiV1ReleasesError, GetApiV1ReleasesResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -39,16 +39,16 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [params];
 };
 
-export const getApiV1ReleasesQueryKey = (options?: Options<GetApiV1ReleasesData>) => createQueryKey('getApiV1Releases', options);
+export const getApiV1ArtistsQueryKey = (options?: Options<GetApiV1ArtistsData>) => createQueryKey('getApiV1Artists', options);
 
 /**
- * List Releases
+ * List Artists
  *
- * Retrieve all published releases for the authenticated user
+ * Retrieve all artists for the authenticated user
  */
-export const getApiV1ReleasesOptions = (options?: Options<GetApiV1ReleasesData>) => queryOptions<GetApiV1ReleasesResponse, GetApiV1ReleasesError, GetApiV1ReleasesResponse, ReturnType<typeof getApiV1ReleasesQueryKey>>({
+export const getApiV1ArtistsOptions = (options?: Options<GetApiV1ArtistsData>) => queryOptions<GetApiV1ArtistsResponse, GetApiV1ArtistsError, GetApiV1ArtistsResponse, ReturnType<typeof getApiV1ArtistsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiV1Releases({
+        const { data } = await getApiV1Artists({
             ...options,
             ...queryKey[0],
             signal,
@@ -56,7 +56,7 @@ export const getApiV1ReleasesOptions = (options?: Options<GetApiV1ReleasesData>)
         });
         return data;
     },
-    queryKey: getApiV1ReleasesQueryKey(options)
+    queryKey: getApiV1ArtistsQueryKey(options)
 });
 
 const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'headers' | 'path' | 'query'>>(queryKey: QueryKey<Options>, page: K) => {
@@ -87,6 +87,75 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
     }
     return params as unknown as typeof page;
 };
+
+export const getApiV1ArtistsInfiniteQueryKey = (options?: Options<GetApiV1ArtistsData>): QueryKey<Options<GetApiV1ArtistsData>> => createQueryKey('getApiV1Artists', options, true);
+
+/**
+ * List Artists
+ *
+ * Retrieve all artists for the authenticated user
+ */
+export const getApiV1ArtistsInfiniteOptions = (options?: Options<GetApiV1ArtistsData>) => infiniteQueryOptions<GetApiV1ArtistsResponse, GetApiV1ArtistsError, InfiniteData<GetApiV1ArtistsResponse>, QueryKey<Options<GetApiV1ArtistsData>>, number | Pick<QueryKey<Options<GetApiV1ArtistsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetApiV1ArtistsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                offset: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getApiV1Artists({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiV1ArtistsInfiniteQueryKey(options)
+});
+
+export const getApiV1ArtistsByIdQueryKey = (options: Options<GetApiV1ArtistsByIdData>) => createQueryKey('getApiV1ArtistsById', options);
+
+/**
+ * Get Artist
+ *
+ * Retrieve details about a specific artist
+ */
+export const getApiV1ArtistsByIdOptions = (options: Options<GetApiV1ArtistsByIdData>) => queryOptions<GetApiV1ArtistsByIdResponse, GetApiV1ArtistsByIdError, GetApiV1ArtistsByIdResponse, ReturnType<typeof getApiV1ArtistsByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiV1ArtistsById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiV1ArtistsByIdQueryKey(options)
+});
+
+export const getApiV1ReleasesQueryKey = (options?: Options<GetApiV1ReleasesData>) => createQueryKey('getApiV1Releases', options);
+
+/**
+ * List Releases
+ *
+ * Retrieve all published releases for the authenticated user
+ */
+export const getApiV1ReleasesOptions = (options?: Options<GetApiV1ReleasesData>) => queryOptions<GetApiV1ReleasesResponse, GetApiV1ReleasesError, GetApiV1ReleasesResponse, ReturnType<typeof getApiV1ReleasesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiV1Releases({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiV1ReleasesQueryKey(options)
+});
 
 export const getApiV1ReleasesInfiniteQueryKey = (options?: Options<GetApiV1ReleasesData>): QueryKey<Options<GetApiV1ReleasesData>> => createQueryKey('getApiV1Releases', options, true);
 

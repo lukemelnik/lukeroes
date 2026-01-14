@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetApiV1ReleasesByIdData, GetApiV1ReleasesByIdErrors, GetApiV1ReleasesByIdResponses, GetApiV1ReleasesData, GetApiV1ReleasesErrors, GetApiV1ReleasesResponses } from './types.gen';
+import type { GetApiV1ArtistsByIdData, GetApiV1ArtistsByIdErrors, GetApiV1ArtistsByIdResponses, GetApiV1ArtistsData, GetApiV1ArtistsErrors, GetApiV1ArtistsResponses, GetApiV1ReleasesByIdData, GetApiV1ReleasesByIdErrors, GetApiV1ReleasesByIdResponses, GetApiV1ReleasesData, GetApiV1ReleasesErrors, GetApiV1ReleasesResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -17,6 +17,28 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: Record<string, unknown>;
 };
+
+/**
+ * List Artists
+ *
+ * Retrieve all artists for the authenticated user
+ */
+export const getApiV1Artists = <ThrowOnError extends boolean = false>(options?: Options<GetApiV1ArtistsData, ThrowOnError>) => (options?.client ?? client).get<GetApiV1ArtistsResponses, GetApiV1ArtistsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/artists',
+    ...options
+});
+
+/**
+ * Get Artist
+ *
+ * Retrieve details about a specific artist
+ */
+export const getApiV1ArtistsById = <ThrowOnError extends boolean = false>(options: Options<GetApiV1ArtistsByIdData, ThrowOnError>) => (options.client ?? client).get<GetApiV1ArtistsByIdResponses, GetApiV1ArtistsByIdErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/artists/{id}',
+    ...options
+});
 
 /**
  * List Releases
