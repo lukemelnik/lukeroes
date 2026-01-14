@@ -1,9 +1,9 @@
 // Server-only module - do not import on client side
 import type {
-	ReleaseSummary,
 	ReleaseDetail,
-	ReleasesResponse,
 	ReleaseResponse,
+	ReleaseSummary,
+	ReleasesResponse,
 } from "@/generated/songkeeper";
 
 export type { ReleaseSummary, ReleaseDetail };

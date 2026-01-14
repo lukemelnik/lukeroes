@@ -1,8 +1,8 @@
 import { queryOptions, skipToken } from "@tanstack/react-query";
-import { getMusic } from "@/functions/get-music";
-import type { ReleaseSummary, ReleaseDetail } from "@/generated/songkeeper";
 import { createServerFn } from "@tanstack/react-start";
 import z from "zod/v4";
+import { getMusic } from "@/functions/get-music";
+import type { ReleaseDetail, ReleaseSummary } from "@/generated/songkeeper";
 import { getReleaseDetailsById } from "@/lib/music-cache";
 
 export type { ReleaseSummary, ReleaseDetail };

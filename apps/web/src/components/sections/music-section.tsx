@@ -1,3 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { Play } from "lucide-react";
+import { ArtworkImage } from "@/components/artwork-image";
+import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
+import { SpotifyIcon } from "@/components/icons/spotify-icon";
+import { YoutubeIcon } from "@/components/icons/youtube-icon";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
 	Carousel,
 	CarouselContent,
@@ -5,16 +14,7 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
-import { Play } from "lucide-react";
-import { SpotifyIcon } from "@/components/icons/spotify-icon";
-import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
-import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { musicQueryOptions } from "@/hooks/use-music";
-import { useQuery } from "@tanstack/react-query";
-import { ArtworkImage } from "@/components/artwork-image";
-import { Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
 
 export default function MusicSection() {
 	const { data: releases } = useQuery(musicQueryOptions);
@@ -24,10 +24,10 @@ export default function MusicSection() {
 	}
 
 	return (
-		<section className="w-full py-16 px-4 md:px-6">
+		<section className="w-full px-4 py-16 md:px-6">
 			<div className="container mx-auto">
 				<div className="mb-8">
-					<h2 className="text-3xl font-bold tracking-tight mb-2">Music</h2>
+					<h2 className="mb-2 font-bold text-3xl tracking-tight">Music</h2>
 					<p className="text-muted-foreground">
 						Listen to the latest releases and catalog
 					</p>
@@ -46,15 +46,15 @@ export default function MusicSection() {
 								key={item.id}
 								className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
 							>
-								<Card className="overflow-hidden hover:shadow-lg transition-shadow">
+								<Card className="overflow-hidden transition-shadow hover:shadow-lg">
 									<CardContent className="p-0">
-										<div className="relative aspect-square group/artwork cursor-pointer">
+										<div className="group/artwork relative aspect-square cursor-pointer">
 											<ArtworkImage
 												src={item.artworkPublicUrl ?? undefined}
 												alt={item.title}
-												className="object-cover w-full h-full"
+												className="h-full w-full object-cover"
 											/>
-											<div className="absolute inset-0 opacity-0 group-hover/artwork:opacity-100 transition-opacity flex items-center justify-center">
+											<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover/artwork:opacity-100">
 												<a
 													href={
 														item.streamingLinks?.spotify ??
@@ -64,23 +64,23 @@ export default function MusicSection() {
 														item.streamingLinks?.bandcamp ??
 														"#"
 													}
-													className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:scale-110 transition-transform"
+													className="flex h-16 w-16 items-center justify-center rounded-full bg-primary transition-transform hover:scale-110"
 												>
-													<Play className="w-8 h-8 fill-primary-foreground text-primary-foreground ml-1" />
+													<Play className="ml-1 h-8 w-8 fill-primary-foreground text-primary-foreground" />
 												</a>
 											</div>
 										</div>
-										<div className="p-4 space-y-1">
+										<div className="space-y-1 p-4">
 											<div className="flex items-center justify-between">
-												<div className="flex flex-col gap-1 min-w-0">
-													<h3 className="font-semibold text-lg truncate">
+												<div className="flex min-w-0 flex-col gap-1">
+													<h3 className="truncate font-semibold text-lg">
 														{item.title}
 													</h3>
-													<p className="text-sm text-muted-foreground truncate">
+													<p className="truncate text-muted-foreground text-sm">
 														{item.artist}
 													</p>
 												</div>
-												<span className="text-xs text-muted-foreground shrink-0 ml-2">
+												<span className="ml-2 shrink-0 text-muted-foreground text-xs">
 													{item.type}
 												</span>
 											</div>
@@ -91,7 +91,7 @@ export default function MusicSection() {
 															href={item.streamingLinks.spotify}
 															target="_blank"
 															rel="noopener noreferrer"
-															className="text-muted-foreground hover:text-primary transition-colors"
+															className="text-muted-foreground transition-colors hover:text-primary"
 															aria-label="Listen on Spotify"
 														>
 															<SpotifyIcon size={20} />
@@ -102,7 +102,7 @@ export default function MusicSection() {
 															href={item.streamingLinks.appleMusic}
 															target="_blank"
 															rel="noopener noreferrer"
-															className="text-muted-foreground hover:text-primary transition-colors"
+															className="text-muted-foreground transition-colors hover:text-primary"
 															aria-label="Listen on Apple Music"
 														>
 															<AppleMusicIcon size={20} />
@@ -113,7 +113,7 @@ export default function MusicSection() {
 															href={item.streamingLinks.youtube}
 															target="_blank"
 															rel="noopener noreferrer"
-															className="text-muted-foreground hover:text-primary transition-colors"
+															className="text-muted-foreground transition-colors hover:text-primary"
 															aria-label="Watch on YouTube"
 														>
 															<YoutubeIcon size={20} />
@@ -129,7 +129,7 @@ export default function MusicSection() {
 														</Button>
 													</Link>
 												</div>
-												<p className="text-sm text-muted-foreground">
+												<p className="text-muted-foreground text-sm">
 													{new Date(item.releaseDate).toLocaleDateString(
 														"en-US",
 													)}

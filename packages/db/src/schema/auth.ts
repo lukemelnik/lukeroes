@@ -1,4 +1,4 @@
-import { pgTable, text, boolean, timestamp } from "drizzle-orm/pg-core";
+import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -33,8 +33,12 @@ export const account = pgTable("account", {
 	accessToken: text("accessToken"),
 	refreshToken: text("refreshToken"),
 	idToken: text("idToken"),
-	accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { withTimezone: true }),
-	refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt", { withTimezone: true }),
+	accessTokenExpiresAt: timestamp("accessTokenExpiresAt", {
+		withTimezone: true,
+	}),
+	refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt", {
+		withTimezone: true,
+	}),
 	scope: text("scope"),
 	password: text("password"),
 	createdAt: timestamp("createdAt", { withTimezone: true }).notNull(),

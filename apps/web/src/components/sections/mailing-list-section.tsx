@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Mail } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function MailingListSection() {
 	const [email, setEmail] = useState("");
@@ -17,18 +17,16 @@ export default function MailingListSection() {
 	};
 
 	return (
-		<section className="w-full py-16 px-4 md:px-6 bg-muted/30">
+		<section className="w-full bg-muted/30 px-4 py-16 md:px-6">
 			<div className="container mx-auto max-w-2xl">
-				<div className="text-center space-y-6">
-					<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-						<Mail className="w-8 h-8 text-primary" />
+				<div className="space-y-6 text-center">
+					<div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+						<Mail className="h-8 w-8 text-primary" />
 					</div>
 
 					<div className="space-y-2">
-						<h2 className="text-3xl font-bold tracking-tight">
-							Stay In Touch
-						</h2>
-						<p className="text-muted-foreground max-w-md mx-auto">
+						<h2 className="font-bold text-3xl tracking-tight">Stay In Touch</h2>
+						<p className="mx-auto max-w-md text-muted-foreground">
 							Join the mailing list to stay up to date with new releases, tour
 							announcements, and exclusive content.
 						</p>
@@ -36,7 +34,7 @@ export default function MailingListSection() {
 
 					<form
 						onSubmit={handleSubmit}
-						className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto pt-4"
+						className="mx-auto flex max-w-md flex-col gap-3 pt-4 sm:flex-row"
 					>
 						<Input
 							type="email"
@@ -51,7 +49,7 @@ export default function MailingListSection() {
 						</Button>
 					</form>
 
-					<p className="text-xs text-muted-foreground">
+					<p className="text-muted-foreground text-xs">
 						We respect your privacy. Unsubscribe at any time.
 					</p>
 				</div>
