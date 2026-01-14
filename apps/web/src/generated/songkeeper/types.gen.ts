@@ -4,6 +4,27 @@ export type ClientOptions = {
     baseUrl: 'https://api.songkeeper.io' | (string & {});
 };
 
+export type Artist = {
+    id: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type ArtistsResponse = {
+    artists: Array<Artist>;
+};
+
+export type Error = {
+    error: string;
+    code?: string;
+    details?: unknown;
+};
+
+export type ArtistResponse = {
+    artist: Artist;
+};
+
 export type ReleaseSummary = {
     id: number;
     title: string;
@@ -36,12 +57,6 @@ export type ReleaseSummary = {
 
 export type ReleasesResponse = {
     releases: Array<ReleaseSummary>;
-};
-
-export type Error = {
-    error: string;
-    code?: string;
-    details?: unknown;
 };
 
 export type ReleaseDetail = {
@@ -81,7 +96,13 @@ export type ReleaseDetail = {
             id: number;
             title: string;
             lyrics: string;
-            songwriters?: unknown;
+            songwriters: Array<{
+                name?: string;
+                role?: string;
+                contribution?: string;
+                share?: number;
+                [key: string]: unknown | string | number | undefined;
+            }>;
             iswc: string;
             genre: string;
             workType: string;
@@ -104,9 +125,27 @@ export type ReleaseDetail = {
             secondaryGenre: string;
             hasExplicitLyrics: boolean;
             labelName: string;
-            credits?: unknown;
-            masterOwners?: unknown;
-            nonFeaturedPerformers?: unknown;
+            credits: Array<{
+                name?: string;
+                role?: string;
+                contribution?: string;
+                share?: number;
+                [key: string]: unknown | string | number | undefined;
+            }>;
+            masterOwners: Array<{
+                name?: string;
+                role?: string;
+                contribution?: string;
+                share?: number;
+                [key: string]: unknown | string | number | undefined;
+            }>;
+            nonFeaturedPerformers: Array<{
+                name?: string;
+                role?: string;
+                contribution?: string;
+                share?: number;
+                [key: string]: unknown | string | number | undefined;
+            }>;
         };
     }>;
 };
@@ -114,6 +153,78 @@ export type ReleaseDetail = {
 export type ReleaseResponse = {
     release: ReleaseDetail;
 };
+
+export type GetApiV1ArtistsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Search artists by name (case-insensitive)
+         */
+        search?: string;
+        /**
+         * Maximum number of artists to return
+         */
+        limit?: number;
+        /**
+         * Number of artists to skip for pagination
+         */
+        offset?: number;
+    };
+    url: '/api/v1/artists';
+};
+
+export type GetApiV1ArtistsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetApiV1ArtistsError = GetApiV1ArtistsErrors[keyof GetApiV1ArtistsErrors];
+
+export type GetApiV1ArtistsResponses = {
+    /**
+     * List of artists
+     */
+    200: ArtistsResponse;
+};
+
+export type GetApiV1ArtistsResponse = GetApiV1ArtistsResponses[keyof GetApiV1ArtistsResponses];
+
+export type GetApiV1ArtistsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Artist ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/artists/{id}';
+};
+
+export type GetApiV1ArtistsByIdErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Artist not found
+     */
+    404: Error;
+};
+
+export type GetApiV1ArtistsByIdError = GetApiV1ArtistsByIdErrors[keyof GetApiV1ArtistsByIdErrors];
+
+export type GetApiV1ArtistsByIdResponses = {
+    /**
+     * Artist details
+     */
+    200: ArtistResponse;
+};
+
+export type GetApiV1ArtistsByIdResponse = GetApiV1ArtistsByIdResponses[keyof GetApiV1ArtistsByIdResponses];
 
 export type GetApiV1ReleasesData = {
     body?: never;
