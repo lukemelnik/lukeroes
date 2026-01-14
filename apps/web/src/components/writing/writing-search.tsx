@@ -46,6 +46,7 @@ export function WritingSearch({
 							const isActive = activeTags.includes(tag);
 							return (
 								<button
+									type="button"
 									key={tag}
 									onClick={() => onTagToggle(tag)}
 									className={`rounded-md px-3 py-1 font-medium text-sm transition-colors ${
@@ -61,6 +62,7 @@ export function WritingSearch({
 						})}
 						{activeTags.length > 0 && (
 							<button
+								type="button"
 								onClick={() => activeTags.forEach(onTagToggle)}
 								className="rounded-md bg-destructive/10 px-3 py-1 font-medium text-destructive text-sm hover:bg-destructive/20"
 							>

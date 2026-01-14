@@ -33,9 +33,11 @@ function WritingIndex() {
 	// Get all unique tags from published posts
 	const allTags = useMemo(() => {
 		const tagSet = new Set<string>();
-		publishedPosts.forEach((post) => {
-			post.tags?.forEach((tag) => tagSet.add(tag));
-		});
+		for (const post of publishedPosts) {
+			for (const tag of post.tags ?? []) {
+				tagSet.add(tag);
+			}
+		}
 		return Array.from(tagSet).sort();
 	}, [publishedPosts]);
 
@@ -92,6 +94,7 @@ function WritingIndex() {
 
 							return (
 								<button
+									type="button"
 									key={tag}
 									onClick={() => handleTagClick(tag)}
 									className={`rounded-md px-3 py-1.5 font-medium text-sm transition-all ${

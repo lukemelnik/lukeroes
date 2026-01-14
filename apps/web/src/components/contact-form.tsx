@@ -44,7 +44,7 @@ export function ContactForm({ showProjectField = true }: ContactFormProps) {
 					"Thanks for your message! I'll get back to you within 24 hours.",
 				);
 				form.reset();
-			} catch (error) {
+			} catch (_error) {
 				toast.error("Failed to send message. Please try again.");
 			}
 		},

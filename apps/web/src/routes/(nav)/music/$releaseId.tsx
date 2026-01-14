@@ -224,6 +224,7 @@ function ReleaseDetailPage() {
 											const isActive = selectedTrack?.id === track.id;
 											return (
 												<button
+													type="button"
 													key={track.id}
 													onClick={() => setSelectedTrackId(track.id)}
 													className={`flex w-full items-center justify-between rounded pr-1 transition-colors ${
@@ -434,7 +435,11 @@ function CreditSection({
 				{entries.length > 0 ? (
 					<ul className="list-inside list-disc space-y-1 text-sm">
 						{entries.map((entry, index) => (
-							<li key={`${title}-${index}`} className="text-muted-foreground">
+							<li
+								// biome-ignore lint/suspicious/noArrayIndexKey: Credit entries may have duplicate names
+								key={index}
+								className="text-muted-foreground"
+							>
 								{entry}
 							</li>
 						))}

@@ -76,6 +76,7 @@ function LinksPage() {
 									// Fallback to initials if image fails to load
 									const target = e.target as HTMLImageElement;
 									target.style.display = "none";
+									// biome-ignore lint/style/noNonNullAssertion: Fallback handler, parent guaranteed to exist
 									target.parentElement!.innerHTML = `<div class="w-full h-full bg-primary/20 flex items-center justify-center text-2xl font-bold text-primary">${profile.name
 										.split(" ")
 										.map((n) => n[0])

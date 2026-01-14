@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
 	return (
+		// biome-ignore lint/a11y/useSemanticElements: shadcn/ui pattern, fieldset would affect styling
 		<div
 			data-slot="input-group"
 			role="group"
@@ -62,6 +63,8 @@ function InputGroupAddon({
 	...props
 }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
 	return (
+		// biome-ignore lint/a11y/useKeyWithClickEvents: Click focuses input, keyboard users use tab
+		// biome-ignore lint/a11y/useSemanticElements: shadcn/ui pattern
 		<div
 			role="group"
 			data-slot="input-group-addon"
