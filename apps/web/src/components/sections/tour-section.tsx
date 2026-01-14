@@ -1,21 +1,21 @@
+import { Calendar, ExternalLink, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, MapPin, ExternalLink } from "lucide-react";
 import {
+	getPastDates,
+	getUpcomingDates,
 	type TourDate,
 	tourDates,
-	getUpcomingDates,
-	getPastDates,
 } from "@/lib/tour-config";
 
 function TourDateCard({ show }: { show: TourDate }) {
 	return (
-		<Card className="hover:shadow-md transition-shadow">
+		<Card className="transition-shadow hover:shadow-md">
 			<CardContent className="p-4 md:p-6">
-				<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-					<div className="flex flex-col md:flex-row md:items-center gap-4 flex-1">
-						<div className="flex items-center gap-2 text-sm font-medium min-w-[120px]">
-							<Calendar className="w-4 h-4 text-muted-foreground" />
+				<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+					<div className="flex flex-1 flex-col gap-4 md:flex-row md:items-center">
+						<div className="flex min-w-[120px] items-center gap-2 font-medium text-sm">
+							<Calendar className="h-4 w-4 text-muted-foreground" />
 							<span>{show.displayDate}</span>
 						</div>
 
@@ -23,13 +23,13 @@ function TourDateCard({ show }: { show: TourDate }) {
 							<h3 className="font-semibold text-lg">
 								{show.venue}
 								{show.notes && (
-									<span className="text-sm font-normal text-muted-foreground ml-2">
+									<span className="ml-2 font-normal text-muted-foreground text-sm">
 										({show.notes})
 									</span>
 								)}
 							</h3>
-							<div className="flex items-center gap-2 text-sm text-muted-foreground">
-								<MapPin className="w-4 h-4" />
+							<div className="flex items-center gap-2 text-muted-foreground text-sm">
+								<MapPin className="h-4 w-4" />
 								<span>
 									{show.city}, {show.region}
 									{show.country !== "USA" && `, ${show.country}`}
@@ -51,7 +51,7 @@ function TourDateCard({ show }: { show: TourDate }) {
 									rel="noopener noreferrer"
 								>
 									Get Tickets
-									<ExternalLink className="w-4 h-4 ml-2" />
+									<ExternalLink className="ml-2 h-4 w-4" />
 								</a>
 							</Button>
 						) : (
@@ -85,10 +85,10 @@ export default function TourSection({
 		: upcomingDates;
 
 	return (
-		<section className="w-full py-16 px-4 md:px-6">
+		<section className="w-full px-4 py-16 md:px-6">
 			<div className="container mx-auto max-w-4xl">
 				<div className="mb-8 text-center">
-					<h2 className="text-3xl font-bold tracking-tight mb-2">Tour Dates</h2>
+					<h2 className="mb-2 font-bold text-3xl tracking-tight">Tour Dates</h2>
 					<p className="text-muted-foreground">
 						Catch a live performance near you
 					</p>
@@ -102,7 +102,7 @@ export default function TourSection({
 						))}
 					</div>
 				) : (
-					<div className="text-center py-12 border border-dashed rounded-lg">
+					<div className="rounded-lg border border-dashed py-12 text-center">
 						<p className="text-muted-foreground">
 							No upcoming tour dates at the moment. Check back soon!
 						</p>
@@ -112,7 +112,7 @@ export default function TourSection({
 				{/* Past dates (optional) */}
 				{showPastDates && pastDates.length > 0 && (
 					<div className="mt-12">
-						<h3 className="text-xl font-semibold mb-4 text-muted-foreground">
+						<h3 className="mb-4 font-semibold text-muted-foreground text-xl">
 							Past Shows
 						</h3>
 						<div className="space-y-3 opacity-60">

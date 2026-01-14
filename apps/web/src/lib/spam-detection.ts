@@ -8,20 +8,20 @@
  * Higher entropy = more random/unpredictable
  */
 function calculateShannonEntropy(str: string): number {
-  const len = str.length;
-  const frequencies = new Map<string, number>();
+	const len = str.length;
+	const frequencies = new Map<string, number>();
 
-  for (const char of str.toLowerCase()) {
-    frequencies.set(char, (frequencies.get(char) || 0) + 1);
-  }
+	for (const char of str.toLowerCase()) {
+		frequencies.set(char, (frequencies.get(char) || 0) + 1);
+	}
 
-  let entropy = 0;
-  for (const count of frequencies.values()) {
-    const probability = count / len;
-    entropy -= probability * Math.log2(probability);
-  }
+	let entropy = 0;
+	for (const count of frequencies.values()) {
+		const probability = count / len;
+		entropy -= probability * Math.log2(probability);
+	}
 
-  return entropy;
+	return entropy;
 }
 
 /**
@@ -40,80 +40,80 @@ function calculateShannonEntropy(str: string): number {
  * 6. Multiple uppercase in a row - unnatural patterns
  */
 export function calculateNameSpamScore(name: string): number {
-  if (!name || name.trim().length === 0) {
-    return 10;
-  }
+	if (!name || name.trim().length === 0) {
+		return 10;
+	}
 
-  const trimmedName = name.trim();
-  let score = 0;
+	const trimmedName = name.trim();
+	let score = 0;
 
-  // 1. Entropy check (randomness detection)
-  const entropy = calculateShannonEntropy(trimmedName);
-  if (entropy > 3.8) {
-    score += 4;
-  } else if (entropy > 3.4) {
-    score += 3;
-  } else if (entropy > 3.0) {
-    score += 2;
-  }
+	// 1. Entropy check (randomness detection)
+	const entropy = calculateShannonEntropy(trimmedName);
+	if (entropy > 3.8) {
+		score += 4;
+	} else if (entropy > 3.4) {
+		score += 3;
+	} else if (entropy > 3.0) {
+		score += 2;
+	}
 
-  // 2. Vowel ratio (pronounceability)
-  const vowelCount = (trimmedName.match(/[aeiouAEIOU]/g) || []).length;
-  const vowelRatio = vowelCount / trimmedName.length;
+	// 2. Vowel ratio (pronounceability)
+	const vowelCount = (trimmedName.match(/[aeiouAEIOU]/g) || []).length;
+	const vowelRatio = vowelCount / trimmedName.length;
 
-  if (vowelRatio < 0.2 || vowelRatio > 0.6) {
-    score += 3;
-  } else if (vowelRatio < 0.25 || vowelRatio > 0.55) {
-    score += 2;
-  }
+	if (vowelRatio < 0.2 || vowelRatio > 0.6) {
+		score += 3;
+	} else if (vowelRatio < 0.25 || vowelRatio > 0.55) {
+		score += 2;
+	}
 
-  // 3. Consecutive consonants
-  if (/[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{4,}/.test(trimmedName)) {
-    score += 3;
-  } else if (
-    /[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{3}/.test(trimmedName)
-  ) {
-    score += 1;
-  }
+	// 3. Consecutive consonants
+	if (/[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{4,}/.test(trimmedName)) {
+		score += 3;
+	} else if (
+		/[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{3}/.test(trimmedName)
+	) {
+		score += 1;
+	}
 
-  // 4. Mixed case randomness
-  const caseChanges = (trimmedName.match(/[a-z][A-Z]|[A-Z][a-z]/g) || [])
-    .length;
+	// 4. Mixed case randomness
+	const caseChanges = (trimmedName.match(/[a-z][A-Z]|[A-Z][a-z]/g) || [])
+		.length;
 
-  if (caseChanges > 3) {
-    score += 3;
-  } else if (caseChanges > 2) {
-    score += 2;
-  }
+	if (caseChanges > 3) {
+		score += 3;
+	} else if (caseChanges > 2) {
+		score += 2;
+	}
 
-  // 5. Multiple consecutive uppercase letters (not at start)
-  if (/[A-Z]{3,}/.test(trimmedName.slice(1))) {
-    score += 2;
-  }
+	// 5. Multiple consecutive uppercase letters (not at start)
+	if (/[A-Z]{3,}/.test(trimmedName.slice(1))) {
+		score += 2;
+	}
 
-  // 6. Length extremes
-  if (trimmedName.length > 20) {
-    score += 3;
-  } else if (trimmedName.length > 15) {
-    score += 2;
-  }
+	// 6. Length extremes
+	if (trimmedName.length > 20) {
+		score += 3;
+	} else if (trimmedName.length > 15) {
+		score += 2;
+	}
 
-  // 7. Digit-heavy names
-  const digitCount = (trimmedName.match(/\d/g) || []).length;
-  const digitRatio = digitCount / trimmedName.length;
+	// 7. Digit-heavy names
+	const digitCount = (trimmedName.match(/\d/g) || []).length;
+	const digitRatio = digitCount / trimmedName.length;
 
-  if (digitRatio > 0.3) {
-    score += 3;
-  } else if (digitRatio > 0.2) {
-    score += 2;
-  }
+	if (digitRatio > 0.3) {
+		score += 3;
+	} else if (digitRatio > 0.2) {
+		score += 2;
+	}
 
-  return Math.min(score, 10);
+	return Math.min(score, 10);
 }
 
 /**
  * Determine if a name should be blocked from submission
  */
 export function shouldBlockSubmission(name: string): boolean {
-  return calculateNameSpamScore(name) >= 6;
+	return calculateNameSpamScore(name) >= 6;
 }
