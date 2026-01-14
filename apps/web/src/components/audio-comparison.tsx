@@ -219,12 +219,14 @@ export function AudioComparison({
 			</div>
 
 			{/* Hidden Audio Elements */}
+			{/* biome-ignore lint/a11y/useMediaCaption: Audio comparison for quality, no speech to caption */}
 			<audio
 				ref={beforeRef}
 				src={beforeSrc}
 				preload="metadata"
 				className="hidden"
 			/>
+			{/* biome-ignore lint/a11y/useMediaCaption: Audio comparison for quality, no speech to caption */}
 			<audio
 				ref={afterRef}
 				src={afterSrc}

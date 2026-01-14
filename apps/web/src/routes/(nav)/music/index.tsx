@@ -215,6 +215,14 @@ function MusicPageComponent() {
 												: ""
 										}`}
 										onClick={() => setSelectedReleaseId(item.id)}
+										onKeyDown={(e) => {
+											if (e.key === "Enter" || e.key === " ") {
+												e.preventDefault();
+												setSelectedReleaseId(item.id);
+											}
+										}}
+										tabIndex={0}
+										role="button"
 									>
 										<CardContent className="flex flex-col items-center p-6">
 											<div className="w-2/3 space-y-2">
@@ -253,8 +261,11 @@ function MusicPageComponent() {
 					{releases.map((item) => (
 						<Card key={item.id} className="overflow-hidden">
 							<CardContent className="p-0">
+								{/* biome-ignore lint/a11y/useSemanticElements: Wrapper div contains complex nested content */}
 								<div
 									className="cursor-pointer"
+									role="button"
+									tabIndex={0}
 									onClick={() => {
 										const newId =
 											expandedMobileId === String(item.id)
@@ -263,6 +274,19 @@ function MusicPageComponent() {
 										setExpandedMobileId(newId);
 										if (newId) {
 											setSelectedReleaseId(item.id);
+										}
+									}}
+									onKeyDown={(e) => {
+										if (e.key === "Enter" || e.key === " ") {
+											e.preventDefault();
+											const newId =
+												expandedMobileId === String(item.id)
+													? null
+													: String(item.id);
+											setExpandedMobileId(newId);
+											if (newId) {
+												setSelectedReleaseId(item.id);
+											}
 										}
 									}}
 								>
