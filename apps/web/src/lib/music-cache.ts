@@ -1,65 +1,31 @@
 // Server-only module - do not import on client side
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
-import type { MusicResponse, ApiReleaseDetails } from "./music-types";
+import type {
+	ReleaseSummary,
+	ReleaseDetail,
+	ReleasesResponse,
+	ReleaseResponse,
+} from "@/generated/songkeeper";
 
-export type { MusicResponse, ApiReleaseDetails } from "./music-types";
+export type { ReleaseSummary, ReleaseDetail };
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const CACHE_DIR = join(__dirname, "../../.cache");
-const CACHE_FILE = join(CACHE_DIR, "music-data.json");
-const CACHE_TTL_MS = 0; // 1 hour
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
-interface CacheData {
-	fetchedAt: string;
-	expiresAt: string;
-	data: MusicResponse;
+interface CacheEntry<T> {
+	data: T;
+	expiresAt: number;
 }
 
-// In-memory cache
-let memoryCache: CacheData | null = null;
+const cache = {
+	releases: null as CacheEntry<ReleaseSummary[]> | null,
+	releaseDetails: new Map<number, CacheEntry<ReleaseDetail>>(),
+};
 
-function ensureCacheDir(): void {
-	if (!existsSync(CACHE_DIR)) {
-		mkdirSync(CACHE_DIR, { recursive: true });
-	}
+function isExpired<T>(entry: CacheEntry<T> | null | undefined): boolean {
+	return !entry || Date.now() > entry.expiresAt;
 }
 
-function readFromFile(): CacheData | null {
-	try {
-		if (!existsSync(CACHE_FILE)) {
-			return null;
-		}
-		const content = readFileSync(CACHE_FILE, "utf-8");
-		const parsed = JSON.parse(content) as Partial<CacheData>;
-		if (
-			!parsed ||
-			typeof parsed !== "object" ||
-			!parsed.data ||
-			!Array.isArray((parsed.data as any).releases)
-		) {
-			console.warn("Cache file invalid shape; ignoring cache");
-			return null;
-		}
-		return parsed as CacheData;
-	} catch (error) {
-		console.warn("Failed to read cache file:", error);
-		return null;
-	}
-}
-
-function writeToFile(data: CacheData): void {
-	try {
-		ensureCacheDir();
-		writeFileSync(CACHE_FILE, JSON.stringify(data, null, 2), "utf-8");
-	} catch (error) {
-		console.warn("Failed to write cache file:", error);
-	}
-}
-
-function isExpired(cache: CacheData): boolean {
-	return new Date(cache.expiresAt) < new Date();
+function createEntry<T>(data: T): CacheEntry<T> {
+	return { data, expiresAt: Date.now() + CACHE_TTL_MS };
 }
 
 function normalizeBaseUrl(raw: string): string {
@@ -67,7 +33,7 @@ function normalizeBaseUrl(raw: string): string {
 	return withProtocol.endsWith("/") ? withProtocol : `${withProtocol}/`;
 }
 
-async function fetchFromApi(): Promise<MusicResponse> {
+async function fetchReleases(): Promise<ReleasesResponse> {
 	const apiUrl = process.env.SONGKEEPER_API_URL;
 	const accessKey = process.env.SONGKEEPER_ACCESS_KEY;
 
@@ -76,15 +42,7 @@ async function fetchFromApi(): Promise<MusicResponse> {
 	}
 
 	const base = normalizeBaseUrl(apiUrl);
-	let url: string;
-	try {
-		url = new URL("releases", base).toString();
-	} catch (err) {
-		throw new Error(
-			`Invalid SONGKEEPER_API_URL. Received: ${apiUrl}. Error: ${err instanceof Error ? err.message : String(err)}`,
-		);
-	}
-	console.log(url);
+	const url = new URL("releases", base).toString();
 
 	const response = await fetch(url, {
 		headers: {
@@ -99,53 +57,9 @@ async function fetchFromApi(): Promise<MusicResponse> {
 	return response.json();
 }
 
-function updateCache(data: MusicResponse): CacheData {
-	const now = new Date();
-	const cacheData: CacheData = {
-		fetchedAt: now.toISOString(),
-		expiresAt: new Date(now.getTime() + CACHE_TTL_MS).toISOString(),
-		data,
-	};
-
-	// Update both memory and file
-	memoryCache = cacheData;
-	writeToFile(cacheData);
-
-	return cacheData;
-}
-
-export async function getMusicReleases(): Promise<MusicResponse> {
-	// 1. If memory cache exists and is not expired, return it immediately
-	if (memoryCache && !isExpired(memoryCache)) {
-		console.log("Getting release data from cache!");
-		return memoryCache.data;
-	}
-
-	// 2. Try to fetch fresh data from API
-	try {
-		const freshData = await fetchFromApi();
-		console.log("Got data from API", freshData);
-		const updatedCache = updateCache(freshData);
-		return updatedCache.data;
-	} catch (error) {
-		console.warn("Failed to fetch from API:", error);
-
-		// 3. API failed - fall back to file cache DISABLED FOR NOW
-		// const fileCache = readFromFile();
-		// if (fileCache && Array.isArray(fileCache.data.apiReleases)) {
-		//   memoryCache = fileCache;
-		//   console.warn("Returning file cache data");
-		//   return fileCache.data;
-		// }
-
-		// 4. No cache file exists - error out
-		throw new Error("No cached data available and API is unreachable");
-	}
-}
-
-export async function getReleaseDetailsById(
-	releaseId: string | number,
-): Promise<ApiReleaseDetails | undefined> {
+async function fetchReleaseDetails(
+	releaseId: number,
+): Promise<ReleaseResponse> {
 	const apiUrl = process.env.SONGKEEPER_API_URL;
 	const accessKey = process.env.SONGKEEPER_ACCESS_KEY;
 
@@ -154,14 +68,7 @@ export async function getReleaseDetailsById(
 	}
 
 	const base = normalizeBaseUrl(apiUrl);
-	let url: string;
-	try {
-		url = new URL(`releases/${releaseId}`, base).toString();
-	} catch (err) {
-		throw new Error(
-			`Invalid SONGKEEPER_API_URL. Received: ${apiUrl}. Error: ${err instanceof Error ? err.message : String(err)}`,
-		);
-	}
+	const url = new URL(`releases/${releaseId}`, base).toString();
 
 	const response = await fetch(url, {
 		headers: {
@@ -169,14 +76,44 @@ export async function getReleaseDetailsById(
 		},
 	});
 
-	if (response.status === 404) {
-		return undefined;
-	}
-
 	if (!response.ok) {
 		throw new Error(`API request failed: ${response.status}`);
 	}
 
-	const json = (await response.json()) as { release: ApiReleaseDetails };
-	return json.release ?? [];
+	return response.json();
+}
+
+export async function getMusicReleases(): Promise<ReleasesResponse> {
+	if (!isExpired(cache.releases) && cache.releases) {
+		console.log("Getting release data from cache!");
+		return { releases: cache.releases.data };
+	}
+
+	const data = await fetchReleases();
+	console.log("Got data from API", data);
+	cache.releases = createEntry(data.releases);
+
+	return data;
+}
+
+export async function getReleaseDetailsById(
+	releaseId: number,
+): Promise<ReleaseDetail | undefined> {
+	const cached = cache.releaseDetails.get(releaseId);
+	if (!isExpired(cached) && cached) {
+		console.log(`Getting release ${releaseId} details from cache!`);
+		return cached.data;
+	}
+
+	try {
+		const data = await fetchReleaseDetails(releaseId);
+		console.log(`Got release ${releaseId} details from API`);
+		cache.releaseDetails.set(releaseId, createEntry(data.release));
+		return data.release;
+	} catch (error) {
+		if (error instanceof Error && error.message.includes("404")) {
+			return undefined;
+		}
+		throw error;
+	}
 }
