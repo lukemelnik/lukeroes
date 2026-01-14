@@ -9,8 +9,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { type ApiTrack } from "@/hooks/use-music";
-import { musicQueryOptions } from "@/hooks/use-music";
+import { musicQueryOptions, type ReleaseSummary } from "@/hooks/use-music";
+
+type Track = ReleaseSummary["tracks"][number];
 import { Spinner } from "@/components/ui/spinner";
 import { msToMMSS } from "@/lib/utils";
 import { ArtworkImage } from "@/components/artwork-image";
@@ -64,7 +65,7 @@ function MusicPageComponent() {
   }, [releases, selectedReleaseId]);
 
   const selectedRelease = releases?.find((r) => r.id === selectedReleaseId);
-  const tracksForSelected: ApiTrack[] = selectedRelease?.tracks ?? [];
+  const tracksForSelected: Track[] = selectedRelease?.tracks ?? [];
 
   const [expandedMobileId, setExpandedMobileId] = useState<string | null>(null);
 

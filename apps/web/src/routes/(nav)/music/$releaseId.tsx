@@ -1,8 +1,21 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { type ApiContribution, type ApiDetailedTrack } from "@/lib/music-types";
-import { releaseDetailsQueryOptions } from "@/hooks/use-music";
+import {
+	releaseDetailsQueryOptions,
+	type ReleaseDetail,
+} from "@/hooks/use-music";
+
+type DetailedTrack = ReleaseDetail["tracks"][number];
+
+type Contribution =
+	| string
+	| {
+			name?: string | null;
+			role?: string | null;
+			contribution?: string | null;
+			share?: number | null;
+	  };
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,9 +34,12 @@ export const Route = createFileRoute("/(nav)/music/$releaseId")({
       throw notFound();
     }
 
-    const release = await context.queryClient.ensureQueryData(
-      releaseDetailsQueryOptions(releaseId),
-    );
+    const queryOpts = releaseDetailsQueryOptions(releaseId);
+    await context.queryClient.prefetchQuery({
+      queryKey: queryOpts.queryKey,
+      queryFn: queryOpts.queryFn,
+    });
+    const release = context.queryClient.getQueryData<ReleaseDetail>(queryOpts.queryKey);
 
     if (!release) {
       throw notFound();
@@ -34,10 +50,12 @@ export const Route = createFileRoute("/(nav)/music/$releaseId")({
   component: ReleaseDetailPage,
 });
 
-function formatContributors(contributors?: ApiContribution[] | null): string[] {
-  if (!contributors || contributors.length === 0) return [];
+function formatContributors(contributors?: unknown): string[] {
+  if (!contributors || !Array.isArray(contributors) || contributors.length === 0)
+    return [];
+  const typedContributors = contributors as Contribution[];
 
-  return contributors.map((entry) => {
+  return typedContributors.map((entry) => {
     if (typeof entry === "string") return entry;
     const parts = [
       entry.name,
@@ -79,7 +97,7 @@ function ReleaseDetailPage() {
     }
   }, [release, selectedTrackId]);
 
-  const selectedTrack: ApiDetailedTrack | undefined = useMemo(() => {
+  const selectedTrack: DetailedTrack | undefined = useMemo(() => {
     if (!release?.tracks?.length) return undefined;
     if (selectedTrackId === null) return release.tracks[0];
     return release.tracks.find((track) => track.id === selectedTrackId);
