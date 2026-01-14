@@ -101,7 +101,6 @@ export type ReleaseDetail = {
                 role?: string;
                 contribution?: string;
                 share?: number;
-                [key: string]: unknown | string | number | undefined;
             }>;
             iswc: string;
             genre: string;
@@ -130,21 +129,18 @@ export type ReleaseDetail = {
                 role?: string;
                 contribution?: string;
                 share?: number;
-                [key: string]: unknown | string | number | undefined;
             }>;
             masterOwners: Array<{
                 name?: string;
                 role?: string;
                 contribution?: string;
                 share?: number;
-                [key: string]: unknown | string | number | undefined;
             }>;
             nonFeaturedPerformers: Array<{
                 name?: string;
                 role?: string;
                 contribution?: string;
                 share?: number;
-                [key: string]: unknown | string | number | undefined;
             }>;
         };
     }>;
