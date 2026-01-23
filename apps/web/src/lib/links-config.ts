@@ -56,7 +56,7 @@ export const linksConfig: LinksConfig = {
 	links: [
 		{
 			label: "Work with Me",
-			href: "/production",
+			href: "/work-with-me",
 			icon: Disc3Icon,
 			external: false,
 		},
