@@ -5,10 +5,18 @@ import type {
 	ReleaseSummary,
 	ReleasesResponse,
 } from "@/generated/songkeeper";
+import { CACHE_TTL_MS } from "./constants";
 
 export type { ReleaseSummary, ReleaseDetail };
 
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const MAX_RELEASE_DETAILS_CACHE_SIZE = 100;
+
+class NotFoundError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = "NotFoundError";
+	}
+}
 
 interface CacheEntry<T> {
 	data: T;
@@ -26,6 +34,32 @@ function isExpired<T>(entry: CacheEntry<T> | null | undefined): boolean {
 
 function createEntry<T>(data: T): CacheEntry<T> {
 	return { data, expiresAt: Date.now() + CACHE_TTL_MS };
+}
+
+function evictExpiredEntries(): void {
+	const now = Date.now();
+	for (const [key, entry] of cache.releaseDetails) {
+		if (now > entry.expiresAt) {
+			cache.releaseDetails.delete(key);
+		}
+	}
+}
+
+function evictOldestIfNeeded(): void {
+	if (cache.releaseDetails.size < MAX_RELEASE_DETAILS_CACHE_SIZE) {
+		return;
+	}
+
+	// First try to evict expired entries
+	evictExpiredEntries();
+
+	// If still over limit, evict oldest entry (first inserted)
+	if (cache.releaseDetails.size >= MAX_RELEASE_DETAILS_CACHE_SIZE) {
+		const firstKey = cache.releaseDetails.keys().next().value;
+		if (firstKey !== undefined) {
+			cache.releaseDetails.delete(firstKey);
+		}
+	}
 }
 
 function normalizeBaseUrl(raw: string): string {
@@ -76,6 +110,10 @@ async function fetchReleaseDetails(
 		},
 	});
 
+	if (response.status === 404) {
+		throw new NotFoundError(`Release ${releaseId} not found`);
+	}
+
 	if (!response.ok) {
 		throw new Error(`API request failed: ${response.status}`);
 	}
@@ -85,12 +123,10 @@ async function fetchReleaseDetails(
 
 export async function getMusicReleases(): Promise<ReleasesResponse> {
 	if (!isExpired(cache.releases) && cache.releases) {
-		console.log("Getting release data from cache!");
 		return { releases: cache.releases.data };
 	}
 
 	const data = await fetchReleases();
-	console.log("Got data from API", data);
 	cache.releases = createEntry(data.releases);
 
 	return data;
@@ -101,17 +137,16 @@ export async function getReleaseDetailsById(
 ): Promise<ReleaseDetail | undefined> {
 	const cached = cache.releaseDetails.get(releaseId);
 	if (!isExpired(cached) && cached) {
-		console.log(`Getting release ${releaseId} details from cache!`);
 		return cached.data;
 	}
 
 	try {
 		const data = await fetchReleaseDetails(releaseId);
-		console.log(`Got release ${releaseId} details from API`);
+		evictOldestIfNeeded();
 		cache.releaseDetails.set(releaseId, createEntry(data.release));
 		return data.release;
 	} catch (error) {
-		if (error instanceof Error && error.message.includes("404")) {
+		if (error instanceof NotFoundError) {
 			return undefined;
 		}
 		throw error;
