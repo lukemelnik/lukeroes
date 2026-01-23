@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import z from "zod/v4";
 import { getMusic } from "@/functions/get-music";
 import type { ReleaseDetail, ReleaseSummary } from "@/generated/songkeeper";
+import { CACHE_TTL_MS } from "@/lib/constants";
 import { getReleaseDetailsById } from "@/lib/music-cache";
 
 export type { ReleaseSummary, ReleaseDetail };
@@ -10,7 +11,7 @@ export type { ReleaseSummary, ReleaseDetail };
 export const musicQueryOptions = queryOptions<ReleaseSummary[] | undefined>({
 	queryKey: ["music"],
 	queryFn: () => getMusic(),
-	staleTime: 1000 * 60 * 5, // 5 minutes on client
+	staleTime: CACHE_TTL_MS,
 });
 
 const GetReleaseInputSchema = z.object({ releaseId: z.number() });
@@ -29,5 +30,5 @@ export const releaseDetailsQueryOptions = (releaseId: number | null) =>
 		queryFn: releaseId
 			? () => getReleaseDetails({ data: { releaseId } })
 			: skipToken,
-		staleTime: 1000 * 60 * 5, // 5 minutes
+		staleTime: CACHE_TTL_MS,
 	});

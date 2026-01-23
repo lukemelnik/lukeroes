@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { ChevronLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
 	type ReleaseDetail,
@@ -8,16 +9,9 @@ import {
 
 type DetailedTrack = ReleaseDetail["tracks"][number];
 
-type Contribution =
-	| string
-	| {
-			name?: string | null;
-			role?: string | null;
-			contribution?: string | null;
-			share?: number | null;
-	  };
+// Derive Contribution type from generated ReleaseDetail types
+type Contribution = DetailedTrack["recording"]["credits"][number];
 
-import { ChevronLeft } from "lucide-react";
 import { ArtworkImage } from "@/components/artwork-image";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
@@ -53,17 +47,10 @@ export const Route = createFileRoute("/(nav)/music/$releaseId")({
 	component: ReleaseDetailPage,
 });
 
-function formatContributors(contributors?: unknown): string[] {
-	if (
-		!contributors ||
-		!Array.isArray(contributors) ||
-		contributors.length === 0
-	)
-		return [];
-	const typedContributors = contributors as Contribution[];
+function formatContributors(contributors?: Contribution[]): string[] {
+	if (!contributors || contributors.length === 0) return [];
 
-	return typedContributors.map((entry) => {
-		if (typeof entry === "string") return entry;
+	return contributors.map((entry) => {
 		const parts = [
 			entry.name,
 			entry.role,
