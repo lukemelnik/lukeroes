@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
 import { Play, RefreshCcw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -9,14 +8,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import type { ApiVideo } from "@/hooks/use-videos";
 import { useVideos, videosQueryOptions } from "@/hooks/use-videos";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/(nav)/videos")({
 	component: VideosPageComponent,
 	head: () => ({
 		...seoHead({
 			title: "Videos",
-			description:
-				"Watch music videos and live performances by Luke Roes.",
+			description: "Watch music videos and live performances by Luke Roes.",
 			path: "/videos",
 		}),
 	}),

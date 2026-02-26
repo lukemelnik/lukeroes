@@ -15,6 +15,7 @@ import {
 	CarouselPrevious,
 } from "@/components/ui/carousel";
 import { musicQueryOptions } from "@/hooks/use-music";
+import { slugify } from "@/lib/slugify";
 
 export default function MusicSection() {
 	const { data: releases } = useQuery(musicQueryOptions);
@@ -120,8 +121,8 @@ export default function MusicSection() {
 														</a>
 													)}
 													<Link
-														to="/music/$releaseId"
-														params={{ releaseId: item.id.toString() }}
+														to="/music/$slug"
+														params={{ slug: slugify(item.title) }}
 														aria-label="Release info"
 													>
 														<Button size="sm" variant="outline">

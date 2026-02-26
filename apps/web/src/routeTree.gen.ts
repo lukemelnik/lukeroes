@@ -23,7 +23,9 @@ import { Route as navWritingIndexRouteImport } from './routes/(nav)/writing/inde
 import { Route as navMusicIndexRouteImport } from './routes/(nav)/music/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as navWritingSlugRouteImport } from './routes/(nav)/writing/$slug'
-import { Route as navMusicReleaseIdRouteImport } from './routes/(nav)/music/$releaseId'
+import { Route as navMusicSlugRouteRouteImport } from './routes/(nav)/music/$slug/route'
+import { Route as navMusicSlugIndexRouteImport } from './routes/(nav)/music/$slug/index'
+import { Route as navMusicSlugTrackRouteImport } from './routes/(nav)/music/$slug/$track'
 
 const LinksRoute = LinksRouteImport.update({
   id: '/links',
@@ -94,10 +96,20 @@ const navWritingSlugRoute = navWritingSlugRouteImport.update({
   path: '/writing/$slug',
   getParentRoute: () => navRouteRoute,
 } as any)
-const navMusicReleaseIdRoute = navMusicReleaseIdRouteImport.update({
-  id: '/music/$releaseId',
-  path: '/music/$releaseId',
+const navMusicSlugRouteRoute = navMusicSlugRouteRouteImport.update({
+  id: '/music/$slug',
+  path: '/music/$slug',
   getParentRoute: () => navRouteRoute,
+} as any)
+const navMusicSlugIndexRoute = navMusicSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => navMusicSlugRouteRoute,
+} as any)
+const navMusicSlugTrackRoute = navMusicSlugTrackRouteImport.update({
+  id: '/$track',
+  path: '/$track',
+  getParentRoute: () => navMusicSlugRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -110,11 +122,13 @@ export interface FileRoutesByFullPath {
   '/work-with-me': typeof navWorkWithMeRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
-  '/music/$releaseId': typeof navMusicReleaseIdRoute
+  '/music/$slug': typeof navMusicSlugRouteRouteWithChildren
   '/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/music': typeof navMusicIndexRoute
   '/writing': typeof navWritingIndexRoute
+  '/music/$slug/$track': typeof navMusicSlugTrackRoute
+  '/music/$slug/': typeof navMusicSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
@@ -126,11 +140,12 @@ export interface FileRoutesByTo {
   '/work-with-me': typeof navWorkWithMeRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
-  '/music/$releaseId': typeof navMusicReleaseIdRoute
   '/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/music': typeof navMusicIndexRoute
   '/writing': typeof navWritingIndexRoute
+  '/music/$slug/$track': typeof navMusicSlugTrackRoute
+  '/music/$slug': typeof navMusicSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -144,11 +159,13 @@ export interface FileRoutesById {
   '/(nav)/work-with-me': typeof navWorkWithMeRoute
   '/api/health': typeof ApiHealthRoute
   '/(nav)/': typeof navIndexRoute
-  '/(nav)/music/$releaseId': typeof navMusicReleaseIdRoute
+  '/(nav)/music/$slug': typeof navMusicSlugRouteRouteWithChildren
   '/(nav)/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/(nav)/music/': typeof navMusicIndexRoute
   '/(nav)/writing/': typeof navWritingIndexRoute
+  '/(nav)/music/$slug/$track': typeof navMusicSlugTrackRoute
+  '/(nav)/music/$slug/': typeof navMusicSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -162,11 +179,13 @@ export interface FileRouteTypes {
     | '/work-with-me'
     | '/api/health'
     | '/'
-    | '/music/$releaseId'
+    | '/music/$slug'
     | '/writing/$slug'
     | '/api/auth/$'
     | '/music'
     | '/writing'
+    | '/music/$slug/$track'
+    | '/music/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
@@ -178,11 +197,12 @@ export interface FileRouteTypes {
     | '/work-with-me'
     | '/api/health'
     | '/'
-    | '/music/$releaseId'
     | '/writing/$slug'
     | '/api/auth/$'
     | '/music'
     | '/writing'
+    | '/music/$slug/$track'
+    | '/music/$slug'
   id:
     | '__root__'
     | '/(nav)'
@@ -195,11 +215,13 @@ export interface FileRouteTypes {
     | '/(nav)/work-with-me'
     | '/api/health'
     | '/(nav)/'
-    | '/(nav)/music/$releaseId'
+    | '/(nav)/music/$slug'
     | '/(nav)/writing/$slug'
     | '/api/auth/$'
     | '/(nav)/music/'
     | '/(nav)/writing/'
+    | '/(nav)/music/$slug/$track'
+    | '/(nav)/music/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -310,15 +332,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navWritingSlugRouteImport
       parentRoute: typeof navRouteRoute
     }
-    '/(nav)/music/$releaseId': {
-      id: '/(nav)/music/$releaseId'
-      path: '/music/$releaseId'
-      fullPath: '/music/$releaseId'
-      preLoaderRoute: typeof navMusicReleaseIdRouteImport
+    '/(nav)/music/$slug': {
+      id: '/(nav)/music/$slug'
+      path: '/music/$slug'
+      fullPath: '/music/$slug'
+      preLoaderRoute: typeof navMusicSlugRouteRouteImport
       parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/music/$slug/': {
+      id: '/(nav)/music/$slug/'
+      path: '/'
+      fullPath: '/music/$slug/'
+      preLoaderRoute: typeof navMusicSlugIndexRouteImport
+      parentRoute: typeof navMusicSlugRouteRoute
+    }
+    '/(nav)/music/$slug/$track': {
+      id: '/(nav)/music/$slug/$track'
+      path: '/$track'
+      fullPath: '/music/$slug/$track'
+      preLoaderRoute: typeof navMusicSlugTrackRouteImport
+      parentRoute: typeof navMusicSlugRouteRoute
     }
   }
 }
+
+interface navMusicSlugRouteRouteChildren {
+  navMusicSlugTrackRoute: typeof navMusicSlugTrackRoute
+  navMusicSlugIndexRoute: typeof navMusicSlugIndexRoute
+}
+
+const navMusicSlugRouteRouteChildren: navMusicSlugRouteRouteChildren = {
+  navMusicSlugTrackRoute: navMusicSlugTrackRoute,
+  navMusicSlugIndexRoute: navMusicSlugIndexRoute,
+}
+
+const navMusicSlugRouteRouteWithChildren =
+  navMusicSlugRouteRoute._addFileChildren(navMusicSlugRouteRouteChildren)
 
 interface navRouteRouteChildren {
   navContactRoute: typeof navContactRoute
@@ -327,7 +376,7 @@ interface navRouteRouteChildren {
   navVideosRoute: typeof navVideosRoute
   navWorkWithMeRoute: typeof navWorkWithMeRoute
   navIndexRoute: typeof navIndexRoute
-  navMusicReleaseIdRoute: typeof navMusicReleaseIdRoute
+  navMusicSlugRouteRoute: typeof navMusicSlugRouteRouteWithChildren
   navWritingSlugRoute: typeof navWritingSlugRoute
   navMusicIndexRoute: typeof navMusicIndexRoute
   navWritingIndexRoute: typeof navWritingIndexRoute
@@ -340,7 +389,7 @@ const navRouteRouteChildren: navRouteRouteChildren = {
   navVideosRoute: navVideosRoute,
   navWorkWithMeRoute: navWorkWithMeRoute,
   navIndexRoute: navIndexRoute,
-  navMusicReleaseIdRoute: navMusicReleaseIdRoute,
+  navMusicSlugRouteRoute: navMusicSlugRouteRouteWithChildren,
   navWritingSlugRoute: navWritingSlugRoute,
   navMusicIndexRoute: navMusicIndexRoute,
   navWritingIndexRoute: navWritingIndexRoute,

@@ -2,8 +2,8 @@ import { MDXContent } from "@content-collections/mdx/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { Clock } from "lucide-react";
-import { seoHead } from "@/lib/seo";
 import { WritingSidebar } from "@/components/writing/writing-sidebar";
+import { seoHead } from "@/lib/seo";
 import { CustomComponent } from "@/routes/(nav)/writing/-components/custom-component";
 
 export const Route = createFileRoute("/(nav)/writing/$slug")({

@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
 import { ExternalLink, Mail } from "lucide-react";
 import { useState } from "react";
 import { ArtworkImage } from "@/components/artwork-image";
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { musicQueryOptions } from "@/hooks/use-music";
 import { linksConfig } from "@/lib/links-config";
+import { seoHead } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 
 export const Route = createFileRoute("/links")({
@@ -18,8 +18,7 @@ export const Route = createFileRoute("/links")({
 	head: () => ({
 		...seoHead({
 			title: "Links",
-			description:
-				"All links for Luke Roes — streaming, socials, and more.",
+			description: "All links for Luke Roes — streaming, socials, and more.",
 			path: "/links",
 		}),
 	}),

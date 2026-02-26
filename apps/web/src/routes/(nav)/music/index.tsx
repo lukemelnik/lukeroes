@@ -21,6 +21,7 @@ type Track = ReleaseSummary["tracks"][number];
 import { ArtworkImage } from "@/components/artwork-image";
 import { Spinner } from "@/components/ui/spinner";
 import { seoHead } from "@/lib/seo";
+import { slugify } from "@/lib/slugify";
 import { msToMMSS } from "@/lib/utils";
 
 function MusicErrorComponent({ error: _error }: { error: unknown }) {
@@ -77,9 +78,9 @@ function MusicPageComponent() {
 	const { release: releaseParam } = Route.useSearch();
 	const navigate = useNavigate();
 
-	const selectedRelease = releases?.find((r) =>
-		releaseParam ? r.id === releaseParam : false,
-	) ?? releases?.[0];
+	const selectedRelease =
+		releases?.find((r) => (releaseParam ? r.id === releaseParam : false)) ??
+		releases?.[0];
 
 	const selectedReleaseId = selectedRelease?.id ?? null;
 
@@ -183,8 +184,8 @@ function MusicPageComponent() {
 											)}
 										</div>
 										<Link
-											to="/music/$releaseId"
-											params={{ releaseId: selectedRelease.id.toString() }}
+											to="/music/$slug"
+											params={{ slug: slugify(selectedRelease.title) }}
 											aria-label="View release details"
 										>
 											<Button size="sm">Details</Button>
@@ -199,11 +200,11 @@ function MusicPageComponent() {
 													key={
 														track.id ?? `${track.trackNumber}-${track.title}`
 													}
-													to="/music/$releaseId"
+													to="/music/$slug/$track"
 													params={{
-														releaseId: selectedRelease.id.toString(),
+														slug: slugify(selectedRelease.title),
+														track: slugify(track.title ?? ""),
 													}}
-													search={{ track: track.id }}
 													className="flex items-center justify-between rounded pr-1 transition-colors hover:bg-accent/50"
 												>
 													<div className="flex items-center gap-3 p-1">
@@ -374,8 +375,8 @@ function MusicPageComponent() {
 												)}
 											</div>
 											<Link
-												to="/music/$releaseId"
-												params={{ releaseId: item.id.toString() }}
+												to="/music/$slug"
+												params={{ slug: slugify(item.title) }}
 												aria-label="View release details"
 												onClick={(e) => e.stopPropagation()}
 											>
@@ -403,11 +404,11 @@ function MusicPageComponent() {
 													key={
 														track.id ?? `${track.trackNumber}-${track.title}`
 													}
-													to="/music/$releaseId"
+													to="/music/$slug/$track"
 													params={{
-														releaseId: item.id.toString(),
+														slug: slugify(item.title),
+														track: slugify(track.title ?? ""),
 													}}
-													search={{ track: track.id }}
 													className="flex items-center justify-between rounded text-sm transition-colors hover:bg-accent/50"
 												>
 													<div className="flex items-center gap-3">

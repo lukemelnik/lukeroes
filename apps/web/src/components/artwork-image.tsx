@@ -8,7 +8,12 @@ type ArtworkImageProps = {
 	priority?: boolean;
 };
 
-export function ArtworkImage({ src, alt, className, priority }: ArtworkImageProps) {
+export function ArtworkImage({
+	src,
+	alt,
+	className,
+	priority,
+}: ArtworkImageProps) {
 	const [hasError, setHasError] = useState(!src);
 
 	useEffect(() => {

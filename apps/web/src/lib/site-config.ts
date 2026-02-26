@@ -53,7 +53,6 @@ export const siteConfig = {
 			href: "https://www.tiktok.com/@iamlukeroes",
 			icon: TiktokIcon,
 		},
-
 	],
 
 	email: "luke@lukeroes.com",

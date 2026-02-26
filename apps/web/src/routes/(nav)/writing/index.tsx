@@ -3,10 +3,10 @@ import { allPosts } from "content-collections";
 import { X } from "lucide-react";
 import { useMemo } from "react";
 import { z } from "zod";
-import { seoHead } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { PostCard } from "@/components/writing/post-card";
 import { WritingHero } from "@/components/writing/writing-hero";
+import { seoHead } from "@/lib/seo";
 
 const searchSchema = z.object({
 	tag: z.string().optional(),

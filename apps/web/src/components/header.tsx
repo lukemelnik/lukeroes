@@ -25,9 +25,7 @@ export default function Header() {
 		{ to: "/writing", label: "Writing" },
 	]);
 
-	const socialLinks = siteConfig.socials.filter(
-		({ href }) => !!href,
-	);
+	const socialLinks = siteConfig.socials.filter(({ href }) => !!href);
 
 	return (
 		<header
@@ -160,7 +158,6 @@ export default function Header() {
 							</Link>
 						))}
 					</nav>
-
 				</div>
 			)}
 		</header>

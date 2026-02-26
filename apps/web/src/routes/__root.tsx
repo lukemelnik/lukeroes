@@ -8,8 +8,8 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 import appCss from "../index.css?url";
 
 export interface RouterAppContext {
@@ -20,7 +20,7 @@ function NotFound() {
 	return (
 		<div className="flex min-h-dvh flex-col items-center justify-center px-4 text-center">
 			<h1 className="mb-2 font-bold text-6xl">404</h1>
-			<p className="mb-6 text-muted-foreground text-lg">
+			<p className="mb-6 text-lg text-muted-foreground">
 				This page doesn't exist.
 			</p>
 			<Link to="/">

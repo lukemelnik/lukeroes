@@ -7,8 +7,7 @@ export const Route = createFileRoute("/(nav)/tour")({
 	head: () => ({
 		...seoHead({
 			title: "Tour",
-			description:
-				"Upcoming and past live shows and tour dates for Luke Roes.",
+			description: "Upcoming and past live shows and tour dates for Luke Roes.",
 			path: "/tour",
 		}),
 	}),

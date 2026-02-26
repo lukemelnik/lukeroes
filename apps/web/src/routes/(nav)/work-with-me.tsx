@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MessageSquare, Music, Sliders } from "lucide-react";
-import { seoHead } from "@/lib/seo";
 import { AudioComparisonSection } from "@/components/audio-comparison";
 import { ContactForm } from "@/components/contact-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/(nav)/work-with-me")({
 	component: ProductionPageComponent,
