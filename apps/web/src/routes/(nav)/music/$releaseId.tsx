@@ -5,7 +5,7 @@ import {
 	notFound,
 	useNavigate,
 } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
+
 import { useMemo } from "react";
 import { z } from "zod";
 import {
@@ -144,15 +144,6 @@ function ReleaseDetailPage() {
 	return (
 		<div className="min-h-screen w-full px-4 py-8 md:px-6">
 			<div className="container mx-auto space-y-6">
-				<div className="flex items-center justify-between gap-3">
-					<Link to="/music">
-						<Button variant="ghost" size="sm">
-							<ChevronLeft className="mr-2 h-4 w-4" />
-							Back to all music
-						</Button>
-					</Link>
-				</div>
-
 				<div className="grid gap-8 md:grid-cols-3">
 					<div className="md:col-span-1">
 						<Card className="sticky top-6">
