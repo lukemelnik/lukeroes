@@ -55,7 +55,7 @@ function MusicErrorComponent({ error: _error }: { error: unknown }) {
 }
 
 const searchSchema = z.object({
-	release: z.coerce.number().int().positive().optional(),
+	release: z.string().optional(),
 });
 
 export const Route = createFileRoute("/(nav)/music/")({
@@ -79,13 +79,16 @@ function MusicPageComponent() {
 	const navigate = useNavigate();
 
 	const selectedRelease =
-		releases?.find((r) => (releaseParam ? r.id === releaseParam : false)) ??
-		releases?.[0];
+		releases?.find((r) =>
+			releaseParam ? slugify(r.title) === releaseParam : false,
+		) ?? releases?.[0];
 
-	const selectedReleaseId = selectedRelease?.id ?? null;
+	const selectedReleaseSlug = selectedRelease
+		? slugify(selectedRelease.title)
+		: null;
 
-	const setSelectedReleaseId = (id: number) => {
-		navigate({ to: ".", search: { release: id }, replace: true });
+	const setSelectedRelease = (title: string) => {
+		navigate({ to: ".", search: { release: slugify(title) }, replace: true });
 	};
 	const tracksForSelected: Track[] = selectedRelease?.tracks ?? [];
 
@@ -237,15 +240,15 @@ function MusicPageComponent() {
 									<Card
 										key={item.id}
 										className={`group cursor-pointer overflow-hidden transition-all hover:shadow-lg ${
-											selectedReleaseId !== item.id
+											selectedReleaseSlug !== slugify(item.title)
 												? "opacity-80 blur-[0.5px]"
 												: ""
 										}`}
-										onClick={() => setSelectedReleaseId(item.id)}
+										onClick={() => setSelectedRelease(item.title)}
 										onKeyDown={(e) => {
 											if (e.key === "Enter" || e.key === " ") {
 												e.preventDefault();
-												setSelectedReleaseId(item.id);
+												setSelectedRelease(item.title);
 											}
 										}}
 										tabIndex={0}
@@ -300,7 +303,7 @@ function MusicPageComponent() {
 												: String(item.id);
 										setExpandedMobileId(newId);
 										if (newId) {
-											setSelectedReleaseId(item.id);
+											setSelectedRelease(item.title);
 										}
 									}}
 									onKeyDown={(e) => {
@@ -312,7 +315,7 @@ function MusicPageComponent() {
 													: String(item.id);
 											setExpandedMobileId(newId);
 											if (newId) {
-												setSelectedReleaseId(item.id);
+												setSelectedRelease(item.title);
 											}
 										}
 									}}
