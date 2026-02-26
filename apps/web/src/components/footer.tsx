@@ -10,6 +10,7 @@ export default function Footer() {
 		{ to: "/videos", label: "Videos" },
 		{ to: "/tour", label: "Tour" },
 		{ to: "/work-with-me", label: "Production" },
+		{ to: "/contact", label: "Contact" },
 	];
 
 	return (

@@ -3,6 +3,7 @@ import { allPosts } from "content-collections";
 import { X } from "lucide-react";
 import { useMemo } from "react";
 import { z } from "zod";
+import { seoHead } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { PostCard } from "@/components/writing/post-card";
 import { WritingHero } from "@/components/writing/writing-hero";
@@ -14,6 +15,14 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/(nav)/writing/")({
 	component: WritingIndex,
 	validateSearch: searchSchema,
+	head: () => ({
+		...seoHead({
+			title: "Writing",
+			description:
+				"Articles and thoughts on music production, mixing, songwriting, and the creative process by Luke Roes.",
+			path: "/writing",
+		}),
+	}),
 });
 
 function WritingIndex() {

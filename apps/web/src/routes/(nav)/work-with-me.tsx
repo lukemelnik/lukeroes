@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MessageSquare, Music, Sliders } from "lucide-react";
+import { seoHead } from "@/lib/seo";
 import { AudioComparisonSection } from "@/components/audio-comparison";
 import { ContactForm } from "@/components/contact-form";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Route = createFileRoute("/(nav)/work-with-me")({
 	component: ProductionPageComponent,
+	head: () => ({
+		...seoHead({
+			title: "Work With Me",
+			description:
+				"Hire Luke Roes for mixing, production, and consulting. Professional music production services based in Canada.",
+			path: "/work-with-me",
+		}),
+	}),
 });
 
 interface Service {
@@ -113,7 +122,7 @@ function ProductionPageComponent() {
 					className="absolute inset-0 bg-center bg-cover"
 					style={{ backgroundImage: "url('/studio.webp')" }}
 				>
-					<div className="from- background/80 absolute inset-0 bg-linear-to-b to-background" />
+					<div className="absolute inset-0 bg-linear-to-b from-background/80 to-background" />
 				</div>
 
 				{/* Content */}

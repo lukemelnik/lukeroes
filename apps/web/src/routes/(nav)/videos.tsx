@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoHead } from "@/lib/seo";
 import { Play, RefreshCcw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,11 +12,19 @@ import { useVideos, videosQueryOptions } from "@/hooks/use-videos";
 
 export const Route = createFileRoute("/(nav)/videos")({
 	component: VideosPageComponent,
+	head: () => ({
+		...seoHead({
+			title: "Videos",
+			description:
+				"Watch music videos and live performances by Luke Roes.",
+			path: "/videos",
+		}),
+	}),
 	loader: async ({ context }) => {
 		try {
 			await context.queryClient.prefetchQuery(videosQueryOptions);
-		} catch (err) {
-			console.warn("Prefetch videos failed; will retry on client", err);
+		} catch {
+			// Prefetch failed — will retry on client
 		}
 		return null;
 	},

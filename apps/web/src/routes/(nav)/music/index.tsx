@@ -1,7 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	Link,
+	useNavigate,
+	useRouter,
+} from "@tanstack/react-router";
 import { ChevronDown, ChevronUp, RefreshCcw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { z } from "zod";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
@@ -14,6 +20,7 @@ type Track = ReleaseSummary["tracks"][number];
 
 import { ArtworkImage } from "@/components/artwork-image";
 import { Spinner } from "@/components/ui/spinner";
+import { seoHead } from "@/lib/seo";
 import { msToMMSS } from "@/lib/utils";
 
 function MusicErrorComponent({ error: _error }: { error: unknown }) {
@@ -46,25 +53,39 @@ function MusicErrorComponent({ error: _error }: { error: unknown }) {
 	);
 }
 
+const searchSchema = z.object({
+	release: z.coerce.number().int().positive().optional(),
+});
+
 export const Route = createFileRoute("/(nav)/music/")({
 	component: MusicPageComponent,
 	errorComponent: MusicErrorComponent,
+	validateSearch: searchSchema,
+	head: () => ({
+		...seoHead({
+			title: "Music",
+			description:
+				"Browse all releases by Luke Roes. Stream on Spotify, Apple Music, YouTube and more.",
+			path: "/music",
+		}),
+	}),
 	loader: ({ context }) => context.queryClient.prefetchQuery(musicQueryOptions),
 });
 
 function MusicPageComponent() {
 	const { data: releases } = useQuery(musicQueryOptions);
-	const [selectedReleaseId, setSelectedReleaseId] = useState<number | null>(
-		null,
-	);
+	const { release: releaseParam } = Route.useSearch();
+	const navigate = useNavigate();
 
-	useEffect(() => {
-		if (!selectedReleaseId && releases && releases.length > 0) {
-			setSelectedReleaseId(releases[0].id);
-		}
-	}, [releases, selectedReleaseId]);
+	const selectedRelease = releases?.find((r) =>
+		releaseParam ? r.id === releaseParam : false,
+	) ?? releases?.[0];
 
-	const selectedRelease = releases?.find((r) => r.id === selectedReleaseId);
+	const selectedReleaseId = selectedRelease?.id ?? null;
+
+	const setSelectedReleaseId = (id: number) => {
+		navigate({ to: ".", search: { release: id }, replace: true });
+	};
 	const tracksForSelected: Track[] = selectedRelease?.tracks ?? [];
 
 	const [expandedMobileId, setExpandedMobileId] = useState<string | null>(null);
@@ -174,10 +195,15 @@ function MusicPageComponent() {
 									<div className="w-full space-y-1">
 										{tracksForSelected.length > 0 ? (
 											tracksForSelected.map((track) => (
-												<div
+												<Link
 													key={
 														track.id ?? `${track.trackNumber}-${track.title}`
 													}
+													to="/music/$releaseId"
+													params={{
+														releaseId: selectedRelease.id.toString(),
+													}}
+													search={{ track: track.id }}
 													className="flex items-center justify-between rounded pr-1 transition-colors hover:bg-accent/50"
 												>
 													<div className="flex items-center gap-3 p-1">
@@ -189,7 +215,7 @@ function MusicPageComponent() {
 													<span className="mr-2 text-muted-foreground text-sm">
 														{msToMMSS(track.duration) ?? "—"}
 													</span>
-												</div>
+												</Link>
 											))
 										) : (
 											<p className="text-muted-foreground text-sm">
@@ -373,10 +399,15 @@ function MusicPageComponent() {
 									<div className="border-t p-4">
 										<div className="space-y-2">
 											{(item.tracks ?? []).map((track) => (
-												<div
+												<Link
 													key={
 														track.id ?? `${track.trackNumber}-${track.title}`
 													}
+													to="/music/$releaseId"
+													params={{
+														releaseId: item.id.toString(),
+													}}
+													search={{ track: track.id }}
 													className="flex items-center justify-between rounded text-sm transition-colors hover:bg-accent/50"
 												>
 													<div className="flex items-center gap-3">
@@ -388,7 +419,7 @@ function MusicPageComponent() {
 													<span className="text-muted-foreground">
 														{msToMMSS(track.duration) ?? "—"}
 													</span>
-												</div>
+												</Link>
 											))}
 										</div>
 									</div>

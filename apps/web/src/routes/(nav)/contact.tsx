@@ -1,8 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ContactForm } from "@/components/contact-form";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/(nav)/contact")({
 	component: ContactPageComponent,
+	head: () => ({
+		...seoHead({
+			title: "Contact",
+			description:
+				"Get in touch with Luke Roes. Send a message for bookings, collaborations, or general inquiries.",
+			path: "/contact",
+		}),
+	}),
 });
 
 function ContactPageComponent() {

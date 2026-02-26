@@ -2,6 +2,7 @@ import { MDXContent } from "@content-collections/mdx/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { Clock } from "lucide-react";
+import { seoHead } from "@/lib/seo";
 import { WritingSidebar } from "@/components/writing/writing-sidebar";
 import { CustomComponent } from "@/routes/(nav)/writing/-components/custom-component";
 
@@ -13,12 +14,44 @@ export const Route = createFileRoute("/(nav)/writing/$slug")({
 			throw notFound();
 		}
 
-		// In production, hide draft posts
 		if (!import.meta.env.DEV && post.draft) {
 			throw notFound();
 		}
 
 		return { post };
+	},
+	head: ({ loaderData }) => {
+		const post = loaderData?.post;
+		if (!post) return {};
+		return {
+			...seoHead({
+				title: post.title,
+				description: post.summary,
+				path: `/writing/${post.slug}`,
+				type: "article",
+				article: {
+					publishedTime: post.date,
+					tags: post.tags,
+				},
+			}),
+			scripts: [
+				{
+					type: "application/ld+json",
+					children: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "BlogPosting",
+						headline: post.title,
+						description: post.summary,
+						datePublished: post.date,
+						author: {
+							"@type": "Person",
+							name: "Luke Roes",
+							url: "https://lukeroes.com",
+						},
+					}),
+				},
+			],
+		};
 	},
 	component: WritingPost,
 });

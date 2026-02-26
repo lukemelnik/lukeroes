@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { seoHead } from "@/lib/seo";
 import { ExternalLink, Mail } from "lucide-react";
 import { useState } from "react";
 import { ArtworkImage } from "@/components/artwork-image";
@@ -14,6 +15,14 @@ import { siteConfig } from "@/lib/site-config";
 
 export const Route = createFileRoute("/links")({
 	component: LinksPage,
+	head: () => ({
+		...seoHead({
+			title: "Links",
+			description:
+				"All links for Luke Roes — streaming, socials, and more.",
+			path: "/links",
+		}),
+	}),
 });
 
 function LinksPage() {

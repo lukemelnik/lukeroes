@@ -56,7 +56,7 @@ export default function HeroSection() {
 				{mostRecentRelease && (
 					<div className="flex w-full max-w-4xl flex-col items-center">
 						{/* New Release Label */}
-						<p className="animate-bounce text-center font-bold text-foreground text-sm uppercase tracking-wider sm:text-lg">
+						<p className="animate-fade-in-up text-center font-bold text-foreground text-sm uppercase tracking-wider sm:text-lg">
 							New {mostRecentRelease.type.toUpperCase()} Out Now
 						</p>
 
@@ -68,6 +68,7 @@ export default function HeroSection() {
 									src={mostRecentRelease.artworkPublicUrl ?? undefined}
 									alt={mostRecentRelease.title}
 									className="h-full w-full rounded-lg object-cover shadow-2xl"
+									priority
 								/>
 							</div>
 

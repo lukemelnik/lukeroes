@@ -23,11 +23,10 @@ export default function Header() {
 		{ to: "/tour", label: "Tour" },
 		{ to: "/work-with-me", label: "Work With Me" },
 		{ to: "/writing", label: "Writing" },
-		{ to: "/contact", label: "Contact" },
 	]);
 
 	const socialLinks = siteConfig.socials.filter(
-		({ href, icon }) => href && icon,
+		({ href }) => !!href,
 	);
 
 	return (
@@ -161,22 +160,7 @@ export default function Header() {
 							</Link>
 						))}
 					</nav>
-					<div className="px-4 py-4">
-						<div className="flex items-center justify-center">
-							{socialLinks.map(({ href, icon: Icon, label }) => (
-								<Button key={label} variant="ghost" asChild>
-									<a
-										href={href}
-										target="_blank"
-										rel="noopener noreferrer"
-										aria-label={label}
-									>
-										<Icon className="size-6" />
-									</a>
-								</Button>
-							))}
-						</div>
-					</div>
+
 				</div>
 			)}
 		</header>

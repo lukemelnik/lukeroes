@@ -5,9 +5,17 @@ import MusicSection from "@/components/sections/music-section";
 import TourSection from "@/components/sections/tour-section";
 import VideosSection from "@/components/sections/videos-section";
 import { musicQueryOptions } from "@/hooks/use-music";
+import { seoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/(nav)/")({
 	component: HomeComponent,
+	head: () => ({
+		...seoHead({
+			description:
+				"Luke Roes — artist, producer, and mixer based in Canada. Listen to the latest music, watch videos, and book production services.",
+			path: "/",
+		}),
+	}),
 	loader: ({ context }) =>
 		context.queryClient.ensureQueryData(musicQueryOptions),
 });

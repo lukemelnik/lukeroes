@@ -53,18 +53,7 @@ export const siteConfig = {
 			href: "https://www.tiktok.com/@iamlukeroes",
 			icon: TiktokIcon,
 		},
-		{
-			key: "facebook",
-			label: "Facebook",
-			href: "",
-			icon: InstagramIcon,
-		},
-		{
-			key: "soundcloud",
-			label: "SoundCloud",
-			href: "",
-			icon: InstagramIcon,
-		},
+
 	],
 
 	email: "luke@lukeroes.com",

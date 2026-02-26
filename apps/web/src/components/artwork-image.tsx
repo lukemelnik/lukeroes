@@ -5,9 +5,10 @@ type ArtworkImageProps = {
 	src?: string;
 	alt?: string;
 	className?: string;
+	priority?: boolean;
 };
 
-export function ArtworkImage({ src, alt, className }: ArtworkImageProps) {
+export function ArtworkImage({ src, alt, className, priority }: ArtworkImageProps) {
 	const [hasError, setHasError] = useState(!src);
 
 	useEffect(() => {
@@ -29,6 +30,7 @@ export function ArtworkImage({ src, alt, className }: ArtworkImageProps) {
 			src={src}
 			alt={alt}
 			className={className}
+			loading={priority ? "eager" : "lazy"}
 			onError={() => setHasError(true)}
 		/>
 	);
