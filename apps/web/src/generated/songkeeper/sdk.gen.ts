@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetApiV1ArtistsByIdData, GetApiV1ArtistsByIdErrors, GetApiV1ArtistsByIdResponses, GetApiV1ArtistsData, GetApiV1ArtistsErrors, GetApiV1ArtistsResponses, GetApiV1ReleasesByIdData, GetApiV1ReleasesByIdErrors, GetApiV1ReleasesByIdResponses, GetApiV1ReleasesData, GetApiV1ReleasesErrors, GetApiV1ReleasesResponses } from './types.gen';
+import type { AcceptInboxFilesData, AcceptInboxFilesErrors, AcceptInboxFilesResponses, AddFavoriteData, AddFavoriteErrors, AddFavoriteResponses, AddIdeaToSongData, AddIdeaToSongErrors, AddIdeaToSongResponses, AddPlaylistTracksData, AddPlaylistTracksErrors, AddPlaylistTracksResponses, AddSongToProjectData, AddSongToProjectErrors, AddSongToProjectResponses, BlockSenderData, BlockSenderErrors, BlockSenderResponses, BulkAddIdeasToSongData, BulkAddIdeasToSongErrors, BulkAddIdeasToSongResponses, BulkDeleteIdeasData, BulkDeleteIdeasErrors, BulkDeleteIdeasResponses, BulkUpdateIdeasData, BulkUpdateIdeasErrors, BulkUpdateIdeasResponses, CheckFavoriteData, CheckFavoriteErrors, CheckFavoriteResponses, ConfirmMediaUploadData, ConfirmMediaUploadErrors, ConfirmMediaUploadResponses, ConvertIdeaToSongData, ConvertIdeaToSongErrors, ConvertIdeaToSongResponses, CreateArtistData, CreateArtistErrors, CreateArtistResponses, CreateBillableItemData, CreateBillableItemErrors, CreateBillableItemResponses, CreateContactActivityData, CreateContactActivityErrors, CreateContactActivityResponses, CreateContactData, CreateContactErrors, CreateContactResponses, CreateFileCommentData, CreateFileCommentErrors, CreateFileCommentResponses, CreateFileShareData, CreateFileShareErrors, CreateFileShareResponses, CreateIdeaData, CreateIdeaErrors, CreateIdeaResponses, CreatePlaylistData, CreatePlaylistErrors, CreatePlaylistResponses, CreatePlaylistShareData, CreatePlaylistShareErrors, CreatePlaylistShareResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, CreateRecordingVersionData, CreateRecordingVersionErrors, CreateRecordingVersionResponses, CreateShareData, CreateShareErrors, CreateShareResponses, CreateSongData, CreateSongErrors, CreateSongFromSplitData, CreateSongFromSplitErrors, CreateSongFromSplitResponses, CreateSongResponses, CreateSplitSheetData, CreateSplitSheetErrors, CreateSplitSheetResponses, DeclineSplitSheetByTokenData, DeclineSplitSheetByTokenErrors, DeclineSplitSheetByTokenResponses, DeleteArtistData, DeleteArtistErrors, DeleteArtistResponses, DeleteContactActivityData, DeleteContactActivityErrors, DeleteContactActivityResponses, DeleteContactData, DeleteContactErrors, DeleteContactResponses, DeleteFileCommentData, DeleteFileCommentErrors, DeleteFileCommentResponses, DeleteFileData, DeleteFileErrors, DeleteFileResponses, DeleteIdeaData, DeleteIdeaErrors, DeleteIdeaResponses, DeleteInboxFilesData, DeleteInboxFilesErrors, DeleteInboxFilesResponses, DeleteMediaItemData, DeleteMediaItemErrors, DeleteMediaItemResponses, DeletePlaylistData, DeletePlaylistErrors, DeletePlaylistResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, DeleteRecordingVersionData, DeleteRecordingVersionErrors, DeleteRecordingVersionResponses, DeleteSongData, DeleteSongErrors, DeleteSongResponses, GetArtistData, GetArtistErrors, GetArtistResponses, GetCommentEqSettingsData, GetCommentEqSettingsErrors, GetCommentEqSettingsResponses, GetContactData, GetContactErrors, GetContactResponses, GetDashboardActivityData, GetDashboardActivityErrors, GetDashboardActivityResponses, GetDashboardChartData, GetDashboardChartErrors, GetDashboardChartResponses, GetDashboardFollowUpsData, GetDashboardFollowUpsErrors, GetDashboardFollowUpsResponses, GetDashboardOpenCommentsData, GetDashboardOpenCommentsErrors, GetDashboardOpenCommentsResponses, GetFileData, GetFileDownloadUrlData, GetFileDownloadUrlErrors, GetFileDownloadUrlResponses, GetFileErrors, GetFileResponses, GetFileStreamUrlData, GetFileStreamUrlErrors, GetFileStreamUrlResponses, GetIdeaData, GetIdeaErrors, GetIdeaLinkedSongsData, GetIdeaLinkedSongsErrors, GetIdeaLinkedSongsResponses, GetIdeaResponses, GetIdeaStreamUrlData, GetIdeaStreamUrlErrors, GetIdeaStreamUrlResponses, GetIdeaUploadUrlData, GetIdeaUploadUrlErrors, GetIdeaUploadUrlResponses, GetInboxFilesData, GetInboxFilesErrors, GetInboxFilesResponses, GetMediaUploadUrlData, GetMediaUploadUrlErrors, GetMediaUploadUrlResponses, GetMyRightsOwnerProfileData, GetMyRightsOwnerProfileErrors, GetMyRightsOwnerProfileResponses, GetMySongwriterProfileData, GetMySongwriterProfileErrors, GetMySongwriterProfileResponses, GetPlaylistData, GetPlaylistErrors, GetPlaylistHeaderUploadUrlData, GetPlaylistHeaderUploadUrlErrors, GetPlaylistHeaderUploadUrlResponses, GetPlaylistResponses, GetPlaylistShareData, GetPlaylistShareErrors, GetPlaylistShareResponses, GetProjectBillingData, GetProjectBillingErrors, GetProjectBillingResponses, GetProjectData, GetProjectErrors, GetProjectResponses, GetProjectSharesData, GetProjectSharesErrors, GetProjectSharesResponses, GetProjectSongsData, GetProjectSongsErrors, GetProjectSongsResponses, GetReleaseData, GetReleaseErrors, GetReleaseResponses, GetShareActivityData, GetShareActivityErrors, GetShareActivityResponses, GetShareData, GetShareDownloadsData, GetShareDownloadsErrors, GetShareDownloadsResponses, GetShareErrors, GetShareFilesData, GetShareFilesErrors, GetShareFilesResponses, GetSharePlaysData, GetSharePlaysErrors, GetSharePlaysResponses, GetShareResponses, GetShareStreamUrlData, GetShareStreamUrlErrors, GetShareStreamUrlResponses, GetShareUploadsData, GetShareUploadsErrors, GetShareUploadsResponses, GetShareViewersData, GetShareViewersErrors, GetShareViewersResponses, GetSharingIndicatorData, GetSharingIndicatorErrors, GetSharingIndicatorResponses, GetSongData, GetSongErrors, GetSongResponses, GetSplitSheetByTokenData, GetSplitSheetByTokenErrors, GetSplitSheetByTokenResponses, GetSplitSheetDetailsData, GetSplitSheetDetailsErrors, GetSplitSheetDetailsResponses, GetSplitSheetPdfByTokenData, GetSplitSheetPdfByTokenErrors, GetSplitSheetPdfByTokenResponses, GetSplitSheetStatusData, GetSplitSheetStatusErrors, GetSplitSheetStatusResponses, GetSubscriptionStatusData, GetSubscriptionStatusErrors, GetSubscriptionStatusResponses, GetTrackingSheetData, GetTrackingSheetErrors, GetTrackingSheetResponses, GetUserSettingsData, GetUserSettingsErrors, GetUserSettingsResponses, HideShareData, HideShareErrors, HideShareResponses, LinkSplitToSongData, LinkSplitToSongErrors, LinkSplitToSongResponses, ListArtistsData, ListArtistsErrors, ListArtistsResponses, ListContactActivitiesData, ListContactActivitiesErrors, ListContactActivitiesResponses, ListContactsData, ListContactsErrors, ListContactSharesData, ListContactSharesErrors, ListContactSharesResponses, ListContactsResponses, ListCreatedSplitSheetsData, ListCreatedSplitSheetsErrors, ListCreatedSplitSheetsResponses, ListDemoFilesData, ListDemoFilesErrors, ListDemoFilesResponses, ListFavoritesData, ListFavoritesErrors, ListFavoritesResponses, ListFileCommentsData, ListFileCommentsErrors, ListFileCommentsResponses, ListIdeasData, ListIdeasErrors, ListIdeasResponses, ListMediaData, ListMediaErrors, ListMediaResponses, ListPlaylistsData, ListPlaylistsErrors, ListPlaylistsResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, ListReceivedSharesData, ListReceivedSharesErrors, ListReceivedSharesResponses, ListReceivedSplitSheetsData, ListReceivedSplitSheetsErrors, ListReceivedSplitSheetsResponses, ListRecordingVersionsData, ListRecordingVersionsErrors, ListRecordingVersionsResponses, ListReleasesData, ListReleasesErrors, ListReleasesResponses, ListServiceItemsData, ListServiceItemsErrors, ListServiceItemsResponses, ListSharesData, ListSharesErrors, ListSharesResponses, ListSongsData, ListSongsErrors, ListSongsResponses, ListTrashData, ListTrashErrors, ListTrashResponses, ListVersionFilesData, ListVersionFilesErrors, ListVersionFilesResponses, MarkCommentCompleteData, MarkCommentCompleteErrors, MarkCommentCompleteResponses, MarkProSubmittedData, MarkProSubmittedErrors, MarkProSubmittedResponses, MoveFileData, MoveFileErrors, MoveFileResponses, PermanentlyDeleteTrashFilesData, PermanentlyDeleteTrashFilesErrors, PermanentlyDeleteTrashFilesResponses, RemoveFavoriteData, RemoveFavoriteErrors, RemoveFavoriteResponses, RemovePlaylistTrackData, RemovePlaylistTrackErrors, RemovePlaylistTrackResponses, RemoveSongFromProjectData, RemoveSongFromProjectErrors, RemoveSongFromProjectResponses, RenameFileData, RenameFileErrors, RenameFileResponses, ReorderPlaylistTracksData, ReorderPlaylistTracksErrors, ReorderPlaylistTracksResponses, ResendToSpecificRecipientData, ResendToSpecificRecipientErrors, ResendToSpecificRecipientResponses, ResendToUnsignedData, ResendToUnsignedErrors, ResendToUnsignedResponses, RestoreTrashFilesData, RestoreTrashFilesErrors, RestoreTrashFilesResponses, RevokeShareData, RevokeShareErrors, RevokeShareResponses, SignSplitSheetByTokenData, SignSplitSheetByTokenErrors, SignSplitSheetByTokenResponses, ToggleProjectFavoriteData, ToggleProjectFavoriteErrors, ToggleProjectFavoriteResponses, TrackShareActivityData, TrackShareActivityErrors, TrackShareActivityResponses, UnblockSenderData, UnblockSenderErrors, UnblockSenderResponses, UnlinkSplitFromSongData, UnlinkSplitFromSongErrors, UnlinkSplitFromSongResponses, UpdateBillableItemStatusData, UpdateBillableItemStatusErrors, UpdateBillableItemStatusResponses, UpdateContactActivityData, UpdateContactActivityErrors, UpdateContactActivityResponses, UpdateContactData, UpdateContactErrors, UpdateContactResponses, UpdateDesignatedWriterData, UpdateDesignatedWriterErrors, UpdateDesignatedWriterResponses, UpdateFileCommentData, UpdateFileCommentErrors, UpdateFileCommentResponses, UpdateFileVisibilityData, UpdateFileVisibilityErrors, UpdateFileVisibilityResponses, UpdateFolderStateData, UpdateFolderStateErrors, UpdateFolderStateResponses, UpdateIdeaData, UpdateIdeaErrors, UpdateIdeaResponses, UpdatePlaylistData, UpdatePlaylistErrors, UpdatePlaylistResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses, UpdateShareData, UpdateShareErrors, UpdateShareResponses, UpdateSongData, UpdateSongErrors, UpdateSongResponses, UpdateTrackingCellData, UpdateTrackingCellErrors, UpdateTrackingCellResponses, UpdateUserSettingsData, UpdateUserSettingsErrors, UpdateUserSettingsResponses, UploadFileData, UploadFileErrors, UploadFileResponses, UpsertMyRightsOwnerProfileData, UpsertMyRightsOwnerProfileErrors, UpsertMyRightsOwnerProfileResponses, UpsertMySongwriterProfileData, UpsertMySongwriterProfileErrors, UpsertMySongwriterProfileResponses, ValidateSharePasswordData, ValidateSharePasswordErrors, ValidateSharePasswordResponses, VerifyFileUploadData, VerifyFileUploadErrors, VerifyFileUploadResponses, VoidSplitSheetData, VoidSplitSheetErrors, VoidSplitSheetResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -23,20 +23,602 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  *
  * Retrieve all artists for the authenticated user
  */
-export const getApiV1Artists = <ThrowOnError extends boolean = false>(options?: Options<GetApiV1ArtistsData, ThrowOnError>) => (options?.client ?? client).get<GetApiV1ArtistsResponses, GetApiV1ArtistsErrors, ThrowOnError>({
+export const listArtists = <ThrowOnError extends boolean = false>(options?: Options<ListArtistsData, ThrowOnError>) => (options?.client ?? client).get<ListArtistsResponses, ListArtistsErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/artists',
     ...options
 });
 
 /**
- * Get Artist
+ * Create Artist
  *
- * Retrieve details about a specific artist
+ * Create a new artist
  */
-export const getApiV1ArtistsById = <ThrowOnError extends boolean = false>(options: Options<GetApiV1ArtistsByIdData, ThrowOnError>) => (options.client ?? client).get<GetApiV1ArtistsByIdResponses, GetApiV1ArtistsByIdErrors, ThrowOnError>({
+export const createArtist = <ThrowOnError extends boolean = false>(options?: Options<CreateArtistData, ThrowOnError>) => (options?.client ?? client).post<CreateArtistResponses, CreateArtistErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/artists',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete Artist
+ *
+ * Delete an artist
+ */
+export const deleteArtist = <ThrowOnError extends boolean = false>(options: Options<DeleteArtistData, ThrowOnError>) => (options.client ?? client).delete<DeleteArtistResponses, DeleteArtistErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/artists/{id}',
+    ...options
+});
+
+/**
+ * Get Artist
+ *
+ * Retrieve detailed information about a specific artist including promo photos and related counts
+ */
+export const getArtist = <ThrowOnError extends boolean = false>(options: Options<GetArtistData, ThrowOnError>) => (options.client ?? client).get<GetArtistResponses, GetArtistErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/artists/{id}',
+    ...options
+});
+
+/**
+ * List Contacts
+ *
+ * Retrieve all contacts for the authenticated user (max 500 records)
+ */
+export const listContacts = <ThrowOnError extends boolean = false>(options?: Options<ListContactsData, ThrowOnError>) => (options?.client ?? client).get<ListContactsResponses, ListContactsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts',
+    ...options
+});
+
+/**
+ * Create Contact
+ *
+ * Create a new contact with minimal fields (first name and email)
+ */
+export const createContact = <ThrowOnError extends boolean = false>(options?: Options<CreateContactData, ThrowOnError>) => (options?.client ?? client).post<CreateContactResponses, CreateContactErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete Contact
+ *
+ * Delete a contact
+ */
+export const deleteContact = <ThrowOnError extends boolean = false>(options: Options<DeleteContactData, ThrowOnError>) => (options.client ?? client).delete<DeleteContactResponses, DeleteContactErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts/{id}',
+    ...options
+});
+
+/**
+ * Get Contact
+ *
+ * Retrieve details about a specific contact
+ */
+export const getContact = <ThrowOnError extends boolean = false>(options: Options<GetContactData, ThrowOnError>) => (options.client ?? client).get<GetContactResponses, GetContactErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts/{id}',
+    ...options
+});
+
+/**
+ * Update Contact
+ *
+ * Update a contact's basic information
+ */
+export const updateContact = <ThrowOnError extends boolean = false>(options: Options<UpdateContactData, ThrowOnError>) => (options.client ?? client).put<UpdateContactResponses, UpdateContactErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Contact Activities
+ *
+ * Retrieve all activities for a specific contact
+ */
+export const listContactActivities = <ThrowOnError extends boolean = false>(options: Options<ListContactActivitiesData, ThrowOnError>) => (options.client ?? client).get<ListContactActivitiesResponses, ListContactActivitiesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts/{id}/activities',
+    ...options
+});
+
+/**
+ * Create Contact Activity
+ *
+ * Create a new activity for a specific contact
+ */
+export const createContactActivity = <ThrowOnError extends boolean = false>(options: Options<CreateContactActivityData, ThrowOnError>) => (options.client ?? client).post<CreateContactActivityResponses, CreateContactActivityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts/{id}/activities',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Contact Activity
+ *
+ * Delete an activity for a specific contact
+ */
+export const deleteContactActivity = <ThrowOnError extends boolean = false>(options: Options<DeleteContactActivityData, ThrowOnError>) => (options.client ?? client).delete<DeleteContactActivityResponses, DeleteContactActivityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts/{id}/activities/{activityId}',
+    ...options
+});
+
+/**
+ * Update Contact Activity
+ *
+ * Update an existing activity for a specific contact
+ */
+export const updateContactActivity = <ThrowOnError extends boolean = false>(options: Options<UpdateContactActivityData, ThrowOnError>) => (options.client ?? client).put<UpdateContactActivityResponses, UpdateContactActivityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts/{id}/activities/{activityId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Contact Shares
+ *
+ * Retrieve all shares associated with a specific contact (max 500 records)
+ */
+export const listContactShares = <ThrowOnError extends boolean = false>(options: Options<ListContactSharesData, ThrowOnError>) => (options.client ?? client).get<ListContactSharesResponses, ListContactSharesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/contacts/{id}/shares',
+    ...options
+});
+
+/**
+ * Get Dashboard Activity Feed
+ *
+ * Retrieve recent share activity events for the dashboard (views, plays, downloads, comments)
+ */
+export const getDashboardActivity = <ThrowOnError extends boolean = false>(options?: Options<GetDashboardActivityData, ThrowOnError>) => (options?.client ?? client).get<GetDashboardActivityResponses, GetDashboardActivityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/dashboard/activity',
+    ...options
+});
+
+/**
+ * Get Dashboard Activity Chart
+ *
+ * Retrieve aggregated activity time series data for all shares over a time period
+ */
+export const getDashboardChart = <ThrowOnError extends boolean = false>(options?: Options<GetDashboardChartData, ThrowOnError>) => (options?.client ?? client).get<GetDashboardChartResponses, GetDashboardChartErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/dashboard/activity-chart',
+    ...options
+});
+
+/**
+ * Get Dashboard Follow-ups
+ *
+ * Retrieve upcoming or overdue activity next steps, sorted by date
+ */
+export const getDashboardFollowUps = <ThrowOnError extends boolean = false>(options?: Options<GetDashboardFollowUpsData, ThrowOnError>) => (options?.client ?? client).get<GetDashboardFollowUpsResponses, GetDashboardFollowUpsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/dashboard/follow-ups',
+    ...options
+});
+
+/**
+ * Get Dashboard Open Comments
+ *
+ * Retrieve unresolved file comments across all songs, grouped by recording version
+ */
+export const getDashboardOpenComments = <ThrowOnError extends boolean = false>(options?: Options<GetDashboardOpenCommentsData, ThrowOnError>) => (options?.client ?? client).get<GetDashboardOpenCommentsResponses, GetDashboardOpenCommentsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/dashboard/open-comments',
+    ...options
+});
+
+/**
+ * Remove Favorite
+ *
+ * Remove an item from the user's favorites
+ */
+export const removeFavorite = <ThrowOnError extends boolean = false>(options?: Options<RemoveFavoriteData, ThrowOnError>) => (options?.client ?? client).delete<RemoveFavoriteResponses, RemoveFavoriteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/favorites',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * List Favorites
+ *
+ * Retrieve the authenticated user's favorites, optionally filtered by item type
+ */
+export const listFavorites = <ThrowOnError extends boolean = false>(options?: Options<ListFavoritesData, ThrowOnError>) => (options?.client ?? client).get<ListFavoritesResponses, ListFavoritesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/favorites',
+    ...options
+});
+
+/**
+ * Add Favorite
+ *
+ * Add an item to the user's favorites
+ */
+export const addFavorite = <ThrowOnError extends boolean = false>(options?: Options<AddFavoriteData, ThrowOnError>) => (options?.client ?? client).post<AddFavoriteResponses, AddFavoriteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/favorites',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Check Favorite
+ *
+ * Check if a specific item is favorited by the user
+ */
+export const checkFavorite = <ThrowOnError extends boolean = false>(options: Options<CheckFavoriteData, ThrowOnError>) => (options.client ?? client).get<CheckFavoriteResponses, CheckFavoriteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/favorites/check',
+    ...options
+});
+
+/**
+ * List Playlists
+ *
+ * Retrieve all playlists for the authenticated user
+ */
+export const listPlaylists = <ThrowOnError extends boolean = false>(options?: Options<ListPlaylistsData, ThrowOnError>) => (options?.client ?? client).get<ListPlaylistsResponses, ListPlaylistsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists',
+    ...options
+});
+
+/**
+ * Create Playlist
+ *
+ * Create a new playlist
+ */
+export const createPlaylist = <ThrowOnError extends boolean = false>(options?: Options<CreatePlaylistData, ThrowOnError>) => (options?.client ?? client).post<CreatePlaylistResponses, CreatePlaylistErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete Playlist
+ *
+ * Delete a playlist and all its tracks
+ */
+export const deletePlaylist = <ThrowOnError extends boolean = false>(options: Options<DeletePlaylistData, ThrowOnError>) => (options.client ?? client).delete<DeletePlaylistResponses, DeletePlaylistErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists/{id}',
+    ...options
+});
+
+/**
+ * Get Playlist
+ *
+ * Retrieve a playlist with its tracks
+ */
+export const getPlaylist = <ThrowOnError extends boolean = false>(options: Options<GetPlaylistData, ThrowOnError>) => (options.client ?? client).get<GetPlaylistResponses, GetPlaylistErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists/{id}',
+    ...options
+});
+
+/**
+ * Update Playlist
+ *
+ * Update playlist metadata
+ */
+export const updatePlaylist = <ThrowOnError extends boolean = false>(options: Options<UpdatePlaylistData, ThrowOnError>) => (options.client ?? client).put<UpdatePlaylistResponses, UpdatePlaylistErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Add Tracks
+ *
+ * Add tracks to a playlist
+ */
+export const addPlaylistTracks = <ThrowOnError extends boolean = false>(options: Options<AddPlaylistTracksData, ThrowOnError>) => (options.client ?? client).post<AddPlaylistTracksResponses, AddPlaylistTracksErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists/{id}/tracks',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Remove Track
+ *
+ * Remove a track from a playlist
+ */
+export const removePlaylistTrack = <ThrowOnError extends boolean = false>(options: Options<RemovePlaylistTrackData, ThrowOnError>) => (options.client ?? client).delete<RemovePlaylistTrackResponses, RemovePlaylistTrackErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists/{id}/tracks/{trackId}',
+    ...options
+});
+
+/**
+ * Reorder Tracks
+ *
+ * Reorder tracks in a playlist
+ */
+export const reorderPlaylistTracks = <ThrowOnError extends boolean = false>(options: Options<ReorderPlaylistTracksData, ThrowOnError>) => (options.client ?? client).put<ReorderPlaylistTracksResponses, ReorderPlaylistTracksErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists/{id}/tracks/reorder',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Header Image Upload URL
+ *
+ * Get a presigned URL for uploading a playlist header image
+ */
+export const getPlaylistHeaderUploadUrl = <ThrowOnError extends boolean = false>(options?: Options<GetPlaylistHeaderUploadUrlData, ThrowOnError>) => (options?.client ?? client).post<GetPlaylistHeaderUploadUrlResponses, GetPlaylistHeaderUploadUrlErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists/header-upload-url',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Share Playlist
+ *
+ * Create shares for a playlist with one or more contacts
+ */
+export const createPlaylistShare = <ThrowOnError extends boolean = false>(options: Options<CreatePlaylistShareData, ThrowOnError>) => (options.client ?? client).post<CreatePlaylistShareResponses, CreatePlaylistShareErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/playlists/{id}/share',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Projects
+ *
+ * Retrieve all projects for the authenticated user with optional search
+ */
+export const listProjects = <ThrowOnError extends boolean = false>(options?: Options<ListProjectsData, ThrowOnError>) => (options?.client ?? client).get<ListProjectsResponses, ListProjectsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects',
+    ...options
+});
+
+/**
+ * Create Project
+ *
+ * Create a new project
+ */
+export const createProject = <ThrowOnError extends boolean = false>(options?: Options<CreateProjectData, ThrowOnError>) => (options?.client ?? client).post<CreateProjectResponses, CreateProjectErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * List Service Items
+ *
+ * List all service items for the current user
+ */
+export const listServiceItems = <ThrowOnError extends boolean = false>(options?: Options<ListServiceItemsData, ThrowOnError>) => (options?.client ?? client).get<ListServiceItemsResponses, ListServiceItemsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/service-items',
+    ...options
+});
+
+/**
+ * Delete Project
+ *
+ * Delete a project
+ */
+export const deleteProject = <ThrowOnError extends boolean = false>(options: Options<DeleteProjectData, ThrowOnError>) => (options.client ?? client).delete<DeleteProjectResponses, DeleteProjectErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}',
+    ...options
+});
+
+/**
+ * Get Project
+ *
+ * Retrieve a single project with artist and contact info
+ */
+export const getProject = <ThrowOnError extends boolean = false>(options: Options<GetProjectData, ThrowOnError>) => (options.client ?? client).get<GetProjectResponses, GetProjectErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}',
+    ...options
+});
+
+/**
+ * Update Project
+ *
+ * Update a project
+ */
+export const updateProject = <ThrowOnError extends boolean = false>(options: Options<UpdateProjectData, ThrowOnError>) => (options.client ?? client).put<UpdateProjectResponses, UpdateProjectErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Project Songs
+ *
+ * Retrieve a project with its songs and recording versions
+ */
+export const getProjectSongs = <ThrowOnError extends boolean = false>(options: Options<GetProjectSongsData, ThrowOnError>) => (options.client ?? client).get<GetProjectSongsResponses, GetProjectSongsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}/songs',
+    ...options
+});
+
+/**
+ * Add Song to Project
+ *
+ * Add an existing song to the project
+ */
+export const addSongToProject = <ThrowOnError extends boolean = false>(options: Options<AddSongToProjectData, ThrowOnError>) => (options.client ?? client).post<AddSongToProjectResponses, AddSongToProjectErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}/songs',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Remove Song from Project
+ *
+ * Remove a song from the project
+ */
+export const removeSongFromProject = <ThrowOnError extends boolean = false>(options: Options<RemoveSongFromProjectData, ThrowOnError>) => (options.client ?? client).delete<RemoveSongFromProjectResponses, RemoveSongFromProjectErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}/songs/{songId}',
+    ...options
+});
+
+/**
+ * Toggle Project Favorite
+ *
+ * Toggle favorite status for a project
+ */
+export const toggleProjectFavorite = <ThrowOnError extends boolean = false>(options: Options<ToggleProjectFavoriteData, ThrowOnError>) => (options.client ?? client).post<ToggleProjectFavoriteResponses, ToggleProjectFavoriteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}/favorite',
+    ...options
+});
+
+/**
+ * Get Tracking Sheet
+ *
+ * Get columns, rows and cells for a project tracking sheet
+ */
+export const getTrackingSheet = <ThrowOnError extends boolean = false>(options: Options<GetTrackingSheetData, ThrowOnError>) => (options.client ?? client).get<GetTrackingSheetResponses, GetTrackingSheetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}/tracking',
+    ...options
+});
+
+/**
+ * Update Tracking Cell
+ *
+ * Update a tracking sheet cell status
+ */
+export const updateTrackingCell = <ThrowOnError extends boolean = false>(options: Options<UpdateTrackingCellData, ThrowOnError>) => (options.client ?? client).put<UpdateTrackingCellResponses, UpdateTrackingCellErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/tracking/cells/{columnId}/{recordingVersionId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Project Billing
+ *
+ * Get all billable items for a project with summary totals
+ */
+export const getProjectBilling = <ThrowOnError extends boolean = false>(options: Options<GetProjectBillingData, ThrowOnError>) => (options.client ?? client).get<GetProjectBillingResponses, GetProjectBillingErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}/billing',
+    ...options
+});
+
+/**
+ * Create Billable Item
+ *
+ * Create a new billable item for a project
+ */
+export const createBillableItem = <ThrowOnError extends boolean = false>(options: Options<CreateBillableItemData, ThrowOnError>) => (options.client ?? client).post<CreateBillableItemResponses, CreateBillableItemErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}/billing',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Update Billable Item Status
+ *
+ * Update a billable item's status (uninvoiced/invoiced/paid)
+ */
+export const updateBillableItemStatus = <ThrowOnError extends boolean = false>(options: Options<UpdateBillableItemStatusData, ThrowOnError>) => (options.client ?? client).put<UpdateBillableItemStatusResponses, UpdateBillableItemStatusErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/billing/items/{id}/status',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Project Shares
+ *
+ * List all share configurations for a project
+ */
+export const getProjectShares = <ThrowOnError extends boolean = false>(options: Options<GetProjectSharesData, ThrowOnError>) => (options.client ?? client).get<GetProjectSharesResponses, GetProjectSharesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/projects/{id}/shares',
     ...options
 });
 
@@ -45,7 +627,7 @@ export const getApiV1ArtistsById = <ThrowOnError extends boolean = false>(option
  *
  * Retrieve all published releases for the authenticated user
  */
-export const getApiV1Releases = <ThrowOnError extends boolean = false>(options?: Options<GetApiV1ReleasesData, ThrowOnError>) => (options?.client ?? client).get<GetApiV1ReleasesResponses, GetApiV1ReleasesErrors, ThrowOnError>({
+export const listReleases = <ThrowOnError extends boolean = false>(options?: Options<ListReleasesData, ThrowOnError>) => (options?.client ?? client).get<ListReleasesResponses, ListReleasesErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/releases',
     ...options
@@ -56,8 +638,1174 @@ export const getApiV1Releases = <ThrowOnError extends boolean = false>(options?:
  *
  * Retrieve detailed information about a specific release
  */
-export const getApiV1ReleasesById = <ThrowOnError extends boolean = false>(options: Options<GetApiV1ReleasesByIdData, ThrowOnError>) => (options.client ?? client).get<GetApiV1ReleasesByIdResponses, GetApiV1ReleasesByIdErrors, ThrowOnError>({
+export const getRelease = <ThrowOnError extends boolean = false>(options: Options<GetReleaseData, ThrowOnError>) => (options.client ?? client).get<GetReleaseResponses, GetReleaseErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/v1/releases/{id}',
+    ...options
+});
+
+/**
+ * List Ideas
+ *
+ * Retrieve a paginated list of ideas for the authenticated user
+ */
+export const listIdeas = <ThrowOnError extends boolean = false>(options?: Options<ListIdeasData, ThrowOnError>) => (options?.client ?? client).get<ListIdeasResponses, ListIdeasErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas',
+    ...options
+});
+
+/**
+ * Create Idea
+ *
+ * Create a new idea with the uploaded file
+ */
+export const createIdea = <ThrowOnError extends boolean = false>(options?: Options<CreateIdeaData, ThrowOnError>) => (options?.client ?? client).post<CreateIdeaResponses, CreateIdeaErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Bulk Delete Ideas
+ *
+ * Delete multiple ideas and their associated files
+ */
+export const bulkDeleteIdeas = <ThrowOnError extends boolean = false>(options?: Options<BulkDeleteIdeasData, ThrowOnError>) => (options?.client ?? client).post<BulkDeleteIdeasResponses, BulkDeleteIdeasErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/bulk-delete',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Bulk Update Ideas
+ *
+ * Update multiple ideas' favorite or pinned status
+ */
+export const bulkUpdateIdeas = <ThrowOnError extends boolean = false>(options?: Options<BulkUpdateIdeasData, ThrowOnError>) => (options?.client ?? client).post<BulkUpdateIdeasResponses, BulkUpdateIdeasErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/bulk-update',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Bulk Add Ideas to Song
+ *
+ * Add multiple ideas as demo recordings to an existing song
+ */
+export const bulkAddIdeasToSong = <ThrowOnError extends boolean = false>(options?: Options<BulkAddIdeasToSongData, ThrowOnError>) => (options?.client ?? client).post<BulkAddIdeasToSongResponses, BulkAddIdeasToSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/bulk-add-to-song',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete Idea
+ *
+ * Delete an idea and its associated file
+ */
+export const deleteIdea = <ThrowOnError extends boolean = false>(options: Options<DeleteIdeaData, ThrowOnError>) => (options.client ?? client).delete<DeleteIdeaResponses, DeleteIdeaErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/{id}',
+    ...options
+});
+
+/**
+ * Get Idea
+ *
+ * Retrieve details about a specific idea
+ */
+export const getIdea = <ThrowOnError extends boolean = false>(options: Options<GetIdeaData, ThrowOnError>) => (options.client ?? client).get<GetIdeaResponses, GetIdeaErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/{id}',
+    ...options
+});
+
+/**
+ * Update Idea
+ *
+ * Update an existing idea
+ */
+export const updateIdea = <ThrowOnError extends boolean = false>(options: Options<UpdateIdeaData, ThrowOnError>) => (options.client ?? client).patch<UpdateIdeaResponses, UpdateIdeaErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Stream URL
+ *
+ * Get a signed URL for streaming the idea's audio file
+ */
+export const getIdeaStreamUrl = <ThrowOnError extends boolean = false>(options: Options<GetIdeaStreamUrlData, ThrowOnError>) => (options.client ?? client).get<GetIdeaStreamUrlResponses, GetIdeaStreamUrlErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/{id}/stream-url',
+    ...options
+});
+
+/**
+ * Get Linked Songs
+ *
+ * Get the songs that this idea is linked to
+ */
+export const getIdeaLinkedSongs = <ThrowOnError extends boolean = false>(options: Options<GetIdeaLinkedSongsData, ThrowOnError>) => (options.client ?? client).get<GetIdeaLinkedSongsResponses, GetIdeaLinkedSongsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/{id}/linked-songs',
+    ...options
+});
+
+/**
+ * Get Upload URL
+ *
+ * Get a presigned URL for uploading an idea file
+ */
+export const getIdeaUploadUrl = <ThrowOnError extends boolean = false>(options?: Options<GetIdeaUploadUrlData, ThrowOnError>) => (options?.client ?? client).post<GetIdeaUploadUrlResponses, GetIdeaUploadUrlErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/upload-url',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Convert Idea to Song
+ *
+ * Create a new song from an idea
+ */
+export const convertIdeaToSong = <ThrowOnError extends boolean = false>(options: Options<ConvertIdeaToSongData, ThrowOnError>) => (options.client ?? client).post<ConvertIdeaToSongResponses, ConvertIdeaToSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/{id}/convert-to-song',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Add Idea to Song
+ *
+ * Add an idea as a demo recording to an existing song
+ */
+export const addIdeaToSong = <ThrowOnError extends boolean = false>(options: Options<AddIdeaToSongData, ThrowOnError>) => (options.client ?? client).post<AddIdeaToSongResponses, AddIdeaToSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/ideas/{id}/add-to-song',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Media Library Items
+ *
+ * Retrieve media library items with cursor-based pagination, ordered by most recent first
+ */
+export const listMedia = <ThrowOnError extends boolean = false>(options?: Options<ListMediaData, ThrowOnError>) => (options?.client ?? client).get<ListMediaResponses, ListMediaErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/media-library',
+    ...options
+});
+
+/**
+ * Get Media Upload URL
+ *
+ * Get a presigned URL for uploading an image to the media library
+ */
+export const getMediaUploadUrl = <ThrowOnError extends boolean = false>(options?: Options<GetMediaUploadUrlData, ThrowOnError>) => (options?.client ?? client).post<GetMediaUploadUrlResponses, GetMediaUploadUrlErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/media-library/upload-url',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Confirm Media Upload
+ *
+ * Confirm that an image has been uploaded to storage and create the media library record
+ */
+export const confirmMediaUpload = <ThrowOnError extends boolean = false>(options?: Options<ConfirmMediaUploadData, ThrowOnError>) => (options?.client ?? client).post<ConfirmMediaUploadResponses, ConfirmMediaUploadErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/media-library/confirm-upload',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete Media Item
+ *
+ * Delete a media library item and its associated file
+ */
+export const deleteMediaItem = <ThrowOnError extends boolean = false>(options: Options<DeleteMediaItemData, ThrowOnError>) => (options.client ?? client).delete<DeleteMediaItemResponses, DeleteMediaItemErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/media-library/{id}',
+    ...options
+});
+
+/**
+ * List Shares
+ *
+ * Retrieve all shares for the authenticated user with analytics and contact info (max 500 records)
+ */
+export const listShares = <ThrowOnError extends boolean = false>(options?: Options<ListSharesData, ThrowOnError>) => (options?.client ?? client).get<ListSharesResponses, ListSharesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares',
+    ...options
+});
+
+/**
+ * Create Share
+ *
+ * Create shares for one or more contacts with configurable access rules and permissions
+ */
+export const createShare = <ThrowOnError extends boolean = false>(options?: Options<CreateShareData, ThrowOnError>) => (options?.client ?? client).post<CreateShareResponses, CreateShareErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * List Shares Received by Current User
+ *
+ * Retrieve all non-revoked, non-expired shares where the authenticated user is the recipient
+ */
+export const listReceivedShares = <ThrowOnError extends boolean = false>(options?: Options<ListReceivedSharesData, ThrowOnError>) => (options?.client ?? client).get<ListReceivedSharesResponses, ListReceivedSharesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/shared-with-me',
+    ...options
+});
+
+/**
+ * Get Sharing Indicator Data
+ *
+ * Get sharing indicator data for a recording version, showing share counts grouped by level
+ */
+export const getSharingIndicator = <ThrowOnError extends boolean = false>(options: Options<GetSharingIndicatorData, ThrowOnError>) => (options.client ?? client).get<GetSharingIndicatorResponses, GetSharingIndicatorErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/indicator',
+    ...options
+});
+
+/**
+ * Get Share
+ *
+ * Retrieve details about a specific share
+ */
+export const getShare = <ThrowOnError extends boolean = false>(options: Options<GetShareData, ThrowOnError>) => (options.client ?? client).get<GetShareResponses, GetShareErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/{id}',
+    ...options
+});
+
+/**
+ * Update Share
+ *
+ * Update share settings such as permissions, password, expiration, etc.
+ */
+export const updateShare = <ThrowOnError extends boolean = false>(options: Options<UpdateShareData, ThrowOnError>) => (options.client ?? client).patch<UpdateShareResponses, UpdateShareErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Share Activity Time Series
+ *
+ * Retrieve daily activity counts (views, plays, downloads) for a share over a time period
+ */
+export const getShareActivity = <ThrowOnError extends boolean = false>(options: Options<GetShareActivityData, ThrowOnError>) => (options.client ?? client).get<GetShareActivityResponses, GetShareActivityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/{id}/activity',
+    ...options
+});
+
+/**
+ * Get Share Play Statistics
+ *
+ * Retrieve play statistics per song and file for a share
+ */
+export const getSharePlays = <ThrowOnError extends boolean = false>(options: Options<GetSharePlaysData, ThrowOnError>) => (options.client ?? client).get<GetSharePlaysResponses, GetSharePlaysErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/{id}/plays',
+    ...options
+});
+
+/**
+ * Get Share Download Statistics
+ *
+ * Retrieve download statistics per song and file with format breakdowns
+ */
+export const getShareDownloads = <ThrowOnError extends boolean = false>(options: Options<GetShareDownloadsData, ThrowOnError>) => (options.client ?? client).get<GetShareDownloadsResponses, GetShareDownloadsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/{id}/downloads',
+    ...options
+});
+
+/**
+ * Get Share Upload Statistics
+ *
+ * Retrieve upload statistics per song with file details
+ */
+export const getShareUploads = <ThrowOnError extends boolean = false>(options: Options<GetShareUploadsData, ThrowOnError>) => (options.client ?? client).get<GetShareUploadsResponses, GetShareUploadsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/{id}/uploads',
+    ...options
+});
+
+/**
+ * Get Share Unique Viewers
+ *
+ * Retrieve a list of unique viewers for a share with device and location info
+ */
+export const getShareViewers = <ThrowOnError extends boolean = false>(options: Options<GetShareViewersData, ThrowOnError>) => (options.client ?? client).get<GetShareViewersResponses, GetShareViewersErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/{id}/viewers',
+    ...options
+});
+
+/**
+ * Hide Shared With Me
+ *
+ * Hide a share from the Shared with Me list
+ */
+export const hideShare = <ThrowOnError extends boolean = false>(options?: Options<HideShareData, ThrowOnError>) => (options?.client ?? client).post<HideShareResponses, HideShareErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/hide',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Unblock Sender
+ *
+ * Unblock a previously blocked sender
+ */
+export const unblockSender = <ThrowOnError extends boolean = false>(options?: Options<UnblockSenderData, ThrowOnError>) => (options?.client ?? client).delete<UnblockSenderResponses, UnblockSenderErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/block-sender',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Block Sender
+ *
+ * Block a sender from sharing with you
+ */
+export const blockSender = <ThrowOnError extends boolean = false>(options?: Options<BlockSenderData, ThrowOnError>) => (options?.client ?? client).post<BlockSenderResponses, BlockSenderErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/block-sender',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Create File Share
+ *
+ * Create file shares for one or more contacts with file-specific access rules
+ */
+export const createFileShare = <ThrowOnError extends boolean = false>(options?: Options<CreateFileShareData, ThrowOnError>) => (options?.client ?? client).post<CreateFileShareResponses, CreateFileShareErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/file',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Revoke Share
+ *
+ * Revoke a share by setting its isRevoked flag to true. The share link will no longer be accessible.
+ */
+export const revokeShare = <ThrowOnError extends boolean = false>(options: Options<RevokeShareData, ThrowOnError>) => (options.client ?? client).post<RevokeShareResponses, RevokeShareErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/{id}/revoke',
+    ...options
+});
+
+/**
+ * Get Inbox Files
+ *
+ * Get inbox files for a recording version (files uploaded by collaborators)
+ */
+export const getInboxFiles = <ThrowOnError extends boolean = false>(options: Options<GetInboxFilesData, ThrowOnError>) => (options.client ?? client).get<GetInboxFilesResponses, GetInboxFilesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/inbox-files/{recordingVersionId}',
+    ...options
+});
+
+/**
+ * Delete Inbox Files
+ *
+ * Soft-delete inbox files (batch)
+ */
+export const deleteInboxFiles = <ThrowOnError extends boolean = false>(options?: Options<DeleteInboxFilesData, ThrowOnError>) => (options?.client ?? client).post<DeleteInboxFilesResponses, DeleteInboxFilesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/inbox-files/delete',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Accept Inbox Files
+ *
+ * Accept inbox files and convert them to recording files in a specific domain/folder
+ */
+export const acceptInboxFiles = <ThrowOnError extends boolean = false>(options?: Options<AcceptInboxFilesData, ThrowOnError>) => (options?.client ?? client).post<AcceptInboxFilesResponses, AcceptInboxFilesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/inbox-files/accept',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Track Share Activity
+ *
+ * Record a view, play, or other activity event for a share. Auth is optional — authenticated users have visitorId resolved from their token.
+ */
+export const trackShareActivity = <ThrowOnError extends boolean = false>(options?: Options<TrackShareActivityData, ThrowOnError>) => (options?.client ?? client).post<TrackShareActivityResponses, TrackShareActivityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/track-activity',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Get Share Files
+ *
+ * Retrieve files for a share by access key. Bearer auth user must be the recipient.
+ */
+export const getShareFiles = <ThrowOnError extends boolean = false>(options: Options<GetShareFilesData, ThrowOnError>) => (options.client ?? client).get<GetShareFilesResponses, GetShareFilesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/by-key/{accessKey}/files',
+    ...options
+});
+
+/**
+ * Get Playlist Share
+ *
+ * Retrieve playlist data for a playlist share by access key. Bearer auth user must be the recipient.
+ */
+export const getPlaylistShare = <ThrowOnError extends boolean = false>(options: Options<GetPlaylistShareData, ThrowOnError>) => (options.client ?? client).get<GetPlaylistShareResponses, GetPlaylistShareErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/by-key/{accessKey}/playlist',
+    ...options
+});
+
+/**
+ * Get File Stream URL
+ *
+ * Get a CDN URL for streaming a file from a share. Bearer auth user must be the recipient.
+ */
+export const getShareStreamUrl = <ThrowOnError extends boolean = false>(options: Options<GetShareStreamUrlData, ThrowOnError>) => (options.client ?? client).get<GetShareStreamUrlResponses, GetShareStreamUrlErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/by-key/{accessKey}/stream',
+    ...options
+});
+
+/**
+ * Validate Share Password
+ *
+ * Validate a password for a password-protected share. Sets an httpOnly cookie on success.
+ */
+export const validateSharePassword = <ThrowOnError extends boolean = false>(options?: Options<ValidateSharePasswordData, ThrowOnError>) => (options?.client ?? client).post<ValidateSharePasswordResponses, ValidateSharePasswordErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/shares/validate-password',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * List Songs
+ *
+ * Retrieve a paginated list of songs for the authenticated user
+ */
+export const listSongs = <ThrowOnError extends boolean = false>(options?: Options<ListSongsData, ThrowOnError>) => (options?.client ?? client).get<ListSongsResponses, ListSongsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs',
+    ...options
+});
+
+/**
+ * Create Song
+ *
+ * Create a new song with a default recording version
+ */
+export const createSong = <ThrowOnError extends boolean = false>(options?: Options<CreateSongData, ThrowOnError>) => (options?.client ?? client).post<CreateSongResponses, CreateSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Delete Song
+ *
+ * Delete a song and all associated recording versions and files
+ */
+export const deleteSong = <ThrowOnError extends boolean = false>(options: Options<DeleteSongData, ThrowOnError>) => (options.client ?? client).delete<DeleteSongResponses, DeleteSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/{id}',
+    ...options
+});
+
+/**
+ * Get Song
+ *
+ * Retrieve a song with its recording versions
+ */
+export const getSong = <ThrowOnError extends boolean = false>(options: Options<GetSongData, ThrowOnError>) => (options.client ?? client).get<GetSongResponses, GetSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/{id}',
+    ...options
+});
+
+/**
+ * Update Song
+ *
+ * Update basic song information (title, notes)
+ */
+export const updateSong = <ThrowOnError extends boolean = false>(options: Options<UpdateSongData, ThrowOnError>) => (options.client ?? client).patch<UpdateSongResponses, UpdateSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Recording Versions
+ *
+ * List recording versions for a song
+ */
+export const listRecordingVersions = <ThrowOnError extends boolean = false>(options: Options<ListRecordingVersionsData, ThrowOnError>) => (options.client ?? client).get<ListRecordingVersionsResponses, ListRecordingVersionsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/{songId}/versions',
+    ...options
+});
+
+/**
+ * Create Recording Version
+ *
+ * Create a new recording version for a song
+ */
+export const createRecordingVersion = <ThrowOnError extends boolean = false>(options: Options<CreateRecordingVersionData, ThrowOnError>) => (options.client ?? client).post<CreateRecordingVersionResponses, CreateRecordingVersionErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/{songId}/versions',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Recording Version
+ *
+ * Delete a recording version and all its files
+ */
+export const deleteRecordingVersion = <ThrowOnError extends boolean = false>(options: Options<DeleteRecordingVersionData, ThrowOnError>) => (options.client ?? client).delete<DeleteRecordingVersionResponses, DeleteRecordingVersionErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/{songId}/versions/{versionId}',
+    ...options
+});
+
+/**
+ * List Version Files
+ *
+ * List files for a specific recording version
+ */
+export const listVersionFiles = <ThrowOnError extends boolean = false>(options: Options<ListVersionFilesData, ThrowOnError>) => (options.client ?? client).get<ListVersionFilesResponses, ListVersionFilesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/{songId}/versions/{versionId}/files',
+    ...options
+});
+
+/**
+ * Delete File
+ *
+ * Soft-delete a recording file
+ */
+export const deleteFile = <ThrowOnError extends boolean = false>(options: Options<DeleteFileData, ThrowOnError>) => (options.client ?? client).delete<DeleteFileResponses, DeleteFileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/{fileId}',
+    ...options
+});
+
+/**
+ * Get File
+ *
+ * Get a single file with waveform peaks
+ */
+export const getFile = <ThrowOnError extends boolean = false>(options: Options<GetFileData, ThrowOnError>) => (options.client ?? client).get<GetFileResponses, GetFileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/{fileId}',
+    ...options
+});
+
+/**
+ * Generate Stream URL
+ *
+ * Generate a CDN URL for streaming a file
+ */
+export const getFileStreamUrl = <ThrowOnError extends boolean = false>(options?: Options<GetFileStreamUrlData, ThrowOnError>) => (options?.client ?? client).post<GetFileStreamUrlResponses, GetFileStreamUrlErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/stream-url',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Generate Download URL
+ *
+ * Generate a download URL for a file
+ */
+export const getFileDownloadUrl = <ThrowOnError extends boolean = false>(options?: Options<GetFileDownloadUrlData, ThrowOnError>) => (options?.client ?? client).post<GetFileDownloadUrlResponses, GetFileDownloadUrlErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/download-url',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Upload File
+ *
+ * Create a pending file record and get a presigned URL for uploading
+ */
+export const uploadFile = <ThrowOnError extends boolean = false>(options: Options<UploadFileData, ThrowOnError>) => (options.client ?? client).post<UploadFileResponses, UploadFileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/{songId}/versions/{versionId}/files/upload',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Verify Upload
+ *
+ * Verify that a file upload completed successfully and update metadata from storage
+ */
+export const verifyFileUpload = <ThrowOnError extends boolean = false>(options: Options<VerifyFileUploadData, ThrowOnError>) => (options.client ?? client).post<VerifyFileUploadResponses, VerifyFileUploadErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/{fileId}/verify',
+    ...options
+});
+
+/**
+ * Update Folder State
+ *
+ * Update the folder expand/collapse and hidden state for a recording version
+ */
+export const updateFolderState = <ThrowOnError extends boolean = false>(options: Options<UpdateFolderStateData, ThrowOnError>) => (options.client ?? client).patch<UpdateFolderStateResponses, UpdateFolderStateErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/versions/{versionId}/folder-state',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Rename File
+ *
+ * Rename a recording file
+ */
+export const renameFile = <ThrowOnError extends boolean = false>(options: Options<RenameFileData, ThrowOnError>) => (options.client ?? client).patch<RenameFileResponses, RenameFileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/{fileId}/rename',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Move File
+ *
+ * Move a recording file to a different domain/folder
+ */
+export const moveFile = <ThrowOnError extends boolean = false>(options: Options<MoveFileData, ThrowOnError>) => (options.client ?? client).patch<MoveFileResponses, MoveFileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/{fileId}/move',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Update File Visibility
+ *
+ * Toggle a file's private/visible state
+ */
+export const updateFileVisibility = <ThrowOnError extends boolean = false>(options: Options<UpdateFileVisibilityData, ThrowOnError>) => (options.client ?? client).patch<UpdateFileVisibilityResponses, UpdateFileVisibilityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/{fileId}/visibility',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List File Comments
+ *
+ * List all comments for a recording file, ordered by creation date
+ */
+export const listFileComments = <ThrowOnError extends boolean = false>(options: Options<ListFileCommentsData, ThrowOnError>) => (options.client ?? client).get<ListFileCommentsResponses, ListFileCommentsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/{fileId}/comments',
+    ...options
+});
+
+/**
+ * Create Comment
+ *
+ * Create a new comment on a recording file
+ */
+export const createFileComment = <ThrowOnError extends boolean = false>(options: Options<CreateFileCommentData, ThrowOnError>) => (options.client ?? client).post<CreateFileCommentResponses, CreateFileCommentErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/{fileId}/comments',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete Comment
+ *
+ * Delete a comment. Authors can delete their own, owners can delete any.
+ */
+export const deleteFileComment = <ThrowOnError extends boolean = false>(options: Options<DeleteFileCommentData, ThrowOnError>) => (options.client ?? client).delete<DeleteFileCommentResponses, DeleteFileCommentErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/comments/{commentId}',
+    ...options
+});
+
+/**
+ * Update Comment
+ *
+ * Update a comment's text or privacy setting. Authors can edit text, only owners can toggle privacy.
+ */
+export const updateFileComment = <ThrowOnError extends boolean = false>(options: Options<UpdateFileCommentData, ThrowOnError>) => (options.client ?? client).patch<UpdateFileCommentResponses, UpdateFileCommentErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/comments/{commentId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Mark Comment Complete
+ *
+ * Toggle a comment's completed status. Only the file owner can do this.
+ */
+export const markCommentComplete = <ThrowOnError extends boolean = false>(options: Options<MarkCommentCompleteData, ThrowOnError>) => (options.client ?? client).post<MarkCommentCompleteResponses, MarkCommentCompleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/comments/{commentId}/mark-complete',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get EQ Settings
+ *
+ * Get EQ settings for a comment. Only the file owner can access.
+ */
+export const getCommentEqSettings = <ThrowOnError extends boolean = false>(options: Options<GetCommentEqSettingsData, ThrowOnError>) => (options.client ?? client).get<GetCommentEqSettingsResponses, GetCommentEqSettingsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/songs/files/comments/{commentId}/eq-settings',
+    ...options
+});
+
+/**
+ * List Created Split Sheets
+ *
+ * List split sheets created by the authenticated user
+ */
+export const listCreatedSplitSheets = <ThrowOnError extends boolean = false>(options?: Options<ListCreatedSplitSheetsData, ThrowOnError>) => (options?.client ?? client).get<ListCreatedSplitSheetsResponses, ListCreatedSplitSheetsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/created',
+    ...options
+});
+
+/**
+ * List Received Split Sheets
+ *
+ * List split sheets sent to the authenticated user
+ */
+export const listReceivedSplitSheets = <ThrowOnError extends boolean = false>(options?: Options<ListReceivedSplitSheetsData, ThrowOnError>) => (options?.client ?? client).get<ListReceivedSplitSheetsResponses, ListReceivedSplitSheetsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/received',
+    ...options
+});
+
+/**
+ * Get Split Sheet Details
+ *
+ * Get full split sheet details with signatures
+ */
+export const getSplitSheetDetails = <ThrowOnError extends boolean = false>(options: Options<GetSplitSheetDetailsData, ThrowOnError>) => (options.client ?? client).get<GetSplitSheetDetailsResponses, GetSplitSheetDetailsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/{versionId}',
+    ...options
+});
+
+/**
+ * Get Split Sheet Status for Song
+ *
+ * Get the pending or executed split sheet for a song
+ */
+export const getSplitSheetStatus = <ThrowOnError extends boolean = false>(options: Options<GetSplitSheetStatusData, ThrowOnError>) => (options.client ?? client).get<GetSplitSheetStatusResponses, GetSplitSheetStatusErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/song/{songId}/status',
+    ...options
+});
+
+/**
+ * Create Split Sheet
+ *
+ * Create and send a new split sheet
+ */
+export const createSplitSheet = <ThrowOnError extends boolean = false>(options?: Options<CreateSplitSheetData, ThrowOnError>) => (options?.client ?? client).post<CreateSplitSheetResponses, CreateSplitSheetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Void Split Sheet
+ *
+ * Void a pending split sheet
+ */
+export const voidSplitSheet = <ThrowOnError extends boolean = false>(options: Options<VoidSplitSheetData, ThrowOnError>) => (options.client ?? client).post<VoidSplitSheetResponses, VoidSplitSheetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/{versionId}/void',
+    ...options
+});
+
+/**
+ * Resend to Unsigned
+ *
+ * Resend signing emails to all unsigned recipients
+ */
+export const resendToUnsigned = <ThrowOnError extends boolean = false>(options: Options<ResendToUnsignedData, ThrowOnError>) => (options.client ?? client).post<ResendToUnsignedResponses, ResendToUnsignedErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/{versionId}/resend',
+    ...options
+});
+
+/**
+ * Resend to Specific Recipient
+ *
+ * Resend signing email to a specific recipient
+ */
+export const resendToSpecificRecipient = <ThrowOnError extends boolean = false>(options: Options<ResendToSpecificRecipientData, ThrowOnError>) => (options.client ?? client).post<ResendToSpecificRecipientResponses, ResendToSpecificRecipientErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/{versionId}/resend/{signatureId}',
+    ...options
+});
+
+/**
+ * Unlink Split from Song
+ *
+ * Unlink a split sheet from a song
+ */
+export const unlinkSplitFromSong = <ThrowOnError extends boolean = false>(options: Options<UnlinkSplitFromSongData, ThrowOnError>) => (options.client ?? client).delete<UnlinkSplitFromSongResponses, UnlinkSplitFromSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/{versionId}/link-song/{songId}',
+    ...options
+});
+
+/**
+ * Link Split to Song
+ *
+ * Link a received split sheet to one of your songs
+ */
+export const linkSplitToSong = <ThrowOnError extends boolean = false>(options: Options<LinkSplitToSongData, ThrowOnError>) => (options.client ?? client).post<LinkSplitToSongResponses, LinkSplitToSongErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/{versionId}/link-song/{songId}',
+    ...options
+});
+
+/**
+ * Create Song from Split
+ *
+ * Create a new song from a received split sheet's data
+ */
+export const createSongFromSplit = <ThrowOnError extends boolean = false>(options: Options<CreateSongFromSplitData, ThrowOnError>) => (options.client ?? client).post<CreateSongFromSplitResponses, CreateSongFromSplitErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/{versionId}/create-song',
+    ...options
+});
+
+/**
+ * Mark PRO Submitted
+ *
+ * Mark the split sheet as submitted to PRO
+ */
+export const markProSubmitted = <ThrowOnError extends boolean = false>(options: Options<MarkProSubmittedData, ThrowOnError>) => (options.client ?? client).post<MarkProSubmittedResponses, MarkProSubmittedErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/song/{songId}/mark-pro-submitted',
+    ...options
+});
+
+/**
+ * Update Designated Writer
+ *
+ * Update the designated PRO submitter for a song's split sheet
+ */
+export const updateDesignatedWriter = <ThrowOnError extends boolean = false>(options: Options<UpdateDesignatedWriterData, ThrowOnError>) => (options.client ?? client).put<UpdateDesignatedWriterResponses, UpdateDesignatedWriterErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/song/{songId}/designated-writer',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Demo Files
+ *
+ * List demo and rough mix files available for attachment
+ */
+export const listDemoFiles = <ThrowOnError extends boolean = false>(options?: Options<ListDemoFilesData, ThrowOnError>) => (options?.client ?? client).get<ListDemoFilesResponses, ListDemoFilesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/split-sheets/demo-files',
+    ...options
+});
+
+/**
+ * Get Split Sheet by Token
+ *
+ * Get split sheet details using a signing token (no auth required)
+ */
+export const getSplitSheetByToken = <ThrowOnError extends boolean = false>(options: Options<GetSplitSheetByTokenData, ThrowOnError>) => (options.client ?? client).get<GetSplitSheetByTokenResponses, GetSplitSheetByTokenErrors, ThrowOnError>({ url: '/api/v1/split-sheets/public/{token}', ...options });
+
+/**
+ * Sign Split Sheet
+ *
+ * Sign a split sheet using a signing token
+ */
+export const signSplitSheetByToken = <ThrowOnError extends boolean = false>(options: Options<SignSplitSheetByTokenData, ThrowOnError>) => (options.client ?? client).post<SignSplitSheetByTokenResponses, SignSplitSheetByTokenErrors, ThrowOnError>({ url: '/api/v1/split-sheets/public/{token}/sign', ...options });
+
+/**
+ * Decline Split Sheet
+ *
+ * Decline a split sheet using a signing token
+ */
+export const declineSplitSheetByToken = <ThrowOnError extends boolean = false>(options: Options<DeclineSplitSheetByTokenData, ThrowOnError>) => (options.client ?? client).post<DeclineSplitSheetByTokenResponses, DeclineSplitSheetByTokenErrors, ThrowOnError>({ url: '/api/v1/split-sheets/public/{token}/decline', ...options });
+
+/**
+ * Download Signed PDF
+ *
+ * Download the signed split sheet PDF using a signing token
+ */
+export const getSplitSheetPdfByToken = <ThrowOnError extends boolean = false>(options: Options<GetSplitSheetPdfByTokenData, ThrowOnError>) => (options.client ?? client).get<GetSplitSheetPdfByTokenResponses, GetSplitSheetPdfByTokenErrors, ThrowOnError>({ url: '/api/v1/split-sheets/public/{token}/pdf', ...options });
+
+/**
+ * List Trash
+ *
+ * Retrieve all soft-deleted files (recording files and inbox files) for the authenticated user
+ */
+export const listTrash = <ThrowOnError extends boolean = false>(options?: Options<ListTrashData, ThrowOnError>) => (options?.client ?? client).get<ListTrashResponses, ListTrashErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/trash',
+    ...options
+});
+
+/**
+ * Restore Trash Files
+ *
+ * Restore soft-deleted files from trash
+ */
+export const restoreTrashFiles = <ThrowOnError extends boolean = false>(options?: Options<RestoreTrashFilesData, ThrowOnError>) => (options?.client ?? client).post<RestoreTrashFilesResponses, RestoreTrashFilesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/trash/restore',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Permanently Delete Trash Files
+ *
+ * Permanently delete files from trash (removes from database and storage)
+ */
+export const permanentlyDeleteTrashFiles = <ThrowOnError extends boolean = false>(options?: Options<PermanentlyDeleteTrashFilesData, ThrowOnError>) => (options?.client ?? client).post<PermanentlyDeleteTrashFilesResponses, PermanentlyDeleteTrashFilesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/trash/permanently-delete',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Get User Settings
+ */
+export const getUserSettings = <ThrowOnError extends boolean = false>(options?: Options<GetUserSettingsData, ThrowOnError>) => (options?.client ?? client).get<GetUserSettingsResponses, GetUserSettingsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/settings',
+    ...options
+});
+
+/**
+ * Update User Settings
+ */
+export const updateUserSettings = <ThrowOnError extends boolean = false>(options?: Options<UpdateUserSettingsData, ThrowOnError>) => (options?.client ?? client).patch<UpdateUserSettingsResponses, UpdateUserSettingsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/settings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Get My Songwriter Profile
+ */
+export const getMySongwriterProfile = <ThrowOnError extends boolean = false>(options?: Options<GetMySongwriterProfileData, ThrowOnError>) => (options?.client ?? client).get<GetMySongwriterProfileResponses, GetMySongwriterProfileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/songwriters/mine',
+    ...options
+});
+
+/**
+ * Upsert My Songwriter Profile
+ */
+export const upsertMySongwriterProfile = <ThrowOnError extends boolean = false>(options?: Options<UpsertMySongwriterProfileData, ThrowOnError>) => (options?.client ?? client).patch<UpsertMySongwriterProfileResponses, UpsertMySongwriterProfileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/songwriters/mine',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Get My Rights Owner Profile
+ */
+export const getMyRightsOwnerProfile = <ThrowOnError extends boolean = false>(options?: Options<GetMyRightsOwnerProfileData, ThrowOnError>) => (options?.client ?? client).get<GetMyRightsOwnerProfileResponses, GetMyRightsOwnerProfileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/rights-owners/mine',
+    ...options
+});
+
+/**
+ * Upsert My Rights Owner Profile
+ */
+export const upsertMyRightsOwnerProfile = <ThrowOnError extends boolean = false>(options?: Options<UpsertMyRightsOwnerProfileData, ThrowOnError>) => (options?.client ?? client).patch<UpsertMyRightsOwnerProfileResponses, UpsertMyRightsOwnerProfileErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/rights-owners/mine',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Get Subscription Status
+ *
+ * Returns the current subscription state for the authenticated user. Used by mobile apps to determine access level.
+ */
+export const getSubscriptionStatus = <ThrowOnError extends boolean = false>(options?: Options<GetSubscriptionStatusData, ThrowOnError>) => (options?.client ?? client).get<GetSubscriptionStatusResponses, GetSubscriptionStatusErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/v1/users/subscription-status',
     ...options
 });

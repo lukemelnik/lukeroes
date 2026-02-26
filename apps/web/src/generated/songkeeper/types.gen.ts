@@ -4,9 +4,24 @@ export type ClientOptions = {
     baseUrl: 'https://api.songkeeper.io' | (string & {});
 };
 
+export type ArtistSocialHandles = {
+    spotify?: string;
+    appleMusic?: string;
+    youtube?: string;
+    instagram?: string;
+    twitter?: string;
+    facebook?: string;
+    soundcloud?: string;
+    website?: string;
+};
+
 export type Artist = {
     id: number;
     name: string;
+    bio: string;
+    city: string;
+    country: string;
+    socialHandles: ArtistSocialHandles;
     createdAt: string;
     updatedAt: string;
 };
@@ -21,8 +36,881 @@ export type Error = {
     details?: unknown;
 };
 
+export type ArtistPromoPhoto = {
+    id: number;
+    fileKey: string;
+    fileName: string;
+    isDefault: boolean;
+    displayOrder: number;
+    publicUrl: string;
+};
+
+export type ArtistDetail = {
+    id: number;
+    name: string;
+    bio: string;
+    city: string;
+    country: string;
+    socialHandles: ArtistSocialHandles;
+    promoPhotos: Array<ArtistPromoPhoto>;
+    projectCount: number;
+    releaseCount: number;
+    playlistCount: number;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type ArtistDetailResponse = {
+    artist: ArtistDetail;
+};
+
 export type ArtistResponse = {
     artist: Artist;
+};
+
+export type CreateArtistRequest = {
+    /**
+     * Artist name
+     */
+    name: string;
+    /**
+     * Artist bio
+     */
+    bio?: string;
+    socialHandles?: ArtistSocialHandles & unknown;
+};
+
+export type DeleteArtistResponse = {
+    success: boolean;
+};
+
+export type Contact = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    emails: Array<{
+        value: string;
+        type: 'work' | 'personal' | 'other';
+        isPrimary: boolean;
+    }>;
+    phones: Array<{
+        value: string;
+        type: 'work' | 'mobile' | 'home' | 'other';
+        isPrimary: boolean;
+    }>;
+    stageName: string;
+    pronouns: string;
+    company: string;
+    jobTitle: string;
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    website: string;
+    tags: Array<string>;
+    socialHandles: {
+        instagram?: string;
+        tiktok?: string;
+        twitter?: string;
+        youtube?: string;
+        spotify?: string;
+        appleMusic?: string;
+        soundcloud?: string;
+        linkedin?: string;
+    };
+    notes: string;
+    lastContactedAt: string;
+    preferredPaymentTerms: string;
+    preferredContactMethod: 'email' | 'phone' | 'text' | 'instagram';
+    isSongwriter: boolean;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type ContactsListResponse = {
+    data: Array<Contact>;
+};
+
+export type ContactResponse = {
+    data: Contact;
+};
+
+export type CreateContactRequest = {
+    /**
+     * First name of the contact
+     */
+    firstName: string;
+    /**
+     * Last name of the contact
+     */
+    lastName?: string;
+    /**
+     * Primary email address. Required unless emails array is provided.
+     */
+    email?: string;
+    /**
+     * Additional email addresses. If provided, these are used instead of the single email field.
+     */
+    emails?: Array<{
+        value: string;
+        type: 'work' | 'personal' | 'other';
+        isPrimary: boolean;
+    }>;
+    /**
+     * Phone numbers for the contact
+     */
+    phones?: Array<{
+        value: string;
+        type: 'work' | 'mobile' | 'home' | 'other';
+        isPrimary: boolean;
+    }>;
+    /**
+     * Company or organization name
+     */
+    company?: string;
+    /**
+     * Job title or role
+     */
+    jobTitle?: string;
+    addressLine1?: string;
+    addressLine2?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    /**
+     * ISO 3166-1 alpha-2 country code
+     */
+    country?: string;
+    website?: string;
+    notes?: string;
+};
+
+export type UpdateContactRequest = {
+    firstName?: string;
+    lastName?: string;
+    emails?: Array<{
+        value: string;
+        type: 'work' | 'personal' | 'other';
+        isPrimary: boolean;
+    }>;
+    phones?: Array<{
+        value: string;
+        type: 'work' | 'mobile' | 'home' | 'other';
+        isPrimary: boolean;
+    }>;
+    company?: string;
+    jobTitle?: string;
+    website?: string;
+};
+
+export type DeleteContactResponse = {
+    success: boolean;
+};
+
+export type ActivityType = 'call' | 'meeting' | 'email' | 'text' | 'other';
+
+export type Activity = {
+    id: number;
+    contactId: number;
+    type: ActivityType;
+    notes: string;
+    sentiment: 'interested' | 'busy' | 'passed' | 'neutral' | 'excited';
+    nextStepDescription: string;
+    nextStepDate: string;
+    nextStepCompletedAt: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type ActivitiesListResponse = {
+    data: Array<Activity>;
+};
+
+export type ActivityResponse = {
+    data: Activity;
+};
+
+export type CreateActivityRequest = {
+    type: ActivityType;
+    notes?: string;
+    nextStepDescription?: string;
+    nextStepDate?: string;
+};
+
+export type UpdateActivityRequest = {
+    type?: ActivityType;
+    notes?: string;
+    nextStepDescription?: string;
+    nextStepDate?: string;
+    nextStepCompletedAt?: string;
+};
+
+export type DeleteActivityResponse = {
+    success: boolean;
+};
+
+export type AudioFileTypeRule = {
+    include?: boolean;
+    latestOnly?: boolean;
+    allowDownload?: boolean;
+};
+
+export type AssetFileTypeRule = {
+    include?: boolean;
+    allowDownload?: boolean;
+};
+
+/**
+ * Access rules for folder-level permissions
+ */
+export type AccessRulesResponse = {
+    recording?: {
+        demo?: AudioFileTypeRule;
+        rough_mix?: AudioFileTypeRule;
+        multitrack?: AudioFileTypeRule;
+        stem?: AudioFileTypeRule;
+        session?: AudioFileTypeRule;
+    };
+    mixing?: {
+        mix?: AudioFileTypeRule;
+        multitrack?: AudioFileTypeRule;
+        stem?: AudioFileTypeRule;
+        session?: AudioFileTypeRule;
+    };
+    mastering?: {
+        digital?: AudioFileTypeRule;
+        cd?: AudioFileTypeRule;
+        vinyl?: AudioFileTypeRule;
+    };
+    assets?: {
+        artwork?: AssetFileTypeRule;
+        social_media?: AssetFileTypeRule;
+        marketing?: AssetFileTypeRule;
+        photo?: AssetFileTypeRule;
+        video?: AssetFileTypeRule;
+    };
+};
+
+export type ShareContact = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    emails: Array<{
+        value: string;
+        isPrimary: boolean;
+    }>;
+};
+
+export type Share = {
+    id: number;
+    shareType: 'project' | 'song' | 'folder' | 'domain' | 'file' | 'playlist';
+    title: string;
+    description: string;
+    accessKey: string;
+    isRevoked: boolean;
+    isPasswordProtected: boolean;
+    expiresAt: string;
+    requireAuth: boolean;
+    allowUploads: boolean;
+    allowComments: boolean;
+    allowBilling: boolean;
+    allowApprovals: boolean;
+    allowPlaylistDownloads: boolean;
+    accessRules: AccessRulesResponse;
+    uploadExpiresAt: string;
+    projectId: number;
+    projectName: string;
+    recordingVersionId: number;
+    recordingFileId: number;
+    songId: number;
+    songTitle: string;
+    playlistId: number;
+    playlistTitle: string;
+    totalFileCount: number;
+    totalFolderCount: number;
+    viewCount: number;
+    playCount: number;
+    downloadCount: number;
+    uniqueViewers: number;
+    uploadsCount: number;
+    lastAccessed: string;
+    contact: ShareContact;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type SharesListResponse = {
+    data: Array<Share>;
+};
+
+export type DashboardActivityResponse = {
+    data: {
+        activities: Array<{
+            id: number;
+            activityType: 'view' | 'play' | 'download' | 'seek' | 'pause' | 'playlist_change' | 'approval';
+            contactName: string;
+            contactId: number;
+            shareConfigId: number;
+            shareType: string;
+            shareName: string;
+            accessKey: string;
+            /**
+             * Actual seconds spent listening (play events only)
+             */
+            accumulatedSeconds: number;
+            /**
+             * Percentage of song timeline covered (play events only)
+             */
+            coveragePercent: number;
+            /**
+             * Whether the listener heard the ending (play events only)
+             */
+            reachedEnd: boolean;
+            metadata: {
+                fileName?: string;
+                location?: {
+                    country?: string;
+                    city?: string;
+                    region?: string;
+                };
+                fileSize?: number;
+                isAuthenticated?: boolean;
+                songTitle?: string;
+            };
+            createdAt: string;
+        }>;
+        stats: {
+            totalPlays: number;
+            uniqueViewers: number;
+            periodDays: number;
+        };
+    };
+};
+
+export type DashboardChartResponse = {
+    data: Array<{
+        date: string;
+        views: number;
+        plays: number;
+        downloads: number;
+    }>;
+};
+
+export type DashboardFollowUpsResponse = {
+    data: Array<{
+        activityId: number;
+        contactId: number;
+        contactName: string;
+        nextStepDescription: string;
+        nextStepDate: string;
+        isOverdue: boolean;
+    }>;
+};
+
+export type DashboardOpenCommentsResponse = {
+    data: Array<{
+        recordingVersionId: number;
+        songId: number;
+        songName: string;
+        projectName: string;
+        commentCount: number;
+        priority: 'urgent' | 'high' | 'medium' | 'low';
+        files: Array<{
+            recordingFileId: number;
+            fileName: string;
+            fileType: string;
+            domain: string;
+            incompleteCount: number;
+        }>;
+    }>;
+};
+
+export type UserFavorite = {
+    id: number;
+    itemType: 'song' | 'project' | 'playlist' | 'idea';
+    itemId: number;
+    position: number;
+    title: string;
+    createdAt: string;
+};
+
+export type FavoritesListResponse = {
+    data: Array<UserFavorite>;
+};
+
+export type FavoriteSuccessResponse = {
+    success: boolean;
+};
+
+export type AddFavoriteRequest = {
+    /**
+     * Type of item to favorite
+     */
+    itemType: 'song' | 'project' | 'playlist' | 'idea';
+    /**
+     * ID of the item to favorite
+     */
+    itemId: number;
+};
+
+export type RemoveFavoriteRequest = {
+    /**
+     * Type of item to unfavorite
+     */
+    itemType: 'song' | 'project' | 'playlist' | 'idea';
+    /**
+     * ID of the item to unfavorite
+     */
+    itemId: number;
+};
+
+export type CheckFavoriteResponse = {
+    data: {
+        isFavorite: boolean;
+    };
+};
+
+export type PlaylistListItem = {
+    id: number;
+    title: string;
+    headerImageKey: string;
+    headerImagePublicUrl: string;
+    trackCount: number;
+    totalDuration: number;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type PlaylistsListResponse = {
+    data: Array<PlaylistListItem>;
+};
+
+export type PlaylistTrack = {
+    id: number;
+    playlistId: number;
+    recordingFileId: number;
+    position: number;
+    customTitle: string;
+    customArtist: string;
+    titleDisplayMode: string;
+    createdAt: string;
+    file: {
+        id: number;
+        fileName: string;
+        fileKey: string;
+        cdnUrl: string;
+        duration: number;
+        mimeType: string;
+        domain: string;
+        fileType: string;
+        waveformPeaks: Array<number>;
+    };
+    song: {
+        id: number;
+        title: string;
+    };
+    recordingVersion: {
+        id: number;
+        artistDisplayName: string;
+    };
+};
+
+export type PlaylistDetail = {
+    id: number;
+    title: string;
+    descriptionJson?: unknown;
+    headerImageKey: string;
+    headerImagePublicUrl: string;
+    trackCount: number;
+    createdAt: string;
+    updatedAt: string;
+    tracks: Array<PlaylistTrack>;
+};
+
+export type PlaylistDetailResponse = {
+    data: PlaylistDetail;
+};
+
+export type PlaylistCreateResponse = {
+    data: {
+        id: number;
+    };
+};
+
+export type CreatePlaylistRequest = {
+    /**
+     * Playlist title
+     */
+    title: string;
+    /**
+     * Description as TipTap JSON
+     */
+    descriptionJson?: unknown;
+    /**
+     * Object storage key for header image
+     */
+    headerImageKey?: string;
+};
+
+export type PlaylistSuccessResponse = {
+    success: boolean;
+};
+
+export type UpdatePlaylistRequest = {
+    /**
+     * Playlist title
+     */
+    title?: string;
+    /**
+     * Description as TipTap JSON
+     */
+    descriptionJson?: unknown;
+    /**
+     * Object storage key for header image
+     */
+    headerImageKey?: string;
+};
+
+export type AddTracksResponse = {
+    data: {
+        added: number;
+    };
+};
+
+export type AddTracksRequest = {
+    /**
+     * Array of recording file IDs to add
+     */
+    recordingFileIds: Array<number>;
+};
+
+export type ReorderTracksRequest = {
+    /**
+     * Array of track IDs with their new positions
+     */
+    trackOrder: Array<{
+        trackId: number;
+        position: number;
+    }>;
+};
+
+export type HeaderImageUploadUrlResponse = {
+    data: {
+        /**
+         * Presigned upload URL
+         */
+        uploadUrl: string;
+        /**
+         * Object storage key to reference later
+         */
+        fileKey: string;
+    };
+};
+
+export type HeaderImageUploadUrlRequest = {
+    /**
+     * Image MIME type
+     */
+    mimeType: 'image/jpeg' | 'image/png' | 'image/webp';
+    /**
+     * File size in bytes (max 10MB)
+     */
+    fileSize: number;
+};
+
+export type PlaylistShareItem = {
+    id: number;
+    accessKey: string;
+    contactId: number;
+    playlistId: number;
+};
+
+export type CreatePlaylistShareResponse = {
+    data: Array<PlaylistShareItem>;
+};
+
+export type CreatePlaylistShareRequest = {
+    /**
+     * IDs of contacts to share with
+     */
+    contactIds: Array<number>;
+    /**
+     * Require recipients to authenticate
+     */
+    requireAuth?: boolean;
+    /**
+     * Optional password for the share
+     */
+    password?: string;
+    /**
+     * ISO date when the share expires
+     */
+    expiresAt?: string;
+    /**
+     * Show track metadata to recipients
+     */
+    showMetadata?: boolean;
+    /**
+     * Allow recipients to download tracks
+     */
+    allowPlaylistDownloads?: boolean;
+    /**
+     * Allow recipients to leave comments
+     */
+    allowComments?: boolean;
+};
+
+export type ProjectArtistSummary = {
+    id: number;
+    name: string;
+};
+
+export type ProjectListItem = {
+    id: number;
+    name: string;
+    description: string;
+    artistId: number;
+    artist: ProjectArtistSummary;
+    startDate: string;
+    endDate: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type ProjectsListResponse = {
+    data: Array<ProjectListItem>;
+};
+
+export type ServiceItemsListResponse = {
+    data: Array<{
+        id: number;
+        name: string;
+        description: string;
+        defaultRate: number;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+};
+
+export type ProjectDetailResponse = {
+    data: ProjectListItem;
+};
+
+export type ProjectWithSongsResponse = {
+    data: ProjectListItem & {
+        songs: Array<{
+            id: number;
+            songTitle: string;
+            lyrics: string;
+            notes: string;
+            isInstrumental: boolean;
+            createdAt: string;
+            updatedAt: string;
+            recordingVersions: Array<{
+                id: number;
+                title: string;
+                isPrimary: boolean;
+            }>;
+        }>;
+    };
+};
+
+export type CreateProjectRequest = {
+    /**
+     * Project name
+     */
+    name: string;
+    /**
+     * Project description
+     */
+    description?: string;
+    /**
+     * Artist ID associated with the project
+     */
+    artistId?: number;
+    /**
+     * Project start date (ISO 8601)
+     */
+    startDate?: string;
+    /**
+     * Project end date (ISO 8601)
+     */
+    endDate?: string;
+};
+
+export type UpdateProjectRequest = {
+    /**
+     * Project name
+     */
+    name?: string;
+    /**
+     * Project description
+     */
+    description?: string;
+    /**
+     * Artist ID associated with the project
+     */
+    artistId?: number;
+    /**
+     * Project start date (ISO 8601)
+     */
+    startDate?: string;
+    /**
+     * Project end date (ISO 8601)
+     */
+    endDate?: string;
+};
+
+export type ProjectSuccessResponse = {
+    success: boolean;
+};
+
+export type AddSongToProjectRequest = {
+    /**
+     * Song ID to add to the project
+     */
+    songId: number;
+};
+
+export type TrackingSheetResponse = {
+    data: {
+        columns: Array<{
+            id: number;
+            projectId: number;
+            name: string;
+            sortOrder: number;
+            createdAt: string;
+            updatedAt: string;
+        }>;
+        rows: Array<{
+            id: number;
+            title: string;
+            songId: number;
+            songTitle: string;
+        }>;
+        cells: {
+            [key: string]: {
+                id: number;
+                columnId: number;
+                recordingVersionId: number;
+                status: 'not_started' | 'recorded' | 'edited' | 'complete' | 'not_applicable';
+                updatedBy: string;
+                createdAt: string;
+                updatedAt: string;
+            };
+        };
+    };
+};
+
+export type TrackingCellResponse = {
+    data: {
+        id: number;
+        columnId: number;
+        recordingVersionId: number;
+        status: 'not_started' | 'recorded' | 'edited' | 'complete' | 'not_applicable';
+        updatedBy: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+};
+
+export type UpdateTrackingCellRequest = {
+    /**
+     * Tracking cell status
+     */
+    status: 'not_started' | 'recorded' | 'edited' | 'complete' | 'not_applicable';
+};
+
+export type BillingResponse = {
+    data: {
+        items: Array<{
+            id: number;
+            projectId: number;
+            serviceItemId: number;
+            serviceItemName: string;
+            serviceName: string;
+            description: string;
+            rate: number;
+            quantity: number;
+            status: string;
+            createdAt: string;
+            updatedAt: string;
+        }>;
+        summary: {
+            total: number;
+            uninvoiced: number;
+            invoiced: number;
+            paid: number;
+        };
+    };
+};
+
+export type BillableItemResponse = {
+    data: {
+        id: number;
+        projectId: number;
+        serviceItemId: number;
+        serviceItemName: string;
+        serviceName: string;
+        description: string;
+        rate: number;
+        quantity: number;
+        status: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+};
+
+export type UpdateBillableItemStatusRequest = {
+    /**
+     * Billable item status
+     */
+    status: 'uninvoiced' | 'invoiced' | 'paid';
+};
+
+export type CreateBillableItemRequest = {
+    /**
+     * Service Item ID
+     */
+    serviceItemId: number;
+    /**
+     * Service item name snapshot
+     */
+    serviceItemName: string;
+    /**
+     * Item description
+     */
+    description?: string;
+    /**
+     * Rate in cents
+     */
+    rate: number;
+    /**
+     * Quantity
+     */
+    quantity: number;
+};
+
+export type ProjectSharesResponse = {
+    data: Array<{
+        id: number;
+        accessKey: string;
+        shareType: string;
+        contactId: number;
+        contactFirstName: string;
+        contactLastName: string;
+        recipientEmail: string;
+        isRevoked: boolean;
+        expiresAt: string;
+        lastAccessed: string;
+        totalViews: number;
+        totalPlays: number;
+        totalDownloads: number;
+        createdAt: string;
+        updatedAt: string;
+    }>;
 };
 
 export type ReleaseSummary = {
@@ -35,9 +923,7 @@ export type ReleaseSummary = {
     catalogNumber: string;
     status: 'draft' | 'published';
     artworkFileKey: string;
-    artworkOptimizedFileKey: string;
     artworkPublicUrl: string;
-    artworkOptimizedPublicUrl: string;
     streamingLinks: {
         spotify: string;
         appleMusic: string;
@@ -49,7 +935,6 @@ export type ReleaseSummary = {
         id: number;
         trackNumber: number;
         title: string;
-        artist: string;
         duration: number;
         isrc: string;
     }>;
@@ -75,9 +960,7 @@ export type ReleaseDetail = {
     countriesOfFirstRelease: Array<string>;
     copyrightOwnerCountryOfNationality: string;
     artworkFileKey: string;
-    artworkOptimizedFileKey: string;
     artworkPublicUrl: string;
-    artworkOptimizedPublicUrl: string;
     streamingLinks: {
         spotify: string;
         appleMusic: string;
@@ -89,7 +972,6 @@ export type ReleaseDetail = {
         id: number;
         trackNumber: number;
         title: string;
-        artist: string;
         duration: number;
         isrc: string;
         song: {
@@ -150,7 +1032,1803 @@ export type ReleaseResponse = {
     release: ReleaseDetail;
 };
 
-export type GetApiV1ArtistsData = {
+export type IdeaMarker = {
+    time: number;
+    label: string;
+};
+
+export type IdeaProvenance = {
+    capturedAt: string;
+    userAgent?: string;
+    platform?: 'ios' | 'android' | 'macos' | 'web' | 'unknown';
+    appVersion?: string;
+    deviceModel?: string;
+};
+
+export type Idea = {
+    id: number;
+    title: string;
+    fileKey: string;
+    fileName: string;
+    fileSize: number;
+    duration: number;
+    mimeType: string;
+    waveformPeaks: Array<number>;
+    sampleRate: number;
+    bitDepth: number;
+    trimStart: number;
+    trimEnd: number;
+    markers: Array<IdeaMarker>;
+    notes: string;
+    isFavorite: boolean;
+    isPinned: boolean;
+    tags: Array<string>;
+    fileHash: string;
+    provenance: IdeaProvenance;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type Pagination = {
+    page: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+};
+
+export type IdeasListResponse = {
+    data: Array<Idea>;
+    pagination: Pagination;
+};
+
+export type BulkDeleteIdeasResponse = {
+    data: {
+        deletedCount: number;
+    };
+};
+
+export type BulkDeleteIdeasRequest = {
+    /**
+     * Array of idea IDs to delete
+     */
+    ids: Array<number>;
+};
+
+export type BulkUpdateIdeasResponse = {
+    data: {
+        updatedCount: number;
+    };
+};
+
+export type BulkUpdateIdeasRequest = {
+    /**
+     * Array of idea IDs to update
+     */
+    ids: Array<number>;
+    /**
+     * Set favorite status for all specified ideas
+     */
+    isFavorite?: boolean;
+    /**
+     * Set pinned status for all specified ideas
+     */
+    isPinned?: boolean;
+};
+
+export type BulkAddToSongResponse = {
+    data: {
+        addedCount: number;
+        songId: number;
+    };
+};
+
+export type BulkAddToSongRequest = {
+    /**
+     * Array of idea IDs to add to the song
+     */
+    ideaIds: Array<number>;
+    /**
+     * ID of the song to add ideas to
+     */
+    songId: number;
+    /**
+     * ID of the recording version to attach ideas to
+     */
+    recordingVersionId: number;
+};
+
+export type IdeaResponse = {
+    data: Idea;
+};
+
+export type CreateIdeaRequest = {
+    /**
+     * Title of the idea
+     */
+    title: string;
+    /**
+     * Storage key for the uploaded file
+     */
+    fileKey: string;
+    /**
+     * Original file name
+     */
+    fileName: string;
+    /**
+     * File size in bytes (max 500MB)
+     */
+    fileSize: number;
+    /**
+     * Duration in milliseconds (max 24 hours)
+     */
+    duration: number;
+    /**
+     * MIME type of the audio file
+     */
+    mimeType: 'audio/wav' | 'audio/wave' | 'audio/x-wav' | 'audio/mpeg' | 'audio/mp3' | 'audio/aiff' | 'audio/x-aiff' | 'audio/flac' | 'audio/mp4' | 'audio/x-m4a' | 'audio/aac' | 'audio/ogg' | 'audio/webm';
+    /**
+     * Waveform peaks for visualization (max 10000 points)
+     */
+    waveformPeaks?: Array<number>;
+    /**
+     * Sample rate in Hz
+     */
+    sampleRate?: number;
+    /**
+     * Bit depth
+     */
+    bitDepth?: number;
+    /**
+     * Client platform
+     */
+    platform?: 'ios' | 'android' | 'macos' | 'web' | 'unknown';
+    /**
+     * Client app version
+     */
+    appVersion?: string;
+    /**
+     * Client device model
+     */
+    deviceModel?: string;
+    /**
+     * SHA-256 hash of the uploaded file (lowercase hex)
+     */
+    fileHash?: string;
+};
+
+export type UpdateIdeaRequest = {
+    /**
+     * Title of the idea
+     */
+    title?: string;
+    /**
+     * Trim start position in milliseconds
+     */
+    trimStart?: number;
+    /**
+     * Trim end position in milliseconds
+     */
+    trimEnd?: number;
+    /**
+     * Audio markers (max 100)
+     */
+    markers?: Array<IdeaMarker>;
+    /**
+     * Notes about the idea (max 10000 chars)
+     */
+    notes?: string;
+    /**
+     * Whether the idea is favorited
+     */
+    isFavorite?: boolean;
+    /**
+     * Whether the idea is pinned
+     */
+    isPinned?: boolean;
+    /**
+     * Tags for the idea (max 20)
+     */
+    tags?: Array<string>;
+};
+
+export type StreamUrlResponse = {
+    data: {
+        streamUrl: string;
+    };
+};
+
+export type LinkedSong = {
+    songId: number;
+    songTitle: string;
+};
+
+export type LinkedSongsResponse = {
+    data: Array<LinkedSong>;
+};
+
+export type UploadUrlResponse = {
+    data: {
+        uploadUrl: string;
+        fileKey: string;
+    };
+};
+
+export type GetUploadUrlRequest = {
+    /**
+     * Original file name
+     */
+    fileName: string;
+    /**
+     * MIME type of the audio file
+     */
+    mimeType: 'audio/wav' | 'audio/wave' | 'audio/x-wav' | 'audio/mpeg' | 'audio/mp3' | 'audio/aiff' | 'audio/x-aiff' | 'audio/flac' | 'audio/mp4' | 'audio/x-m4a' | 'audio/aac' | 'audio/ogg' | 'audio/webm';
+    /**
+     * File size in bytes (max 500MB)
+     */
+    fileSize: number;
+};
+
+export type ConvertToSongResponse = {
+    data: {
+        songId: number;
+        recordingVersionId: number;
+    };
+};
+
+export type ConvertToSongRequest = {
+    /**
+     * Title for the new song (defaults to idea title)
+     */
+    songTitle?: string;
+};
+
+export type AddToSongResponse = {
+    data: {
+        recordingFileId: number;
+    };
+};
+
+export type AddToSongRequest = {
+    /**
+     * ID of the song to add the idea to
+     */
+    songId: number;
+    /**
+     * ID of the recording version to attach the idea to
+     */
+    recordingVersionId: number;
+};
+
+export type MediaItem = {
+    id: string;
+    mediaType: 'image' | 'video';
+    originalFilename: string;
+    mimeType: string;
+    fileSizeBytes: number;
+    width: number;
+    height: number;
+    alt: string;
+    originalUrl: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type MediaListResponse = {
+    data: Array<MediaItem>;
+    nextCursor: string;
+};
+
+export type MediaUploadUrlResponse = {
+    data: {
+        uploadUrl: string;
+        fileKey: string;
+        expiresAt: number;
+    };
+};
+
+export type MediaUploadUrlRequest = {
+    /**
+     * Original filename
+     */
+    filename: string;
+    /**
+     * MIME type of the image
+     */
+    mimeType: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif';
+    /**
+     * File size in bytes (max 20MB)
+     */
+    fileSizeBytes: number;
+};
+
+export type MediaConfirmUploadResponse = {
+    data: MediaItem;
+};
+
+export type MediaConfirmUploadRequest = {
+    /**
+     * Storage key from the upload URL response
+     */
+    fileKey: string;
+    /**
+     * Original filename
+     */
+    filename: string;
+    /**
+     * MIME type of the image
+     */
+    mimeType: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif';
+    /**
+     * File size in bytes
+     */
+    fileSizeBytes: number;
+    /**
+     * Image width in pixels
+     */
+    width: number;
+    /**
+     * Image height in pixels
+     */
+    height: number;
+    /**
+     * Alt text for the image
+     */
+    alt?: string;
+};
+
+export type DeleteMediaResponse = {
+    success: boolean;
+};
+
+export type ReceivedSharesListResponse = {
+    data: Array<{
+        id: number;
+        accessKey: string;
+        title: string;
+        type: 'project' | 'playlist' | 'song';
+        senderName: string;
+        senderUserId: string;
+        isPasswordProtected: boolean;
+        allowComments: boolean;
+        allowUploads: boolean;
+        allowPlaylistDownloads: boolean;
+        createdAt: string;
+    }>;
+};
+
+export type SharingIndicatorShare = {
+    id: number;
+    contactId: number;
+    contactFirstName: string;
+    contactLastName: string;
+    contactEmail: string;
+    accessKey: string;
+    shareType: 'song' | 'project' | 'folder' | 'domain' | 'file';
+    projectId: number;
+    songId: number;
+    allowDownload: boolean;
+    allowComments: boolean;
+    allowUploads: boolean;
+    allowApprovals: boolean;
+    expiresAt: string;
+    lastAccessed: string;
+    isRevoked: boolean;
+};
+
+export type SharingIndicatorDataResponse = {
+    data: {
+        songLevelShares: Array<SharingIndicatorShare>;
+        domainShares: {
+            [key: string]: Array<SharingIndicatorShare>;
+        };
+        folderShares: {
+            [key: string]: Array<SharingIndicatorShare>;
+        };
+        fileShares: {
+            [key: string]: Array<SharingIndicatorShare>;
+        };
+    };
+};
+
+export type ShareResponse = {
+    data: Share;
+};
+
+export type ActivityTimeSeriesResponse = {
+    data: Array<{
+        date: string;
+        views: number;
+        plays: number;
+        downloads: number;
+    }>;
+};
+
+export type PlayStatisticsResponse = {
+    data: {
+        songs: Array<{
+            songId: number;
+            songTitle: string;
+            totalPlays: number;
+            uniqueListeners: number;
+            files: Array<{
+                recordingFileId: number;
+                fileName: string;
+                playCount: number;
+                uniqueListeners: number;
+                lastPlayed: string;
+                avgDurationSeconds: number;
+                avgCompletionPercent: number;
+            }>;
+        }>;
+        totalPlays: number;
+    };
+};
+
+export type DownloadStatisticsResponse = {
+    data: {
+        songs: Array<{
+            songId: number;
+            songTitle: string;
+            total: number;
+            formats: {
+                [key: string]: number;
+            };
+            files: Array<{
+                recordingFileId: number;
+                fileName: string;
+                format: string;
+                count: number;
+            }>;
+        }>;
+        overallFormats: {
+            [key: string]: number;
+        };
+        totalDownloads: number;
+    };
+};
+
+export type UploadStatisticsResponse = {
+    data: {
+        songs: Array<{
+            songId: number;
+            songTitle: string;
+            total: number;
+            files: Array<{
+                inboxFileId: number;
+                fileName: string;
+                fileSize: number;
+                submittedByName: string;
+                submittedAt: string;
+            }>;
+        }>;
+        totalUploads: number;
+    };
+};
+
+export type UniqueViewersResponse = {
+    data: Array<{
+        visitorId: string;
+        firstViewedAt: string;
+        country: string;
+        city: string;
+        region: string;
+        userAgent: string;
+        isAuthenticated: boolean;
+    }>;
+};
+
+export type ShareSuccessResponse = {
+    success: boolean;
+};
+
+export type HideShareRequest = {
+    /**
+     * ID of the share to hide
+     */
+    shareId: number;
+};
+
+export type BlockSenderRequest = {
+    /**
+     * User ID of the sender to block
+     */
+    senderUserId: string;
+};
+
+export type CreateShareResponse = {
+    success: boolean;
+    shares: Array<{
+        id: number;
+        accessKey: string;
+        contactId: number;
+    }>;
+};
+
+export type AccessRules = {
+    recording?: {
+        demo?: AudioFileTypeRule;
+        rough_mix?: AudioFileTypeRule;
+        multitrack?: AudioFileTypeRule;
+        stem?: AudioFileTypeRule;
+        session?: AudioFileTypeRule;
+        [key: string]: unknown | AudioFileTypeRule | undefined;
+    };
+    mixing?: {
+        mix?: AudioFileTypeRule;
+        multitrack?: AudioFileTypeRule;
+        stem?: AudioFileTypeRule;
+        session?: AudioFileTypeRule;
+        [key: string]: unknown | AudioFileTypeRule | undefined;
+    };
+    mastering?: {
+        digital?: AudioFileTypeRule;
+        cd?: AudioFileTypeRule;
+        vinyl?: AudioFileTypeRule;
+        [key: string]: unknown | AudioFileTypeRule | undefined;
+    };
+    assets?: {
+        artwork?: AssetFileTypeRule;
+        social_media?: AssetFileTypeRule;
+        marketing?: AssetFileTypeRule;
+        photo?: AssetFileTypeRule;
+        video?: AssetFileTypeRule;
+        [key: string]: unknown | AssetFileTypeRule | undefined;
+    };
+    [key: string]: unknown | {
+        demo?: AudioFileTypeRule;
+        rough_mix?: AudioFileTypeRule;
+        multitrack?: AudioFileTypeRule;
+        stem?: AudioFileTypeRule;
+        session?: AudioFileTypeRule;
+        [key: string]: unknown | AudioFileTypeRule | undefined;
+    } | {
+        mix?: AudioFileTypeRule;
+        multitrack?: AudioFileTypeRule;
+        stem?: AudioFileTypeRule;
+        session?: AudioFileTypeRule;
+        [key: string]: unknown | AudioFileTypeRule | undefined;
+    } | {
+        digital?: AudioFileTypeRule;
+        cd?: AudioFileTypeRule;
+        vinyl?: AudioFileTypeRule;
+        [key: string]: unknown | AudioFileTypeRule | undefined;
+    } | {
+        artwork?: AssetFileTypeRule;
+        social_media?: AssetFileTypeRule;
+        marketing?: AssetFileTypeRule;
+        photo?: AssetFileTypeRule;
+        video?: AssetFileTypeRule;
+        [key: string]: unknown | AssetFileTypeRule | undefined;
+    } | undefined;
+};
+
+export type CreateShareRequest = {
+    /**
+     * Type of share
+     */
+    shareType: 'project' | 'song' | 'folder' | 'domain';
+    /**
+     * Project ID (required for project shares)
+     */
+    projectId?: number;
+    /**
+     * Song ID for canonical song scope
+     */
+    songId?: number;
+    /**
+     * Legacy recording version ID used for preset compatibility
+     */
+    recordingVersionId?: number;
+    /**
+     * Song scope version selector (null for all versions, array for selected versions)
+     */
+    recordingVersionIds?: Array<number>;
+    /**
+     * Contact IDs to share with (each gets their own link). Omit or pass empty array for a public share link.
+     */
+    contactIds?: Array<number>;
+    accessRules: AccessRules;
+    /**
+     * Global non-playlist download permission
+     */
+    allowDownloads?: boolean;
+    /**
+     * Require authentication to view
+     */
+    requireAuth?: boolean;
+    /**
+     * SHA-256 hashed password for password-protected shares
+     */
+    password?: string;
+    /**
+     * Expiration date (ISO 8601)
+     */
+    expiresAt?: string;
+    /**
+     * Allow recipients to upload files
+     */
+    allowUploads?: boolean;
+    /**
+     * Upload permission expiration date (ISO 8601)
+     */
+    uploadExpiresAt?: string;
+    /**
+     * Require authentication to upload
+     */
+    requireUploadAuth?: boolean;
+    /**
+     * Allow recipients to comment
+     */
+    allowComments?: boolean;
+    /**
+     * Require authentication to comment
+     */
+    requireCommentAuth?: boolean;
+    /**
+     * Allow billing features
+     */
+    allowBilling?: boolean;
+    /**
+     * Allow file approval
+     */
+    allowApprovals?: boolean;
+    /**
+     * Skip keyword filtering for playlists
+     */
+    skipPlaylistKeywordFiltering?: boolean;
+};
+
+export type CreateFileShareRequest = {
+    /**
+     * Recording file ID
+     */
+    recordingFileId: number;
+    /**
+     * Contact IDs to share with (each gets their own link). Omit or pass empty array for a public share link.
+     */
+    contactIds?: Array<number>;
+    /**
+     * Require authentication to view
+     */
+    requireAuth?: boolean;
+    /**
+     * SHA-256 hashed password for password-protected shares
+     */
+    password?: string;
+    /**
+     * Expiration date (ISO 8601)
+     */
+    expiresAt?: string;
+    /**
+     * Legacy file-level download permission
+     */
+    allowDownload?: boolean;
+    /**
+     * Global non-playlist download permission
+     */
+    allowDownloads?: boolean;
+    /**
+     * Allow recipients to comment
+     */
+    allowComments?: boolean;
+    /**
+     * Require authentication to comment
+     */
+    requireCommentAuth?: boolean;
+    accessRules?: AccessRules;
+};
+
+export type UpdateShareRequest = {
+    /**
+     * Require authentication to view
+     */
+    requireAuth?: boolean;
+    /**
+     * SHA-256 hashed password (null to remove, omit to keep unchanged)
+     */
+    password?: string;
+    /**
+     * Expiration date (ISO 8601, null to remove)
+     */
+    expiresAt?: string;
+    /**
+     * Allow recipients to upload files
+     */
+    allowUploads?: boolean;
+    /**
+     * Upload permission expiration date (ISO 8601)
+     */
+    uploadExpiresAt?: string;
+    /**
+     * Allow recipients to comment
+     */
+    allowComments?: boolean;
+    /**
+     * Allow billing features
+     */
+    allowBilling?: boolean;
+    /**
+     * Allow file approval
+     */
+    allowApprovals?: boolean;
+    /**
+     * Allow downloads
+     */
+    allowDownloads?: boolean;
+    accessRules?: AccessRules;
+};
+
+export type InboxFile = {
+    id: number;
+    fileName: string;
+    fileSize: number;
+    mimeType: string;
+    fileKey: string;
+    cdnUrl: string;
+    submittedByName: string;
+    submittedByEmail: string;
+    status: string;
+    duration: number;
+    sampleRate: number;
+    bitDepth: number;
+    bitrate: number;
+    submittedAt: string;
+    createdAt: string;
+};
+
+export type InboxFilesResponse = {
+    data: Array<InboxFile>;
+};
+
+export type DeleteInboxFilesRequest = {
+    /**
+     * Array of inbox file IDs to delete
+     */
+    inboxFileIds: Array<number>;
+};
+
+export type AcceptInboxFilesResponse = {
+    success: boolean;
+    createdCount: number;
+};
+
+export type AcceptInboxFilesRequest = {
+    /**
+     * Array of inbox file IDs to accept
+     */
+    inboxFileIds: Array<number>;
+    /**
+     * Target domain for the accepted files
+     */
+    domain: 'recording' | 'mixing' | 'mastering';
+    /**
+     * Target file type within the domain
+     */
+    fileType: 'demo' | 'rough_mix' | 'multitrack' | 'stem' | 'session' | 'mix' | 'digital' | 'cd' | 'vinyl' | 'artwork' | 'social_media' | 'marketing' | 'photo' | 'video';
+    /**
+     * Recording version to add the files to
+     */
+    recordingVersionId: number;
+};
+
+export type TrackShareActivityResponse = {
+    success: true;
+    duplicate?: boolean;
+    skipped?: boolean;
+    reason?: string;
+};
+
+export type TrackShareActivityRequest = {
+    /**
+     * Share access key
+     */
+    accessKey: string;
+    /**
+     * Unique session identifier
+     */
+    sessionId: string;
+    /**
+     * Visitor ID for unauthenticated users; ignored when authenticated
+     */
+    visitorId?: string;
+    /**
+     * Type of activity to track
+     */
+    activityType: 'view' | 'play' | 'pause' | 'seek' | 'download';
+    /**
+     * Recording file ID for play events
+     */
+    recordingFileId?: number;
+    /**
+     * Play-specific metrics (only for play events)
+     */
+    playMetrics?: {
+        /**
+         * Actual seconds spent listening
+         */
+        accumulatedSeconds: number;
+        /**
+         * Total track length in seconds
+         */
+        trackDuration: number;
+        /**
+         * Percentage of song timeline covered
+         */
+        coveragePercent: number;
+        /**
+         * Whether the listener heard the ending
+         */
+        reachedEnd: boolean;
+        /**
+         * Array of [start, end] time ranges in seconds that were listened to
+         */
+        listenedSegments: Array<[
+            number,
+            number
+        ]>;
+    };
+    /**
+     * Additional metadata for the activity
+     */
+    metadata?: {
+        fileName?: string;
+        fileKey?: string;
+        duration?: number;
+        position?: number;
+        durationSeconds?: number;
+        completionPercent?: number;
+        reachedEnd?: boolean;
+        fileType?: string;
+        mimeType?: string;
+        fileSize?: number;
+        outputFileSize?: number;
+        outputFormat?: string;
+        batchId?: string;
+        domain?: string;
+        source?: string;
+    };
+};
+
+export type ShareFilesResponse = {
+    data: {
+        share: {
+            id: number;
+            shareType: string;
+            projectId: number;
+            recordingVersionId: number;
+            recordingFileId: number;
+            title: string;
+            description: string;
+            recipientName: string;
+            createdAt?: string;
+            allowComments: boolean;
+        };
+        files: Array<{
+            id: number;
+            recordingVersionId: number;
+            songId: number;
+            songTitle: string;
+            version: string;
+            fileName: string;
+            fileSize: number;
+            mimeType: string;
+            domain: string;
+            fileType: string;
+            duration: number;
+            sampleRate: number;
+            bitDepth: number;
+            bitrate: number;
+            status: string;
+            isApproved: boolean;
+            hideFromPlaylists: boolean;
+            fileKey: string;
+            cdnUrl: string;
+            createdAt: string;
+            updatedAt: string;
+        }>;
+    };
+};
+
+export type PlaylistShareResponse = {
+    data: {
+        share: {
+            id: number;
+            shareType: string;
+            title: string;
+            senderName: string;
+            allowPlaylistDownloads: boolean;
+            createdAt?: string;
+        };
+        playlist: {
+            id: number;
+            title: string;
+            description: string;
+            headerImagePublicUrl: string;
+            tracks: Array<{
+                id: number;
+                playlistId: number;
+                recordingFileId: number;
+                position: number;
+                file: {
+                    id: number;
+                    fileName: string;
+                    fileKey: string;
+                    duration: number;
+                    mimeType: string;
+                    domain: string;
+                    fileType: string;
+                    waveformPeaks: Array<number>;
+                    cdnUrl: string;
+                };
+                song: {
+                    id: number;
+                    title: string;
+                };
+                recordingVersion: {
+                    id: number;
+                    artistDisplayName: string;
+                };
+            }>;
+            trackCount: number;
+        };
+    };
+};
+
+export type ShareStreamUrlResponse = {
+    data: {
+        url: string;
+    };
+};
+
+export type V1ValidatePasswordResponse = {
+    success: boolean;
+    error?: string;
+};
+
+export type V1ValidatePasswordRequest = {
+    /**
+     * Share access key
+     */
+    accessKey: string;
+    /**
+     * SHA-256 hashed password
+     */
+    passwordHash: string;
+};
+
+export type RecordingVersionSummary = {
+    id: number;
+    title: string;
+    isPrimary: boolean;
+    songId: number;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type SongListItem = {
+    id: number;
+    songTitle: string;
+    alternateTitles: Array<string>;
+    isInstrumental: boolean;
+    genre: string;
+    workType: string;
+    language: string;
+    copyrightYear: number;
+    iswc: string;
+    notes: string;
+    isFavorite: boolean;
+    createdAt: string;
+    updatedAt: string;
+    recordingVersions: Array<RecordingVersionSummary>;
+    totalFileCount: number;
+    primaryArtistName: string;
+    projectId: number;
+    projectName: string;
+};
+
+export type SongsPagination = {
+    page: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+};
+
+export type SongsListResponse = {
+    data: Array<SongListItem>;
+    pagination: SongsPagination;
+};
+
+export type Writer = {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    pro?: string;
+    ipiNumber?: string;
+    writerShare: number;
+    role: 'author' | 'composer' | 'composer and author';
+};
+
+export type PublishingParty = {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    pro?: string;
+    ipiNumber?: string;
+    publishingShare: number;
+    affiliatedWriter?: string;
+};
+
+export type FolderState = {
+    openDomainIds: Array<string>;
+    hiddenDomainIds?: Array<string>;
+    openFolderIds: Array<string>;
+    hiddenFolderIds?: Array<string>;
+};
+
+export type SongDetail = {
+    id: number;
+    songTitle: string;
+    alternateTitles: Array<string>;
+    isInstrumental: boolean;
+    genre: string;
+    workType: string;
+    language: string;
+    lyrics: string;
+    copyrightYear: number;
+    iswc: string;
+    notes: string;
+    writers: Array<Writer>;
+    publishingInfo: Array<PublishingParty>;
+    projectId: number;
+    projectName: string;
+    createdAt: string;
+    updatedAt: string;
+    primaryArtistName: string;
+    recordingVersions: Array<{
+        id: number;
+        songId: number;
+        title: string;
+        isPrimary: boolean;
+        notes: string;
+        bpm: number;
+        keySignature: string;
+        timeSignature: string;
+        primaryGenre: string;
+        projectId: number;
+        folderState: FolderState;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+};
+
+export type SongDetailResponse = {
+    data: SongDetail;
+};
+
+export type CreateSongRequest = {
+    /**
+     * Song title
+     */
+    songTitle: string;
+    /**
+     * Song notes
+     */
+    notes?: string;
+    /**
+     * Project ID to link the song to
+     */
+    projectId?: number;
+    /**
+     * Artist ID to set as primary performer
+     */
+    artistId?: number;
+};
+
+export type UpdateSongRequest = {
+    /**
+     * Song title
+     */
+    songTitle?: string;
+    /**
+     * Song notes
+     */
+    notes?: string;
+    /**
+     * Song writers
+     */
+    writers?: Array<Writer>;
+};
+
+export type RecordingVersion = {
+    id: number;
+    songId: number;
+    title: string;
+    notes: string;
+    isPrimary: boolean;
+    bpm: number;
+    keySignature: string;
+    timeSignature: string;
+    labelName: string;
+    primaryGenre: string;
+    secondaryGenre: string;
+    hasExplicitLyrics: boolean;
+    studio: string;
+    recordingDate: string;
+    dateOfFirstRelease: string;
+    countryOfMastering: string;
+    credits: Array<{
+        name: string;
+        role: string;
+    }>;
+    masterOwners: Array<{
+        name: string;
+        entityType: string;
+        royaltyPercentage: number;
+        contactInfo?: {
+            email?: string;
+            phone?: string;
+        };
+        isni?: string;
+        ipi?: string;
+    }>;
+    folderState: FolderState;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type RecordingVersionsListResponse = {
+    data: Array<RecordingVersion>;
+};
+
+export type CreateRecordingVersionRequest = {
+    /**
+     * Version title
+     */
+    title: string;
+    /**
+     * Whether this is the primary version
+     */
+    isPrimary?: boolean;
+    /**
+     * Version notes
+     */
+    notes?: string;
+};
+
+export type SongSuccessResponse = {
+    success: boolean;
+};
+
+export type RecordingFile = {
+    id: number;
+    recordingVersionId: number;
+    parentFileId: number;
+    parentFileRelation: string;
+    domain: string;
+    fileType: string;
+    isApproved: boolean;
+    toBeMastered: boolean;
+    isPrivate: boolean;
+    hideFromPlaylists: boolean;
+    mimeType: string;
+    fileName: string;
+    fileSize: number;
+    duration: number;
+    sampleRate: number;
+    bitDepth: number;
+    bitrate: number;
+    waveformPeaks: Array<number>;
+    isrc: string;
+    status: string;
+    errorMessage: string;
+    countryOfRecording: string;
+    language: string;
+    commentCount: number;
+    cdnUrl: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type RecordingFilesListResponse = {
+    data: Array<RecordingFile>;
+};
+
+export type RecordingFileResponse = {
+    data: RecordingFile;
+};
+
+export type FileUrlResponse = {
+    data: {
+        url: string;
+    };
+};
+
+export type FileUrlRequest = {
+    /**
+     * File ID
+     */
+    fileId: number;
+};
+
+export type UploadFileResponse = {
+    data: {
+        uploadUrl: string;
+        fileId: number;
+    };
+};
+
+export type UploadFileRequest = {
+    /**
+     * Original file name
+     */
+    fileName: string;
+    /**
+     * MIME type of the file
+     */
+    mimeType: string;
+    /**
+     * File size in bytes
+     */
+    fileSize: number;
+    /**
+     * File domain (recording, mixing, mastering, assets)
+     */
+    domain: string;
+    /**
+     * File type within the domain (e.g. demo, mix, stem)
+     */
+    fileType: string;
+    /**
+     * Duration in milliseconds
+     */
+    duration?: number;
+    sampleRate?: number;
+    bitDepth?: number;
+    bitrate?: number;
+    waveformPeaks?: Array<number>;
+};
+
+export type UpdateFolderStateRequest = {
+    /**
+     * IDs of expanded domains
+     */
+    openDomainIds: Array<string>;
+    /**
+     * IDs of hidden domains
+     */
+    hiddenDomainIds?: Array<string>;
+    /**
+     * IDs of expanded folders
+     */
+    openFolderIds: Array<string>;
+    /**
+     * IDs of hidden folders
+     */
+    hiddenFolderIds?: Array<string>;
+};
+
+export type RenameFileRequest = {
+    /**
+     * New file name (including extension)
+     */
+    fileName: string;
+};
+
+export type MoveFileRequest = {
+    /**
+     * Target domain (recording, mixing, mastering, assets)
+     */
+    domain: 'recording' | 'mixing' | 'mastering' | 'assets';
+    /**
+     * Target file type within the domain
+     */
+    fileType: 'demo' | 'rough_mix' | 'multitrack' | 'stem' | 'session' | 'mix' | 'digital' | 'cd' | 'vinyl' | 'artwork' | 'social_media' | 'marketing' | 'photo' | 'video';
+};
+
+export type UpdateFileVisibilityRequest = {
+    /**
+     * Whether the file should be private (visible only to owner)
+     */
+    isPrivate: boolean;
+};
+
+export type FileComment = {
+    id: number;
+    recordingFileId: number;
+    userId: string;
+    userName: string;
+    email: string;
+    timestamp: number;
+    text: string;
+    parentCommentId: number;
+    isPrivate: boolean;
+    completedAt: string;
+    completedBy: string;
+    createdAt: string;
+    updatedAt: string;
+    editedAt: string;
+    hasEqSettings: boolean;
+    parentAuthorName: string;
+};
+
+export type FileCommentsListResponse = {
+    data: Array<FileComment>;
+};
+
+export type FileCommentResponse = {
+    data: FileComment;
+};
+
+/**
+ * Optional EQ settings to attach to this comment
+ */
+export type EqSettings = {
+    lowCut: {
+        enabled: boolean;
+        frequency: number;
+        slope: 12 | 24;
+    };
+    lowShelf: {
+        enabled: boolean;
+        frequency: number;
+        gain: number;
+    };
+    mid: {
+        enabled: boolean;
+        frequency: number;
+        gain: number;
+        q: number;
+    };
+    highShelf: {
+        enabled: boolean;
+        frequency: number;
+        gain: number;
+    };
+    highCut: {
+        enabled: boolean;
+        frequency: number;
+        slope: 12 | 24;
+    };
+    bypassed: boolean;
+};
+
+export type CreateCommentRequest = {
+    /**
+     * Comment text
+     */
+    text: string;
+    /**
+     * Timestamp in seconds within the audio file
+     */
+    timestamp?: number;
+    /**
+     * Parent comment ID for threaded replies
+     */
+    parentCommentId?: number;
+    /**
+     * Whether the comment is private (owner only)
+     */
+    isPrivate?: boolean;
+    eqSettings?: EqSettings;
+};
+
+export type UpdateCommentRequest = {
+    /**
+     * Updated comment text
+     */
+    text?: string;
+    /**
+     * Updated privacy setting (owner only)
+     */
+    isPrivate?: boolean;
+};
+
+export type DeleteCommentResponse = {
+    data: {
+        success: boolean;
+    };
+};
+
+export type MarkCompleteRequest = {
+    /**
+     * Whether to mark the comment as complete or incomplete
+     */
+    completed: boolean;
+};
+
+export type EqSettingsResponse = {
+    data: EqSettings & unknown;
+};
+
+export type CreatedSplitListItem = {
+    id: number;
+    songTitle: string;
+    generatedAt: string;
+    status: 'pending' | 'superseded' | 'executed' | 'voided';
+    signedCount: number;
+    totalCount: number;
+    allSigned: boolean;
+    linkedSongsCount: number;
+};
+
+export type CreatedSplitsListResponse = {
+    data: {
+        items: Array<CreatedSplitListItem>;
+        nextCursor: {
+            generatedAt: string;
+            id: number;
+        };
+        hasMore: boolean;
+    };
+};
+
+export type ReceivedSplitListItem = {
+    id: number;
+    songTitle: string;
+    generatedAt: string;
+    status: 'pending' | 'superseded' | 'executed' | 'voided';
+    createdByUserId: string;
+    userSignatureStatus: 'pending' | 'viewed' | 'signed' | 'declined' | 'expired';
+    userSignedAt: string;
+    signedCount: number;
+    totalCount: number;
+    allSigned: boolean;
+    linkedSongId: number;
+    token: string;
+};
+
+export type ReceivedSplitsListResponse = {
+    data: {
+        items: Array<ReceivedSplitListItem>;
+    };
+};
+
+export type SongSplitSnapshot = {
+    title: string;
+    alternateTitles?: Array<string>;
+    copyrightYear?: number;
+    language?: string;
+    notes?: string;
+};
+
+export type WriterSplitSnapshot = {
+    name: string;
+    email: string;
+    phoneNumber?: string;
+    pro?: string;
+    ipiNumber?: string;
+    writerShare: number;
+    role: 'author' | 'composer' | 'composer and author';
+};
+
+export type SplitSheetSignature = {
+    id: number;
+    recipientName: string;
+    recipientEmail: string;
+    status: 'pending' | 'viewed' | 'signed' | 'declined' | 'expired';
+    viewedAt: string;
+    signedAt: string;
+    declinedAt: string;
+    emailFailedAt: string;
+    token?: string;
+};
+
+export type RelatedVersion = {
+    id: number;
+    generatedAt: string;
+    status: 'pending' | 'superseded' | 'executed' | 'voided';
+    signedCount: number;
+    totalCount: number;
+};
+
+export type SplitDetailResponse = {
+    data: {
+        version: {
+            id: number;
+            status: 'pending' | 'superseded' | 'executed' | 'voided';
+            generatedAt: string;
+            createdByUserId: string;
+            designatedWriterName: string;
+            designatedWriterEmail: string;
+            proSubmittedAt: string;
+            remindersEnabled: boolean;
+        };
+        songSnapshot: SongSplitSnapshot;
+        writerSplits: Array<WriterSplitSnapshot>;
+        signatures: Array<SplitSheetSignature>;
+        demoFileName: string;
+        demoStreamUrl: string;
+        pdfDownloadUrl: string;
+        allSigned: boolean;
+        isCreator: boolean;
+        isAmendment: boolean;
+        linkedSongId: number;
+        relatedVersions: Array<RelatedVersion>;
+    };
+};
+
+export type SplitStatusResponse = {
+    data: {
+        version: {
+            id: number;
+            status: 'pending' | 'superseded' | 'executed' | 'voided';
+            generatedAt: string;
+            designatedWriterName: string;
+            designatedWriterEmail: string;
+            proSubmittedAt: string;
+        };
+        signatures: Array<{
+            id: number;
+            recipientName: string;
+            recipientEmail: string;
+            status: 'pending' | 'viewed' | 'signed' | 'declined' | 'expired';
+            signedAt: string;
+        }>;
+    };
+};
+
+export type CreateSplitSheetResponse = {
+    data: {
+        versionId: number;
+        pdfFileKey: string;
+        pdfHash: string;
+        signatureCount: number;
+    };
+};
+
+export type CreateSplitSheetRequest = {
+    /**
+     * Song ID to create split sheet from
+     */
+    songId?: number;
+    songSnapshot?: SongSplitSnapshot & unknown;
+    /**
+     * Writers when songId is not provided
+     */
+    writers?: Array<WriterSplitSnapshot>;
+    /**
+     * Email of the designated PRO submitter
+     */
+    designatedWriterEmail: string;
+    /**
+     * Recording file ID for attached demo
+     */
+    demoFileId?: number;
+    /**
+     * Days until signing links expire (default 30)
+     */
+    expiresInDays?: number;
+    /**
+     * Enable email reminders for unsigned writers
+     */
+    remindersEnabled?: boolean;
+    /**
+     * Whether this is an amendment to a prior version
+     */
+    isUpdate?: boolean;
+    /**
+     * Auto-sign the creator if their email matches a writer
+     */
+    autoSignCreator?: boolean;
+};
+
+export type SplitSuccessResponse = {
+    data: {
+        success: boolean;
+    };
+};
+
+export type ResendResponse = {
+    data: {
+        emailsSent: number;
+    };
+};
+
+export type CreateSongFromSplitResponse = {
+    data: {
+        songId: number;
+    };
+};
+
+export type UpdateDesignatedWriterRequest = {
+    /**
+     * Email of the new designated PRO submitter
+     */
+    designatedWriterEmail: string;
+};
+
+export type DemoFile = {
+    id: number;
+    fileName: string;
+    fileType: string;
+    songTitle: string;
+    recordingVersionTitle: string;
+    duration: number;
+    fileSize: number;
+};
+
+export type DemoFilesListResponse = {
+    data: Array<DemoFile>;
+};
+
+export type PublicSplitDetailResponse = {
+    data: {
+        recipientName: string;
+        recipientEmail: string;
+        status: 'pending' | 'viewed' | 'signed' | 'declined' | 'expired';
+        versionStatus: 'pending' | 'superseded' | 'executed' | 'voided';
+        song: SongSplitSnapshot;
+        writers: Array<WriterSplitSnapshot>;
+        pdfHash: string;
+        demoFileName: string;
+        demoStreamUrl: string;
+        designatedWriterName: string;
+        designatedWriterEmail: string;
+        generatedAt: string;
+        tokenExpiresAt: string;
+        isAmendment: boolean;
+        signatures: Array<{
+            recipientEmail: string;
+            status: 'pending' | 'viewed' | 'signed' | 'declined' | 'expired';
+            signedAt: string;
+        }>;
+    };
+};
+
+export type SignResponse = {
+    data: {
+        status: 'signed';
+    };
+};
+
+export type DeclineResponse = {
+    data: {
+        status: 'declined';
+    };
+};
+
+export type PdfResponse = {
+    data: {
+        pdfUrl: string;
+        fileName: string;
+    };
+};
+
+export type TrashItem = {
+    /**
+     * File ID
+     */
+    id: number;
+    /**
+     * File name
+     */
+    fileName: string;
+    /**
+     * File size in bytes
+     */
+    fileSize: number;
+    /**
+     * Type of file
+     */
+    fileType: 'recording_file' | 'inbox_file';
+    /**
+     * ISO 8601 deletion timestamp
+     */
+    deletedAt: string;
+    /**
+     * Name of the user who deleted the file
+     */
+    deletedByName: string;
+    /**
+     * Location context (song/version or share info)
+     */
+    contextInfo: string;
+    /**
+     * File domain
+     */
+    domain: string;
+    /**
+     * MIME type
+     */
+    mimeType: string;
+};
+
+export type TrashListResponse = {
+    data: Array<TrashItem>;
+};
+
+export type TrashMutationResponse = {
+    data: {
+        /**
+         * Number of files affected
+         */
+        count: number;
+    };
+};
+
+export type TrashFileIdsRequest = {
+    /**
+     * Array of file IDs
+     */
+    fileIds: Array<number>;
+    /**
+     * Type of files being operated on
+     */
+    fileType: 'recording_file' | 'inbox_file';
+};
+
+export type UserSettingsData = {
+    currency: string;
+    emailNotifications: boolean;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    dateOfBirth: string;
+    countryOfCitizenship: string;
+};
+
+export type UserSettingsResponse = {
+    data: UserSettingsData;
+};
+
+export type UpdateUserSettingsBody = {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    dateOfBirth?: string;
+    countryOfCitizenship?: string;
+    currency?: string;
+    emailNotifications?: boolean;
+};
+
+export type SongwriterProfile = {
+    id: number;
+    pro: string;
+    ipiNumber: string;
+    defaultRole: 'author' | 'composer' | 'composer and author';
+};
+
+export type SongwriterProfileResponse = {
+    data: SongwriterProfile;
+};
+
+export type UpsertSongwriterBody = {
+    pro?: string;
+    ipiNumber?: string;
+    defaultRole?: 'author' | 'composer' | 'composer and author';
+};
+
+export type RightsOwnerProfile = {
+    id: number;
+    name: string;
+    entityType: 'individual' | 'company' | 'label';
+    isni: string;
+    isrcPrefix: string;
+};
+
+export type RightsOwnerProfileResponse = {
+    data: RightsOwnerProfile;
+};
+
+export type UpsertRightsOwnerBody = {
+    name: string;
+    entityType?: 'individual' | 'company' | 'label';
+    isni?: string;
+    isrcPrefix?: string;
+};
+
+export type SubscriptionStatus = {
+    state: 'active' | 'trialing' | 'grace_period' | 'archived' | 'none';
+    planName: string;
+    trialEnd: string;
+    hadTrial: boolean;
+};
+
+export type SubscriptionStatusResponse = {
+    data: SubscriptionStatus;
+};
+
+export type ListArtistsData = {
     body?: never;
     path?: never;
     query?: {
@@ -170,25 +2848,54 @@ export type GetApiV1ArtistsData = {
     url: '/api/v1/artists';
 };
 
-export type GetApiV1ArtistsErrors = {
+export type ListArtistsErrors = {
     /**
      * Unauthorized
      */
     401: Error;
 };
 
-export type GetApiV1ArtistsError = GetApiV1ArtistsErrors[keyof GetApiV1ArtistsErrors];
+export type ListArtistsError = ListArtistsErrors[keyof ListArtistsErrors];
 
-export type GetApiV1ArtistsResponses = {
+export type ListArtistsResponses = {
     /**
      * List of artists
      */
     200: ArtistsResponse;
 };
 
-export type GetApiV1ArtistsResponse = GetApiV1ArtistsResponses[keyof GetApiV1ArtistsResponses];
+export type ListArtistsResponse = ListArtistsResponses[keyof ListArtistsResponses];
 
-export type GetApiV1ArtistsByIdData = {
+export type CreateArtistData = {
+    body?: CreateArtistRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/artists';
+};
+
+export type CreateArtistErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type CreateArtistError = CreateArtistErrors[keyof CreateArtistErrors];
+
+export type CreateArtistResponses = {
+    /**
+     * Created artist
+     */
+    201: ArtistResponse;
+};
+
+export type CreateArtistResponse = CreateArtistResponses[keyof CreateArtistResponses];
+
+export type DeleteArtistData = {
     body?: never;
     path: {
         /**
@@ -200,7 +2907,45 @@ export type GetApiV1ArtistsByIdData = {
     url: '/api/v1/artists/{id}';
 };
 
-export type GetApiV1ArtistsByIdErrors = {
+export type DeleteArtistErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Artist not found
+     */
+    404: Error;
+    /**
+     * Cannot delete artist (in use)
+     */
+    422: Error;
+};
+
+export type DeleteArtistError = DeleteArtistErrors[keyof DeleteArtistErrors];
+
+export type DeleteArtistResponses = {
+    /**
+     * Artist deleted
+     */
+    200: DeleteArtistResponse;
+};
+
+export type DeleteArtistResponse2 = DeleteArtistResponses[keyof DeleteArtistResponses];
+
+export type GetArtistData = {
+    body?: never;
+    path: {
+        /**
+         * Artist ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/artists/{id}';
+};
+
+export type GetArtistErrors = {
     /**
      * Unauthorized
      */
@@ -211,18 +2956,1466 @@ export type GetApiV1ArtistsByIdErrors = {
     404: Error;
 };
 
-export type GetApiV1ArtistsByIdError = GetApiV1ArtistsByIdErrors[keyof GetApiV1ArtistsByIdErrors];
+export type GetArtistError = GetArtistErrors[keyof GetArtistErrors];
 
-export type GetApiV1ArtistsByIdResponses = {
+export type GetArtistResponses = {
     /**
      * Artist details
      */
-    200: ArtistResponse;
+    200: ArtistDetailResponse;
 };
 
-export type GetApiV1ArtistsByIdResponse = GetApiV1ArtistsByIdResponses[keyof GetApiV1ArtistsByIdResponses];
+export type GetArtistResponse = GetArtistResponses[keyof GetArtistResponses];
 
-export type GetApiV1ReleasesData = {
+export type ListContactsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/contacts';
+};
+
+export type ListContactsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListContactsError = ListContactsErrors[keyof ListContactsErrors];
+
+export type ListContactsResponses = {
+    /**
+     * List of contacts
+     */
+    200: ContactsListResponse;
+};
+
+export type ListContactsResponse = ListContactsResponses[keyof ListContactsResponses];
+
+export type CreateContactData = {
+    body?: CreateContactRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/contacts';
+};
+
+export type CreateContactErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type CreateContactError = CreateContactErrors[keyof CreateContactErrors];
+
+export type CreateContactResponses = {
+    /**
+     * Contact created
+     */
+    201: ContactResponse;
+};
+
+export type CreateContactResponse = CreateContactResponses[keyof CreateContactResponses];
+
+export type DeleteContactData = {
+    body?: never;
+    path: {
+        /**
+         * Contact ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/{id}';
+};
+
+export type DeleteContactErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Contact not found
+     */
+    404: Error;
+};
+
+export type DeleteContactError = DeleteContactErrors[keyof DeleteContactErrors];
+
+export type DeleteContactResponses = {
+    /**
+     * Contact deleted
+     */
+    200: DeleteContactResponse;
+};
+
+export type DeleteContactResponse2 = DeleteContactResponses[keyof DeleteContactResponses];
+
+export type GetContactData = {
+    body?: never;
+    path: {
+        /**
+         * Contact ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/{id}';
+};
+
+export type GetContactErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Contact not found
+     */
+    404: Error;
+};
+
+export type GetContactError = GetContactErrors[keyof GetContactErrors];
+
+export type GetContactResponses = {
+    /**
+     * Contact details
+     */
+    200: ContactResponse;
+};
+
+export type GetContactResponse = GetContactResponses[keyof GetContactResponses];
+
+export type UpdateContactData = {
+    body?: UpdateContactRequest;
+    path: {
+        /**
+         * Contact ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/{id}';
+};
+
+export type UpdateContactErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Contact not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type UpdateContactError = UpdateContactErrors[keyof UpdateContactErrors];
+
+export type UpdateContactResponses = {
+    /**
+     * Contact updated
+     */
+    200: ContactResponse;
+};
+
+export type UpdateContactResponse = UpdateContactResponses[keyof UpdateContactResponses];
+
+export type ListContactActivitiesData = {
+    body?: never;
+    path: {
+        /**
+         * Contact ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/{id}/activities';
+};
+
+export type ListContactActivitiesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Contact not found
+     */
+    404: Error;
+};
+
+export type ListContactActivitiesError = ListContactActivitiesErrors[keyof ListContactActivitiesErrors];
+
+export type ListContactActivitiesResponses = {
+    /**
+     * List of activities
+     */
+    200: ActivitiesListResponse;
+};
+
+export type ListContactActivitiesResponse = ListContactActivitiesResponses[keyof ListContactActivitiesResponses];
+
+export type CreateContactActivityData = {
+    body?: CreateActivityRequest;
+    path: {
+        /**
+         * Contact ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/{id}/activities';
+};
+
+export type CreateContactActivityErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Contact not found
+     */
+    404: Error;
+};
+
+export type CreateContactActivityError = CreateContactActivityErrors[keyof CreateContactActivityErrors];
+
+export type CreateContactActivityResponses = {
+    /**
+     * Activity created
+     */
+    201: ActivityResponse;
+};
+
+export type CreateContactActivityResponse = CreateContactActivityResponses[keyof CreateContactActivityResponses];
+
+export type DeleteContactActivityData = {
+    body?: never;
+    path: {
+        /**
+         * Contact ID
+         */
+        id: number;
+        /**
+         * Activity ID
+         */
+        activityId: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/{id}/activities/{activityId}';
+};
+
+export type DeleteContactActivityErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Activity not found
+     */
+    404: Error;
+};
+
+export type DeleteContactActivityError = DeleteContactActivityErrors[keyof DeleteContactActivityErrors];
+
+export type DeleteContactActivityResponses = {
+    /**
+     * Activity deleted
+     */
+    200: DeleteActivityResponse;
+};
+
+export type DeleteContactActivityResponse = DeleteContactActivityResponses[keyof DeleteContactActivityResponses];
+
+export type UpdateContactActivityData = {
+    body?: UpdateActivityRequest;
+    path: {
+        /**
+         * Contact ID
+         */
+        id: number;
+        /**
+         * Activity ID
+         */
+        activityId: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/{id}/activities/{activityId}';
+};
+
+export type UpdateContactActivityErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Activity not found
+     */
+    404: Error;
+};
+
+export type UpdateContactActivityError = UpdateContactActivityErrors[keyof UpdateContactActivityErrors];
+
+export type UpdateContactActivityResponses = {
+    /**
+     * Activity updated
+     */
+    200: ActivityResponse;
+};
+
+export type UpdateContactActivityResponse = UpdateContactActivityResponses[keyof UpdateContactActivityResponses];
+
+export type ListContactSharesData = {
+    body?: never;
+    path: {
+        /**
+         * Contact ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/{id}/shares';
+};
+
+export type ListContactSharesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Contact not found
+     */
+    404: Error;
+};
+
+export type ListContactSharesError = ListContactSharesErrors[keyof ListContactSharesErrors];
+
+export type ListContactSharesResponses = {
+    /**
+     * List of shares for the contact
+     */
+    200: SharesListResponse;
+};
+
+export type ListContactSharesResponse = ListContactSharesResponses[keyof ListContactSharesResponses];
+
+export type GetDashboardActivityData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Maximum number of activities to return
+         */
+        limit?: number;
+    };
+    url: '/api/v1/dashboard/activity';
+};
+
+export type GetDashboardActivityErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetDashboardActivityError = GetDashboardActivityErrors[keyof GetDashboardActivityErrors];
+
+export type GetDashboardActivityResponses = {
+    /**
+     * Activity feed
+     */
+    200: DashboardActivityResponse;
+};
+
+export type GetDashboardActivityResponse = GetDashboardActivityResponses[keyof GetDashboardActivityResponses];
+
+export type GetDashboardChartData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Number of days of data to return
+         */
+        days?: number;
+    };
+    url: '/api/v1/dashboard/activity-chart';
+};
+
+export type GetDashboardChartErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetDashboardChartError = GetDashboardChartErrors[keyof GetDashboardChartErrors];
+
+export type GetDashboardChartResponses = {
+    /**
+     * Chart data
+     */
+    200: DashboardChartResponse;
+};
+
+export type GetDashboardChartResponse = GetDashboardChartResponses[keyof GetDashboardChartResponses];
+
+export type GetDashboardFollowUpsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/dashboard/follow-ups';
+};
+
+export type GetDashboardFollowUpsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetDashboardFollowUpsError = GetDashboardFollowUpsErrors[keyof GetDashboardFollowUpsErrors];
+
+export type GetDashboardFollowUpsResponses = {
+    /**
+     * Follow-ups list
+     */
+    200: DashboardFollowUpsResponse;
+};
+
+export type GetDashboardFollowUpsResponse = GetDashboardFollowUpsResponses[keyof GetDashboardFollowUpsResponses];
+
+export type GetDashboardOpenCommentsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/dashboard/open-comments';
+};
+
+export type GetDashboardOpenCommentsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetDashboardOpenCommentsError = GetDashboardOpenCommentsErrors[keyof GetDashboardOpenCommentsErrors];
+
+export type GetDashboardOpenCommentsResponses = {
+    /**
+     * Open comments list
+     */
+    200: DashboardOpenCommentsResponse;
+};
+
+export type GetDashboardOpenCommentsResponse = GetDashboardOpenCommentsResponses[keyof GetDashboardOpenCommentsResponses];
+
+export type RemoveFavoriteData = {
+    body?: RemoveFavoriteRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/favorites';
+};
+
+export type RemoveFavoriteErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type RemoveFavoriteError = RemoveFavoriteErrors[keyof RemoveFavoriteErrors];
+
+export type RemoveFavoriteResponses = {
+    /**
+     * Favorite removed
+     */
+    200: FavoriteSuccessResponse;
+};
+
+export type RemoveFavoriteResponse = RemoveFavoriteResponses[keyof RemoveFavoriteResponses];
+
+export type ListFavoritesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Filter by item type (song, project, playlist, idea)
+         */
+        itemType?: 'song' | 'project' | 'playlist' | 'idea';
+    };
+    url: '/api/v1/favorites';
+};
+
+export type ListFavoritesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListFavoritesError = ListFavoritesErrors[keyof ListFavoritesErrors];
+
+export type ListFavoritesResponses = {
+    /**
+     * List of favorites
+     */
+    200: FavoritesListResponse;
+};
+
+export type ListFavoritesResponse = ListFavoritesResponses[keyof ListFavoritesResponses];
+
+export type AddFavoriteData = {
+    body?: AddFavoriteRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/favorites';
+};
+
+export type AddFavoriteErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type AddFavoriteError = AddFavoriteErrors[keyof AddFavoriteErrors];
+
+export type AddFavoriteResponses = {
+    /**
+     * Favorite added
+     */
+    201: FavoriteSuccessResponse;
+};
+
+export type AddFavoriteResponse = AddFavoriteResponses[keyof AddFavoriteResponses];
+
+export type CheckFavoriteData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Type of item to check
+         */
+        itemType: 'song' | 'project' | 'playlist' | 'idea';
+        /**
+         * ID of the item to check
+         */
+        itemId: number;
+    };
+    url: '/api/v1/favorites/check';
+};
+
+export type CheckFavoriteErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type CheckFavoriteError = CheckFavoriteErrors[keyof CheckFavoriteErrors];
+
+export type CheckFavoriteResponses = {
+    /**
+     * Favorite status
+     */
+    200: CheckFavoriteResponse;
+};
+
+export type CheckFavoriteResponse2 = CheckFavoriteResponses[keyof CheckFavoriteResponses];
+
+export type ListPlaylistsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Search playlists by title
+         */
+        search?: string;
+    };
+    url: '/api/v1/playlists';
+};
+
+export type ListPlaylistsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListPlaylistsError = ListPlaylistsErrors[keyof ListPlaylistsErrors];
+
+export type ListPlaylistsResponses = {
+    /**
+     * List of playlists
+     */
+    200: PlaylistsListResponse;
+};
+
+export type ListPlaylistsResponse = ListPlaylistsResponses[keyof ListPlaylistsResponses];
+
+export type CreatePlaylistData = {
+    body?: CreatePlaylistRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/playlists';
+};
+
+export type CreatePlaylistErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type CreatePlaylistError = CreatePlaylistErrors[keyof CreatePlaylistErrors];
+
+export type CreatePlaylistResponses = {
+    /**
+     * Created playlist
+     */
+    201: PlaylistCreateResponse;
+};
+
+export type CreatePlaylistResponse = CreatePlaylistResponses[keyof CreatePlaylistResponses];
+
+export type DeletePlaylistData = {
+    body?: never;
+    path: {
+        /**
+         * Playlist ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/playlists/{id}';
+};
+
+export type DeletePlaylistErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Playlist not found
+     */
+    404: Error;
+};
+
+export type DeletePlaylistError = DeletePlaylistErrors[keyof DeletePlaylistErrors];
+
+export type DeletePlaylistResponses = {
+    /**
+     * Playlist deleted
+     */
+    200: PlaylistSuccessResponse;
+};
+
+export type DeletePlaylistResponse = DeletePlaylistResponses[keyof DeletePlaylistResponses];
+
+export type GetPlaylistData = {
+    body?: never;
+    path: {
+        /**
+         * Playlist ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/playlists/{id}';
+};
+
+export type GetPlaylistErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Playlist not found
+     */
+    404: Error;
+};
+
+export type GetPlaylistError = GetPlaylistErrors[keyof GetPlaylistErrors];
+
+export type GetPlaylistResponses = {
+    /**
+     * Playlist details with tracks
+     */
+    200: PlaylistDetailResponse;
+};
+
+export type GetPlaylistResponse = GetPlaylistResponses[keyof GetPlaylistResponses];
+
+export type UpdatePlaylistData = {
+    body?: UpdatePlaylistRequest;
+    path: {
+        /**
+         * Playlist ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/playlists/{id}';
+};
+
+export type UpdatePlaylistErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Playlist not found
+     */
+    404: Error;
+};
+
+export type UpdatePlaylistError = UpdatePlaylistErrors[keyof UpdatePlaylistErrors];
+
+export type UpdatePlaylistResponses = {
+    /**
+     * Playlist updated
+     */
+    200: PlaylistSuccessResponse;
+};
+
+export type UpdatePlaylistResponse = UpdatePlaylistResponses[keyof UpdatePlaylistResponses];
+
+export type AddPlaylistTracksData = {
+    body?: AddTracksRequest;
+    path: {
+        /**
+         * Playlist ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/playlists/{id}/tracks';
+};
+
+export type AddPlaylistTracksErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Playlist not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type AddPlaylistTracksError = AddPlaylistTracksErrors[keyof AddPlaylistTracksErrors];
+
+export type AddPlaylistTracksResponses = {
+    /**
+     * Tracks added
+     */
+    200: AddTracksResponse;
+};
+
+export type AddPlaylistTracksResponse = AddPlaylistTracksResponses[keyof AddPlaylistTracksResponses];
+
+export type RemovePlaylistTrackData = {
+    body?: never;
+    path: {
+        /**
+         * Playlist ID
+         */
+        id: number;
+        /**
+         * Playlist Track ID
+         */
+        trackId: number;
+    };
+    query?: never;
+    url: '/api/v1/playlists/{id}/tracks/{trackId}';
+};
+
+export type RemovePlaylistTrackErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Playlist or track not found
+     */
+    404: Error;
+};
+
+export type RemovePlaylistTrackError = RemovePlaylistTrackErrors[keyof RemovePlaylistTrackErrors];
+
+export type RemovePlaylistTrackResponses = {
+    /**
+     * Track removed
+     */
+    200: PlaylistSuccessResponse;
+};
+
+export type RemovePlaylistTrackResponse = RemovePlaylistTrackResponses[keyof RemovePlaylistTrackResponses];
+
+export type ReorderPlaylistTracksData = {
+    body?: ReorderTracksRequest;
+    path: {
+        /**
+         * Playlist ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/playlists/{id}/tracks/reorder';
+};
+
+export type ReorderPlaylistTracksErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Playlist not found
+     */
+    404: Error;
+};
+
+export type ReorderPlaylistTracksError = ReorderPlaylistTracksErrors[keyof ReorderPlaylistTracksErrors];
+
+export type ReorderPlaylistTracksResponses = {
+    /**
+     * Tracks reordered
+     */
+    200: PlaylistSuccessResponse;
+};
+
+export type ReorderPlaylistTracksResponse = ReorderPlaylistTracksResponses[keyof ReorderPlaylistTracksResponses];
+
+export type GetPlaylistHeaderUploadUrlData = {
+    body?: HeaderImageUploadUrlRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/playlists/header-upload-url';
+};
+
+export type GetPlaylistHeaderUploadUrlErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetPlaylistHeaderUploadUrlError = GetPlaylistHeaderUploadUrlErrors[keyof GetPlaylistHeaderUploadUrlErrors];
+
+export type GetPlaylistHeaderUploadUrlResponses = {
+    /**
+     * Upload URL and file key
+     */
+    200: HeaderImageUploadUrlResponse;
+};
+
+export type GetPlaylistHeaderUploadUrlResponse = GetPlaylistHeaderUploadUrlResponses[keyof GetPlaylistHeaderUploadUrlResponses];
+
+export type CreatePlaylistShareData = {
+    body?: CreatePlaylistShareRequest;
+    path: {
+        /**
+         * Playlist ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/playlists/{id}/share';
+};
+
+export type CreatePlaylistShareErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Playlist not found
+     */
+    404: Error;
+};
+
+export type CreatePlaylistShareError = CreatePlaylistShareErrors[keyof CreatePlaylistShareErrors];
+
+export type CreatePlaylistShareResponses = {
+    /**
+     * Shares created
+     */
+    201: CreatePlaylistShareResponse;
+};
+
+export type CreatePlaylistShareResponse2 = CreatePlaylistShareResponses[keyof CreatePlaylistShareResponses];
+
+export type ListProjectsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Search by project name or description
+         */
+        search?: string;
+    };
+    url: '/api/v1/projects';
+};
+
+export type ListProjectsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListProjectsError = ListProjectsErrors[keyof ListProjectsErrors];
+
+export type ListProjectsResponses = {
+    /**
+     * List of projects
+     */
+    200: ProjectsListResponse;
+};
+
+export type ListProjectsResponse = ListProjectsResponses[keyof ListProjectsResponses];
+
+export type CreateProjectData = {
+    body?: CreateProjectRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/projects';
+};
+
+export type CreateProjectErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type CreateProjectError = CreateProjectErrors[keyof CreateProjectErrors];
+
+export type CreateProjectResponses = {
+    /**
+     * Created project
+     */
+    201: ProjectDetailResponse;
+};
+
+export type CreateProjectResponse = CreateProjectResponses[keyof CreateProjectResponses];
+
+export type ListServiceItemsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/projects/service-items';
+};
+
+export type ListServiceItemsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListServiceItemsError = ListServiceItemsErrors[keyof ListServiceItemsErrors];
+
+export type ListServiceItemsResponses = {
+    /**
+     * List of service items
+     */
+    200: ServiceItemsListResponse;
+};
+
+export type ListServiceItemsResponse = ListServiceItemsResponses[keyof ListServiceItemsResponses];
+
+export type DeleteProjectData = {
+    body?: never;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}';
+};
+
+export type DeleteProjectErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project not found
+     */
+    404: Error;
+};
+
+export type DeleteProjectError = DeleteProjectErrors[keyof DeleteProjectErrors];
+
+export type DeleteProjectResponses = {
+    /**
+     * Project deleted
+     */
+    200: ProjectSuccessResponse;
+};
+
+export type DeleteProjectResponse = DeleteProjectResponses[keyof DeleteProjectResponses];
+
+export type GetProjectData = {
+    body?: never;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}';
+};
+
+export type GetProjectErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project not found
+     */
+    404: Error;
+};
+
+export type GetProjectError = GetProjectErrors[keyof GetProjectErrors];
+
+export type GetProjectResponses = {
+    /**
+     * Project details
+     */
+    200: ProjectDetailResponse;
+};
+
+export type GetProjectResponse = GetProjectResponses[keyof GetProjectResponses];
+
+export type UpdateProjectData = {
+    body?: UpdateProjectRequest;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}';
+};
+
+export type UpdateProjectErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project not found
+     */
+    404: Error;
+    /**
+     * Failed to update project
+     */
+    422: Error;
+};
+
+export type UpdateProjectError = UpdateProjectErrors[keyof UpdateProjectErrors];
+
+export type UpdateProjectResponses = {
+    /**
+     * Updated project
+     */
+    200: ProjectDetailResponse;
+};
+
+export type UpdateProjectResponse = UpdateProjectResponses[keyof UpdateProjectResponses];
+
+export type GetProjectSongsData = {
+    body?: never;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}/songs';
+};
+
+export type GetProjectSongsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project not found
+     */
+    404: Error;
+};
+
+export type GetProjectSongsError = GetProjectSongsErrors[keyof GetProjectSongsErrors];
+
+export type GetProjectSongsResponses = {
+    /**
+     * Project with songs
+     */
+    200: ProjectWithSongsResponse;
+};
+
+export type GetProjectSongsResponse = GetProjectSongsResponses[keyof GetProjectSongsResponses];
+
+export type AddSongToProjectData = {
+    body?: AddSongToProjectRequest;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}/songs';
+};
+
+export type AddSongToProjectErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project or song not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type AddSongToProjectError = AddSongToProjectErrors[keyof AddSongToProjectErrors];
+
+export type AddSongToProjectResponses = {
+    /**
+     * Song added to project
+     */
+    200: ProjectSuccessResponse;
+};
+
+export type AddSongToProjectResponse = AddSongToProjectResponses[keyof AddSongToProjectResponses];
+
+export type RemoveSongFromProjectData = {
+    body?: never;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+        /**
+         * Song ID
+         */
+        songId: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}/songs/{songId}';
+};
+
+export type RemoveSongFromProjectErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project or song not found
+     */
+    404: Error;
+};
+
+export type RemoveSongFromProjectError = RemoveSongFromProjectErrors[keyof RemoveSongFromProjectErrors];
+
+export type RemoveSongFromProjectResponses = {
+    /**
+     * Song removed from project
+     */
+    200: ProjectSuccessResponse;
+};
+
+export type RemoveSongFromProjectResponse = RemoveSongFromProjectResponses[keyof RemoveSongFromProjectResponses];
+
+export type ToggleProjectFavoriteData = {
+    body?: never;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}/favorite';
+};
+
+export type ToggleProjectFavoriteErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project not found
+     */
+    404: Error;
+};
+
+export type ToggleProjectFavoriteError = ToggleProjectFavoriteErrors[keyof ToggleProjectFavoriteErrors];
+
+export type ToggleProjectFavoriteResponses = {
+    /**
+     * Favorite status toggled
+     */
+    200: ProjectSuccessResponse & {
+        isFavorite: boolean;
+    };
+};
+
+export type ToggleProjectFavoriteResponse = ToggleProjectFavoriteResponses[keyof ToggleProjectFavoriteResponses];
+
+export type GetTrackingSheetData = {
+    body?: never;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}/tracking';
+};
+
+export type GetTrackingSheetErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project not found
+     */
+    404: Error;
+};
+
+export type GetTrackingSheetError = GetTrackingSheetErrors[keyof GetTrackingSheetErrors];
+
+export type GetTrackingSheetResponses = {
+    /**
+     * Tracking sheet data
+     */
+    200: TrackingSheetResponse;
+};
+
+export type GetTrackingSheetResponse = GetTrackingSheetResponses[keyof GetTrackingSheetResponses];
+
+export type UpdateTrackingCellData = {
+    body?: UpdateTrackingCellRequest;
+    path: {
+        /**
+         * Column ID
+         */
+        columnId: number;
+        /**
+         * Recording Version ID
+         */
+        recordingVersionId: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/tracking/cells/{columnId}/{recordingVersionId}';
+};
+
+export type UpdateTrackingCellErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Column or recording version not found
+     */
+    404: Error;
+};
+
+export type UpdateTrackingCellError = UpdateTrackingCellErrors[keyof UpdateTrackingCellErrors];
+
+export type UpdateTrackingCellResponses = {
+    /**
+     * Updated cell
+     */
+    200: TrackingCellResponse;
+};
+
+export type UpdateTrackingCellResponse = UpdateTrackingCellResponses[keyof UpdateTrackingCellResponses];
+
+export type GetProjectBillingData = {
+    body?: never;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}/billing';
+};
+
+export type GetProjectBillingErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project not found
+     */
+    404: Error;
+};
+
+export type GetProjectBillingError = GetProjectBillingErrors[keyof GetProjectBillingErrors];
+
+export type GetProjectBillingResponses = {
+    /**
+     * Billing data with summary
+     */
+    200: BillingResponse;
+};
+
+export type GetProjectBillingResponse = GetProjectBillingResponses[keyof GetProjectBillingResponses];
+
+export type CreateBillableItemData = {
+    body?: CreateBillableItemRequest;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}/billing';
+};
+
+export type CreateBillableItemErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project or service item not found
+     */
+    404: Error;
+};
+
+export type CreateBillableItemError = CreateBillableItemErrors[keyof CreateBillableItemErrors];
+
+export type CreateBillableItemResponses = {
+    /**
+     * Created billable item
+     */
+    201: BillableItemResponse;
+};
+
+export type CreateBillableItemResponse = CreateBillableItemResponses[keyof CreateBillableItemResponses];
+
+export type UpdateBillableItemStatusData = {
+    body?: UpdateBillableItemStatusRequest;
+    path: {
+        /**
+         * Billable Item ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/billing/items/{id}/status';
+};
+
+export type UpdateBillableItemStatusErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Billable item not found
+     */
+    404: Error;
+};
+
+export type UpdateBillableItemStatusError = UpdateBillableItemStatusErrors[keyof UpdateBillableItemStatusErrors];
+
+export type UpdateBillableItemStatusResponses = {
+    /**
+     * Updated billable item
+     */
+    200: BillableItemResponse;
+};
+
+export type UpdateBillableItemStatusResponse = UpdateBillableItemStatusResponses[keyof UpdateBillableItemStatusResponses];
+
+export type GetProjectSharesData = {
+    body?: never;
+    path: {
+        /**
+         * Project ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/projects/{id}/shares';
+};
+
+export type GetProjectSharesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Project not found
+     */
+    404: Error;
+};
+
+export type GetProjectSharesError = GetProjectSharesErrors[keyof GetProjectSharesErrors];
+
+export type GetProjectSharesResponses = {
+    /**
+     * List of shares
+     */
+    200: ProjectSharesResponse;
+};
+
+export type GetProjectSharesResponse = GetProjectSharesResponses[keyof GetProjectSharesResponses];
+
+export type ListReleasesData = {
     body?: never;
     path?: never;
     query?: {
@@ -242,25 +4435,25 @@ export type GetApiV1ReleasesData = {
     url: '/api/v1/releases';
 };
 
-export type GetApiV1ReleasesErrors = {
+export type ListReleasesErrors = {
     /**
      * Unauthorized
      */
     401: Error;
 };
 
-export type GetApiV1ReleasesError = GetApiV1ReleasesErrors[keyof GetApiV1ReleasesErrors];
+export type ListReleasesError = ListReleasesErrors[keyof ListReleasesErrors];
 
-export type GetApiV1ReleasesResponses = {
+export type ListReleasesResponses = {
     /**
      * List of releases
      */
     200: ReleasesResponse;
 };
 
-export type GetApiV1ReleasesResponse = GetApiV1ReleasesResponses[keyof GetApiV1ReleasesResponses];
+export type ListReleasesResponse = ListReleasesResponses[keyof ListReleasesResponses];
 
-export type GetApiV1ReleasesByIdData = {
+export type GetReleaseData = {
     body?: never;
     path: {
         /**
@@ -272,7 +4465,7 @@ export type GetApiV1ReleasesByIdData = {
     url: '/api/v1/releases/{id}';
 };
 
-export type GetApiV1ReleasesByIdErrors = {
+export type GetReleaseErrors = {
     /**
      * Unauthorized
      */
@@ -283,13 +4476,3186 @@ export type GetApiV1ReleasesByIdErrors = {
     404: Error;
 };
 
-export type GetApiV1ReleasesByIdError = GetApiV1ReleasesByIdErrors[keyof GetApiV1ReleasesByIdErrors];
+export type GetReleaseError = GetReleaseErrors[keyof GetReleaseErrors];
 
-export type GetApiV1ReleasesByIdResponses = {
+export type GetReleaseResponses = {
     /**
      * Release details
      */
     200: ReleaseResponse;
 };
 
-export type GetApiV1ReleasesByIdResponse = GetApiV1ReleasesByIdResponses[keyof GetApiV1ReleasesByIdResponses];
+export type GetReleaseResponse = GetReleaseResponses[keyof GetReleaseResponses];
+
+export type ListIdeasData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number (1-indexed, max 1000)
+         */
+        page?: number;
+        /**
+         * Maximum number of ideas to return (max 50)
+         */
+        limit?: number;
+    };
+    url: '/api/v1/ideas';
+};
+
+export type ListIdeasErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListIdeasError = ListIdeasErrors[keyof ListIdeasErrors];
+
+export type ListIdeasResponses = {
+    /**
+     * List of ideas with pagination
+     */
+    200: IdeasListResponse;
+};
+
+export type ListIdeasResponse = ListIdeasResponses[keyof ListIdeasResponses];
+
+export type CreateIdeaData = {
+    body?: CreateIdeaRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/ideas';
+};
+
+export type CreateIdeaErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type CreateIdeaError = CreateIdeaErrors[keyof CreateIdeaErrors];
+
+export type CreateIdeaResponses = {
+    /**
+     * Created idea
+     */
+    201: IdeaResponse;
+};
+
+export type CreateIdeaResponse = CreateIdeaResponses[keyof CreateIdeaResponses];
+
+export type BulkDeleteIdeasData = {
+    body?: BulkDeleteIdeasRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/ideas/bulk-delete';
+};
+
+export type BulkDeleteIdeasErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type BulkDeleteIdeasError = BulkDeleteIdeasErrors[keyof BulkDeleteIdeasErrors];
+
+export type BulkDeleteIdeasResponses = {
+    /**
+     * Ideas deleted
+     */
+    200: BulkDeleteIdeasResponse;
+};
+
+export type BulkDeleteIdeasResponse2 = BulkDeleteIdeasResponses[keyof BulkDeleteIdeasResponses];
+
+export type BulkUpdateIdeasData = {
+    body?: BulkUpdateIdeasRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/ideas/bulk-update';
+};
+
+export type BulkUpdateIdeasErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type BulkUpdateIdeasError = BulkUpdateIdeasErrors[keyof BulkUpdateIdeasErrors];
+
+export type BulkUpdateIdeasResponses = {
+    /**
+     * Ideas updated
+     */
+    200: BulkUpdateIdeasResponse;
+};
+
+export type BulkUpdateIdeasResponse2 = BulkUpdateIdeasResponses[keyof BulkUpdateIdeasResponses];
+
+export type BulkAddIdeasToSongData = {
+    body?: BulkAddToSongRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/ideas/bulk-add-to-song';
+};
+
+export type BulkAddIdeasToSongErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Ideas or recording version not found
+     */
+    404: Error;
+};
+
+export type BulkAddIdeasToSongError = BulkAddIdeasToSongErrors[keyof BulkAddIdeasToSongErrors];
+
+export type BulkAddIdeasToSongResponses = {
+    /**
+     * Ideas added to song
+     */
+    200: BulkAddToSongResponse;
+};
+
+export type BulkAddIdeasToSongResponse = BulkAddIdeasToSongResponses[keyof BulkAddIdeasToSongResponses];
+
+export type DeleteIdeaData = {
+    body?: never;
+    path: {
+        /**
+         * Idea ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/ideas/{id}';
+};
+
+export type DeleteIdeaErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Idea not found
+     */
+    404: Error;
+};
+
+export type DeleteIdeaError = DeleteIdeaErrors[keyof DeleteIdeaErrors];
+
+export type DeleteIdeaResponses = {
+    /**
+     * Idea deleted successfully
+     */
+    204: void;
+};
+
+export type DeleteIdeaResponse = DeleteIdeaResponses[keyof DeleteIdeaResponses];
+
+export type GetIdeaData = {
+    body?: never;
+    path: {
+        /**
+         * Idea ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/ideas/{id}';
+};
+
+export type GetIdeaErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Idea not found
+     */
+    404: Error;
+};
+
+export type GetIdeaError = GetIdeaErrors[keyof GetIdeaErrors];
+
+export type GetIdeaResponses = {
+    /**
+     * Idea details
+     */
+    200: IdeaResponse;
+};
+
+export type GetIdeaResponse = GetIdeaResponses[keyof GetIdeaResponses];
+
+export type UpdateIdeaData = {
+    body?: UpdateIdeaRequest;
+    path: {
+        /**
+         * Idea ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/ideas/{id}';
+};
+
+export type UpdateIdeaErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Idea not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type UpdateIdeaError = UpdateIdeaErrors[keyof UpdateIdeaErrors];
+
+export type UpdateIdeaResponses = {
+    /**
+     * Updated idea
+     */
+    200: IdeaResponse;
+};
+
+export type UpdateIdeaResponse = UpdateIdeaResponses[keyof UpdateIdeaResponses];
+
+export type GetIdeaStreamUrlData = {
+    body?: never;
+    path: {
+        /**
+         * Idea ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/ideas/{id}/stream-url';
+};
+
+export type GetIdeaStreamUrlErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Idea not found
+     */
+    404: Error;
+};
+
+export type GetIdeaStreamUrlError = GetIdeaStreamUrlErrors[keyof GetIdeaStreamUrlErrors];
+
+export type GetIdeaStreamUrlResponses = {
+    /**
+     * Stream URL
+     */
+    200: StreamUrlResponse;
+};
+
+export type GetIdeaStreamUrlResponse = GetIdeaStreamUrlResponses[keyof GetIdeaStreamUrlResponses];
+
+export type GetIdeaLinkedSongsData = {
+    body?: never;
+    path: {
+        /**
+         * Idea ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/ideas/{id}/linked-songs';
+};
+
+export type GetIdeaLinkedSongsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetIdeaLinkedSongsError = GetIdeaLinkedSongsErrors[keyof GetIdeaLinkedSongsErrors];
+
+export type GetIdeaLinkedSongsResponses = {
+    /**
+     * Linked songs
+     */
+    200: LinkedSongsResponse;
+};
+
+export type GetIdeaLinkedSongsResponse = GetIdeaLinkedSongsResponses[keyof GetIdeaLinkedSongsResponses];
+
+export type GetIdeaUploadUrlData = {
+    body?: GetUploadUrlRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/ideas/upload-url';
+};
+
+export type GetIdeaUploadUrlErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetIdeaUploadUrlError = GetIdeaUploadUrlErrors[keyof GetIdeaUploadUrlErrors];
+
+export type GetIdeaUploadUrlResponses = {
+    /**
+     * Upload URL and file key
+     */
+    200: UploadUrlResponse;
+};
+
+export type GetIdeaUploadUrlResponse = GetIdeaUploadUrlResponses[keyof GetIdeaUploadUrlResponses];
+
+export type ConvertIdeaToSongData = {
+    body?: ConvertToSongRequest;
+    path: {
+        /**
+         * Idea ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/ideas/{id}/convert-to-song';
+};
+
+export type ConvertIdeaToSongErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Idea not found
+     */
+    404: Error;
+};
+
+export type ConvertIdeaToSongError = ConvertIdeaToSongErrors[keyof ConvertIdeaToSongErrors];
+
+export type ConvertIdeaToSongResponses = {
+    /**
+     * Song created from idea
+     */
+    200: ConvertToSongResponse;
+};
+
+export type ConvertIdeaToSongResponse = ConvertIdeaToSongResponses[keyof ConvertIdeaToSongResponses];
+
+export type AddIdeaToSongData = {
+    body?: AddToSongRequest;
+    path: {
+        /**
+         * Idea ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/ideas/{id}/add-to-song';
+};
+
+export type AddIdeaToSongErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Idea or recording version not found
+     */
+    404: Error;
+};
+
+export type AddIdeaToSongError = AddIdeaToSongErrors[keyof AddIdeaToSongErrors];
+
+export type AddIdeaToSongResponses = {
+    /**
+     * Idea added to song
+     */
+    200: AddToSongResponse;
+};
+
+export type AddIdeaToSongResponse = AddIdeaToSongResponses[keyof AddIdeaToSongResponses];
+
+export type ListMediaData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Cursor for pagination (ID of last item from previous page)
+         */
+        cursor?: string;
+        /**
+         * Maximum number of items to return
+         */
+        limit?: number;
+    };
+    url: '/api/v1/media-library';
+};
+
+export type ListMediaErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListMediaError = ListMediaErrors[keyof ListMediaErrors];
+
+export type ListMediaResponses = {
+    /**
+     * List of media items
+     */
+    200: MediaListResponse;
+};
+
+export type ListMediaResponse = ListMediaResponses[keyof ListMediaResponses];
+
+export type GetMediaUploadUrlData = {
+    body?: MediaUploadUrlRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/media-library/upload-url';
+};
+
+export type GetMediaUploadUrlErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetMediaUploadUrlError = GetMediaUploadUrlErrors[keyof GetMediaUploadUrlErrors];
+
+export type GetMediaUploadUrlResponses = {
+    /**
+     * Upload URL and file key
+     */
+    200: MediaUploadUrlResponse;
+};
+
+export type GetMediaUploadUrlResponse = GetMediaUploadUrlResponses[keyof GetMediaUploadUrlResponses];
+
+export type ConfirmMediaUploadData = {
+    body?: MediaConfirmUploadRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/media-library/confirm-upload';
+};
+
+export type ConfirmMediaUploadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden - file key does not belong to user
+     */
+    403: Error;
+    /**
+     * File not found in storage
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type ConfirmMediaUploadError = ConfirmMediaUploadErrors[keyof ConfirmMediaUploadErrors];
+
+export type ConfirmMediaUploadResponses = {
+    /**
+     * Media item created
+     */
+    201: MediaConfirmUploadResponse;
+};
+
+export type ConfirmMediaUploadResponse = ConfirmMediaUploadResponses[keyof ConfirmMediaUploadResponses];
+
+export type DeleteMediaItemData = {
+    body?: never;
+    path: {
+        /**
+         * Media item ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/v1/media-library/{id}';
+};
+
+export type DeleteMediaItemErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Media item not found
+     */
+    404: Error;
+};
+
+export type DeleteMediaItemError = DeleteMediaItemErrors[keyof DeleteMediaItemErrors];
+
+export type DeleteMediaItemResponses = {
+    /**
+     * Media item deleted
+     */
+    200: DeleteMediaResponse;
+};
+
+export type DeleteMediaItemResponse = DeleteMediaItemResponses[keyof DeleteMediaItemResponses];
+
+export type ListSharesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares';
+};
+
+export type ListSharesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListSharesError = ListSharesErrors[keyof ListSharesErrors];
+
+export type ListSharesResponses = {
+    /**
+     * List of shares
+     */
+    200: SharesListResponse;
+};
+
+export type ListSharesResponse = ListSharesResponses[keyof ListSharesResponses];
+
+export type CreateShareData = {
+    body?: CreateShareRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares';
+};
+
+export type CreateShareErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Resource not found
+     */
+    404: Error;
+};
+
+export type CreateShareError = CreateShareErrors[keyof CreateShareErrors];
+
+export type CreateShareResponses = {
+    /**
+     * Shares created
+     */
+    200: CreateShareResponse;
+};
+
+export type CreateShareResponse2 = CreateShareResponses[keyof CreateShareResponses];
+
+export type ListReceivedSharesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/shared-with-me';
+};
+
+export type ListReceivedSharesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListReceivedSharesError = ListReceivedSharesErrors[keyof ListReceivedSharesErrors];
+
+export type ListReceivedSharesResponses = {
+    /**
+     * List of received shares
+     */
+    200: ReceivedSharesListResponse;
+};
+
+export type ListReceivedSharesResponse = ListReceivedSharesResponses[keyof ListReceivedSharesResponses];
+
+export type GetSharingIndicatorData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Recording Version ID
+         */
+        recordingVersionId: number;
+    };
+    url: '/api/v1/shares/indicator';
+};
+
+export type GetSharingIndicatorErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetSharingIndicatorError = GetSharingIndicatorErrors[keyof GetSharingIndicatorErrors];
+
+export type GetSharingIndicatorResponses = {
+    /**
+     * Sharing indicator data
+     */
+    200: SharingIndicatorDataResponse;
+};
+
+export type GetSharingIndicatorResponse = GetSharingIndicatorResponses[keyof GetSharingIndicatorResponses];
+
+export type GetShareData = {
+    body?: never;
+    path: {
+        /**
+         * Share ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/shares/{id}';
+};
+
+export type GetShareErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type GetShareError = GetShareErrors[keyof GetShareErrors];
+
+export type GetShareResponses = {
+    /**
+     * Share details
+     */
+    200: ShareResponse;
+};
+
+export type GetShareResponse = GetShareResponses[keyof GetShareResponses];
+
+export type UpdateShareData = {
+    body?: UpdateShareRequest;
+    path: {
+        /**
+         * Share ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/shares/{id}';
+};
+
+export type UpdateShareErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type UpdateShareError = UpdateShareErrors[keyof UpdateShareErrors];
+
+export type UpdateShareResponses = {
+    /**
+     * Share updated
+     */
+    200: ShareResponse;
+};
+
+export type UpdateShareResponse = UpdateShareResponses[keyof UpdateShareResponses];
+
+export type GetShareActivityData = {
+    body?: never;
+    path: {
+        /**
+         * Share ID
+         */
+        id: number;
+    };
+    query?: {
+        /**
+         * Number of days of activity to retrieve (1-180)
+         */
+        days?: number;
+    };
+    url: '/api/v1/shares/{id}/activity';
+};
+
+export type GetShareActivityErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type GetShareActivityError = GetShareActivityErrors[keyof GetShareActivityErrors];
+
+export type GetShareActivityResponses = {
+    /**
+     * Activity time series
+     */
+    200: ActivityTimeSeriesResponse;
+};
+
+export type GetShareActivityResponse = GetShareActivityResponses[keyof GetShareActivityResponses];
+
+export type GetSharePlaysData = {
+    body?: never;
+    path: {
+        /**
+         * Share ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/shares/{id}/plays';
+};
+
+export type GetSharePlaysErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type GetSharePlaysError = GetSharePlaysErrors[keyof GetSharePlaysErrors];
+
+export type GetSharePlaysResponses = {
+    /**
+     * Play statistics
+     */
+    200: PlayStatisticsResponse;
+};
+
+export type GetSharePlaysResponse = GetSharePlaysResponses[keyof GetSharePlaysResponses];
+
+export type GetShareDownloadsData = {
+    body?: never;
+    path: {
+        /**
+         * Share ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/shares/{id}/downloads';
+};
+
+export type GetShareDownloadsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type GetShareDownloadsError = GetShareDownloadsErrors[keyof GetShareDownloadsErrors];
+
+export type GetShareDownloadsResponses = {
+    /**
+     * Download statistics
+     */
+    200: DownloadStatisticsResponse;
+};
+
+export type GetShareDownloadsResponse = GetShareDownloadsResponses[keyof GetShareDownloadsResponses];
+
+export type GetShareUploadsData = {
+    body?: never;
+    path: {
+        /**
+         * Share ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/shares/{id}/uploads';
+};
+
+export type GetShareUploadsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type GetShareUploadsError = GetShareUploadsErrors[keyof GetShareUploadsErrors];
+
+export type GetShareUploadsResponses = {
+    /**
+     * Upload statistics
+     */
+    200: UploadStatisticsResponse;
+};
+
+export type GetShareUploadsResponse = GetShareUploadsResponses[keyof GetShareUploadsResponses];
+
+export type GetShareViewersData = {
+    body?: never;
+    path: {
+        /**
+         * Share ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/shares/{id}/viewers';
+};
+
+export type GetShareViewersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type GetShareViewersError = GetShareViewersErrors[keyof GetShareViewersErrors];
+
+export type GetShareViewersResponses = {
+    /**
+     * Unique viewers
+     */
+    200: UniqueViewersResponse;
+};
+
+export type GetShareViewersResponse = GetShareViewersResponses[keyof GetShareViewersResponses];
+
+export type HideShareData = {
+    body?: HideShareRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/hide';
+};
+
+export type HideShareErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Access denied
+     */
+    403: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type HideShareError = HideShareErrors[keyof HideShareErrors];
+
+export type HideShareResponses = {
+    /**
+     * Share hidden
+     */
+    200: ShareSuccessResponse;
+};
+
+export type HideShareResponse = HideShareResponses[keyof HideShareResponses];
+
+export type UnblockSenderData = {
+    body?: BlockSenderRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/block-sender';
+};
+
+export type UnblockSenderErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type UnblockSenderError = UnblockSenderErrors[keyof UnblockSenderErrors];
+
+export type UnblockSenderResponses = {
+    /**
+     * Sender unblocked
+     */
+    200: ShareSuccessResponse;
+};
+
+export type UnblockSenderResponse = UnblockSenderResponses[keyof UnblockSenderResponses];
+
+export type BlockSenderData = {
+    body?: BlockSenderRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/block-sender';
+};
+
+export type BlockSenderErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * No shares from this sender
+     */
+    404: Error;
+};
+
+export type BlockSenderError = BlockSenderErrors[keyof BlockSenderErrors];
+
+export type BlockSenderResponses = {
+    /**
+     * Sender blocked
+     */
+    200: ShareSuccessResponse;
+};
+
+export type BlockSenderResponse = BlockSenderResponses[keyof BlockSenderResponses];
+
+export type CreateFileShareData = {
+    body?: CreateFileShareRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/file';
+};
+
+export type CreateFileShareErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Resource not found
+     */
+    404: Error;
+};
+
+export type CreateFileShareError = CreateFileShareErrors[keyof CreateFileShareErrors];
+
+export type CreateFileShareResponses = {
+    /**
+     * File shares created
+     */
+    200: CreateShareResponse;
+};
+
+export type CreateFileShareResponse = CreateFileShareResponses[keyof CreateFileShareResponses];
+
+export type RevokeShareData = {
+    body?: never;
+    path: {
+        /**
+         * Share ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/shares/{id}/revoke';
+};
+
+export type RevokeShareErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Share not found
+     */
+    404: Error;
+};
+
+export type RevokeShareError = RevokeShareErrors[keyof RevokeShareErrors];
+
+export type RevokeShareResponses = {
+    /**
+     * Share revoked
+     */
+    200: ShareResponse;
+};
+
+export type RevokeShareResponse = RevokeShareResponses[keyof RevokeShareResponses];
+
+export type GetInboxFilesData = {
+    body?: never;
+    path: {
+        /**
+         * Recording Version ID
+         */
+        recordingVersionId: number;
+    };
+    query?: never;
+    url: '/api/v1/shares/inbox-files/{recordingVersionId}';
+};
+
+export type GetInboxFilesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetInboxFilesError = GetInboxFilesErrors[keyof GetInboxFilesErrors];
+
+export type GetInboxFilesResponses = {
+    /**
+     * List of inbox files
+     */
+    200: InboxFilesResponse;
+};
+
+export type GetInboxFilesResponse = GetInboxFilesResponses[keyof GetInboxFilesResponses];
+
+export type DeleteInboxFilesData = {
+    body?: DeleteInboxFilesRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/inbox-files/delete';
+};
+
+export type DeleteInboxFilesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Server error
+     */
+    500: Error;
+};
+
+export type DeleteInboxFilesError = DeleteInboxFilesErrors[keyof DeleteInboxFilesErrors];
+
+export type DeleteInboxFilesResponses = {
+    /**
+     * Files deleted
+     */
+    200: ShareSuccessResponse;
+};
+
+export type DeleteInboxFilesResponse = DeleteInboxFilesResponses[keyof DeleteInboxFilesResponses];
+
+export type AcceptInboxFilesData = {
+    body?: AcceptInboxFilesRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/inbox-files/accept';
+};
+
+export type AcceptInboxFilesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Server error
+     */
+    500: Error;
+};
+
+export type AcceptInboxFilesError = AcceptInboxFilesErrors[keyof AcceptInboxFilesErrors];
+
+export type AcceptInboxFilesResponses = {
+    /**
+     * Files accepted
+     */
+    200: AcceptInboxFilesResponse;
+};
+
+export type AcceptInboxFilesResponse2 = AcceptInboxFilesResponses[keyof AcceptInboxFilesResponses];
+
+export type TrackShareActivityData = {
+    body?: TrackShareActivityRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/track-activity';
+};
+
+export type TrackShareActivityErrors = {
+    /**
+     * Share not found
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type TrackShareActivityError = TrackShareActivityErrors[keyof TrackShareActivityErrors];
+
+export type TrackShareActivityResponses = {
+    /**
+     * Activity tracked
+     */
+    200: TrackShareActivityResponse;
+};
+
+export type TrackShareActivityResponse2 = TrackShareActivityResponses[keyof TrackShareActivityResponses];
+
+export type GetShareFilesData = {
+    body?: never;
+    path: {
+        /**
+         * Share access key
+         */
+        accessKey: string;
+    };
+    query?: never;
+    url: '/api/v1/shares/by-key/{accessKey}/files';
+};
+
+export type GetShareFilesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden - not the recipient
+     */
+    403: Error;
+    /**
+     * Share not found or revoked
+     */
+    404: Error;
+};
+
+export type GetShareFilesError = GetShareFilesErrors[keyof GetShareFilesErrors];
+
+export type GetShareFilesResponses = {
+    /**
+     * Share files
+     */
+    200: ShareFilesResponse;
+};
+
+export type GetShareFilesResponse = GetShareFilesResponses[keyof GetShareFilesResponses];
+
+export type GetPlaylistShareData = {
+    body?: never;
+    path: {
+        /**
+         * Share access key
+         */
+        accessKey: string;
+    };
+    query?: never;
+    url: '/api/v1/shares/by-key/{accessKey}/playlist';
+};
+
+export type GetPlaylistShareErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden - not the recipient
+     */
+    403: Error;
+    /**
+     * Share or playlist not found
+     */
+    404: Error;
+};
+
+export type GetPlaylistShareError = GetPlaylistShareErrors[keyof GetPlaylistShareErrors];
+
+export type GetPlaylistShareResponses = {
+    /**
+     * Playlist share data
+     */
+    200: PlaylistShareResponse;
+};
+
+export type GetPlaylistShareResponse = GetPlaylistShareResponses[keyof GetPlaylistShareResponses];
+
+export type GetShareStreamUrlData = {
+    body?: never;
+    path: {
+        /**
+         * Share access key
+         */
+        accessKey: string;
+    };
+    query: {
+        /**
+         * File storage key
+         */
+        fileKey: string;
+    };
+    url: '/api/v1/shares/by-key/{accessKey}/stream';
+};
+
+export type GetShareStreamUrlErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden - not the recipient or file not in share
+     */
+    403: Error;
+    /**
+     * Share not found or revoked
+     */
+    404: Error;
+};
+
+export type GetShareStreamUrlError = GetShareStreamUrlErrors[keyof GetShareStreamUrlErrors];
+
+export type GetShareStreamUrlResponses = {
+    /**
+     * Stream URL
+     */
+    200: ShareStreamUrlResponse;
+};
+
+export type GetShareStreamUrlResponse = GetShareStreamUrlResponses[keyof GetShareStreamUrlResponses];
+
+export type ValidateSharePasswordData = {
+    body?: V1ValidatePasswordRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/shares/validate-password';
+};
+
+export type ValidateSharePasswordErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ValidateSharePasswordError = ValidateSharePasswordErrors[keyof ValidateSharePasswordErrors];
+
+export type ValidateSharePasswordResponses = {
+    /**
+     * Validation result
+     */
+    200: V1ValidatePasswordResponse;
+};
+
+export type ValidateSharePasswordResponse = ValidateSharePasswordResponses[keyof ValidateSharePasswordResponses];
+
+export type ListSongsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number (1-indexed, max 1000)
+         */
+        page?: number;
+        /**
+         * Maximum number of songs to return (max 50)
+         */
+        limit?: number;
+        /**
+         * Search by song title
+         */
+        search?: string;
+    };
+    url: '/api/v1/songs';
+};
+
+export type ListSongsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListSongsError = ListSongsErrors[keyof ListSongsErrors];
+
+export type ListSongsResponses = {
+    /**
+     * List of songs with pagination
+     */
+    200: SongsListResponse;
+};
+
+export type ListSongsResponse = ListSongsResponses[keyof ListSongsResponses];
+
+export type CreateSongData = {
+    body?: CreateSongRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/songs';
+};
+
+export type CreateSongErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type CreateSongError = CreateSongErrors[keyof CreateSongErrors];
+
+export type CreateSongResponses = {
+    /**
+     * Created song
+     */
+    201: SongDetailResponse;
+};
+
+export type CreateSongResponse = CreateSongResponses[keyof CreateSongResponses];
+
+export type DeleteSongData = {
+    body?: never;
+    path: {
+        /**
+         * Song ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/{id}';
+};
+
+export type DeleteSongErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Song not found
+     */
+    404: Error;
+};
+
+export type DeleteSongError = DeleteSongErrors[keyof DeleteSongErrors];
+
+export type DeleteSongResponses = {
+    /**
+     * Song deleted
+     */
+    200: SongSuccessResponse;
+};
+
+export type DeleteSongResponse = DeleteSongResponses[keyof DeleteSongResponses];
+
+export type GetSongData = {
+    body?: never;
+    path: {
+        /**
+         * Song ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/{id}';
+};
+
+export type GetSongErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Song not found
+     */
+    404: Error;
+};
+
+export type GetSongError = GetSongErrors[keyof GetSongErrors];
+
+export type GetSongResponses = {
+    /**
+     * Song details with recording versions
+     */
+    200: SongDetailResponse;
+};
+
+export type GetSongResponse = GetSongResponses[keyof GetSongResponses];
+
+export type UpdateSongData = {
+    body?: UpdateSongRequest;
+    path: {
+        /**
+         * Song ID
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/{id}';
+};
+
+export type UpdateSongErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Song not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type UpdateSongError = UpdateSongErrors[keyof UpdateSongErrors];
+
+export type UpdateSongResponses = {
+    /**
+     * Updated song details
+     */
+    200: SongDetailResponse;
+};
+
+export type UpdateSongResponse = UpdateSongResponses[keyof UpdateSongResponses];
+
+export type ListRecordingVersionsData = {
+    body?: never;
+    path: {
+        /**
+         * Song ID
+         */
+        songId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/{songId}/versions';
+};
+
+export type ListRecordingVersionsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Song not found
+     */
+    404: Error;
+};
+
+export type ListRecordingVersionsError = ListRecordingVersionsErrors[keyof ListRecordingVersionsErrors];
+
+export type ListRecordingVersionsResponses = {
+    /**
+     * List of recording versions
+     */
+    200: RecordingVersionsListResponse;
+};
+
+export type ListRecordingVersionsResponse = ListRecordingVersionsResponses[keyof ListRecordingVersionsResponses];
+
+export type CreateRecordingVersionData = {
+    body?: CreateRecordingVersionRequest;
+    path: {
+        /**
+         * Song ID
+         */
+        songId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/{songId}/versions';
+};
+
+export type CreateRecordingVersionErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Song not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type CreateRecordingVersionError = CreateRecordingVersionErrors[keyof CreateRecordingVersionErrors];
+
+export type CreateRecordingVersionResponses = {
+    /**
+     * Created recording version
+     */
+    201: RecordingVersionsListResponse;
+};
+
+export type CreateRecordingVersionResponse = CreateRecordingVersionResponses[keyof CreateRecordingVersionResponses];
+
+export type DeleteRecordingVersionData = {
+    body?: never;
+    path: {
+        /**
+         * Song ID
+         */
+        songId: number;
+        /**
+         * Recording Version ID
+         */
+        versionId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/{songId}/versions/{versionId}';
+};
+
+export type DeleteRecordingVersionErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Recording version not found
+     */
+    404: Error;
+    /**
+     * Cannot delete version
+     */
+    422: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type DeleteRecordingVersionError = DeleteRecordingVersionErrors[keyof DeleteRecordingVersionErrors];
+
+export type DeleteRecordingVersionResponses = {
+    /**
+     * Recording version deleted
+     */
+    200: SongSuccessResponse;
+};
+
+export type DeleteRecordingVersionResponse = DeleteRecordingVersionResponses[keyof DeleteRecordingVersionResponses];
+
+export type ListVersionFilesData = {
+    body?: never;
+    path: {
+        /**
+         * Song ID
+         */
+        songId: number;
+        /**
+         * Recording Version ID
+         */
+        versionId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/{songId}/versions/{versionId}/files';
+};
+
+export type ListVersionFilesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Song or version not found
+     */
+    404: Error;
+};
+
+export type ListVersionFilesError = ListVersionFilesErrors[keyof ListVersionFilesErrors];
+
+export type ListVersionFilesResponses = {
+    /**
+     * List of recording files
+     */
+    200: RecordingFilesListResponse;
+};
+
+export type ListVersionFilesResponse = ListVersionFilesResponses[keyof ListVersionFilesResponses];
+
+export type DeleteFileData = {
+    body?: never;
+    path: {
+        /**
+         * File ID
+         */
+        fileId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/{fileId}';
+};
+
+export type DeleteFileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+    /**
+     * Cannot delete file
+     */
+    422: Error;
+};
+
+export type DeleteFileError = DeleteFileErrors[keyof DeleteFileErrors];
+
+export type DeleteFileResponses = {
+    /**
+     * Deleted file
+     */
+    200: RecordingFileResponse;
+};
+
+export type DeleteFileResponse = DeleteFileResponses[keyof DeleteFileResponses];
+
+export type GetFileData = {
+    body?: never;
+    path: {
+        /**
+         * File ID
+         */
+        fileId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/{fileId}';
+};
+
+export type GetFileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+};
+
+export type GetFileError = GetFileErrors[keyof GetFileErrors];
+
+export type GetFileResponses = {
+    /**
+     * File details with waveform peaks
+     */
+    200: RecordingFileResponse;
+};
+
+export type GetFileResponse = GetFileResponses[keyof GetFileResponses];
+
+export type GetFileStreamUrlData = {
+    body?: FileUrlRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/songs/files/stream-url';
+};
+
+export type GetFileStreamUrlErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+};
+
+export type GetFileStreamUrlError = GetFileStreamUrlErrors[keyof GetFileStreamUrlErrors];
+
+export type GetFileStreamUrlResponses = {
+    /**
+     * Stream URL
+     */
+    200: FileUrlResponse;
+};
+
+export type GetFileStreamUrlResponse = GetFileStreamUrlResponses[keyof GetFileStreamUrlResponses];
+
+export type GetFileDownloadUrlData = {
+    body?: FileUrlRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/songs/files/download-url';
+};
+
+export type GetFileDownloadUrlErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+};
+
+export type GetFileDownloadUrlError = GetFileDownloadUrlErrors[keyof GetFileDownloadUrlErrors];
+
+export type GetFileDownloadUrlResponses = {
+    /**
+     * Download URL
+     */
+    200: FileUrlResponse;
+};
+
+export type GetFileDownloadUrlResponse = GetFileDownloadUrlResponses[keyof GetFileDownloadUrlResponses];
+
+export type UploadFileData = {
+    body?: UploadFileRequest;
+    path: {
+        /**
+         * Song ID
+         */
+        songId: number;
+        /**
+         * Recording Version ID
+         */
+        versionId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/{songId}/versions/{versionId}/files/upload';
+};
+
+export type UploadFileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Recording version not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type UploadFileError = UploadFileErrors[keyof UploadFileErrors];
+
+export type UploadFileResponses = {
+    /**
+     * Upload URL and file ID
+     */
+    201: UploadFileResponse;
+};
+
+export type UploadFileResponse2 = UploadFileResponses[keyof UploadFileResponses];
+
+export type VerifyFileUploadData = {
+    body?: never;
+    path: {
+        /**
+         * File ID
+         */
+        fileId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/{fileId}/verify';
+};
+
+export type VerifyFileUploadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+    /**
+     * Verification failed
+     */
+    422: Error;
+};
+
+export type VerifyFileUploadError = VerifyFileUploadErrors[keyof VerifyFileUploadErrors];
+
+export type VerifyFileUploadResponses = {
+    /**
+     * Verified file
+     */
+    200: RecordingFileResponse;
+};
+
+export type VerifyFileUploadResponse = VerifyFileUploadResponses[keyof VerifyFileUploadResponses];
+
+export type UpdateFolderStateData = {
+    body?: UpdateFolderStateRequest;
+    path: {
+        /**
+         * Recording Version ID
+         */
+        versionId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/versions/{versionId}/folder-state';
+};
+
+export type UpdateFolderStateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Recording version not found
+     */
+    404: Error;
+};
+
+export type UpdateFolderStateError = UpdateFolderStateErrors[keyof UpdateFolderStateErrors];
+
+export type UpdateFolderStateResponses = {
+    /**
+     * Folder state updated
+     */
+    200: SongSuccessResponse;
+};
+
+export type UpdateFolderStateResponse = UpdateFolderStateResponses[keyof UpdateFolderStateResponses];
+
+export type RenameFileData = {
+    body?: RenameFileRequest;
+    path: {
+        /**
+         * File ID
+         */
+        fileId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/{fileId}/rename';
+};
+
+export type RenameFileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type RenameFileError = RenameFileErrors[keyof RenameFileErrors];
+
+export type RenameFileResponses = {
+    /**
+     * Renamed file
+     */
+    200: RecordingFileResponse;
+};
+
+export type RenameFileResponse = RenameFileResponses[keyof RenameFileResponses];
+
+export type MoveFileData = {
+    body?: MoveFileRequest;
+    path: {
+        /**
+         * File ID
+         */
+        fileId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/{fileId}/move';
+};
+
+export type MoveFileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+    /**
+     * Validation error
+     */
+    422: Error;
+};
+
+export type MoveFileError = MoveFileErrors[keyof MoveFileErrors];
+
+export type MoveFileResponses = {
+    /**
+     * Moved file
+     */
+    200: RecordingFileResponse;
+};
+
+export type MoveFileResponse = MoveFileResponses[keyof MoveFileResponses];
+
+export type UpdateFileVisibilityData = {
+    body?: UpdateFileVisibilityRequest;
+    path: {
+        /**
+         * File ID
+         */
+        fileId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/{fileId}/visibility';
+};
+
+export type UpdateFileVisibilityErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+};
+
+export type UpdateFileVisibilityError = UpdateFileVisibilityErrors[keyof UpdateFileVisibilityErrors];
+
+export type UpdateFileVisibilityResponses = {
+    /**
+     * Updated file
+     */
+    200: RecordingFileResponse;
+};
+
+export type UpdateFileVisibilityResponse = UpdateFileVisibilityResponses[keyof UpdateFileVisibilityResponses];
+
+export type ListFileCommentsData = {
+    body?: never;
+    path: {
+        /**
+         * Recording File ID
+         */
+        fileId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/{fileId}/comments';
+};
+
+export type ListFileCommentsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File not found
+     */
+    404: Error;
+};
+
+export type ListFileCommentsError = ListFileCommentsErrors[keyof ListFileCommentsErrors];
+
+export type ListFileCommentsResponses = {
+    /**
+     * List of comments with parent/reply grouping info
+     */
+    200: FileCommentsListResponse;
+};
+
+export type ListFileCommentsResponse = ListFileCommentsResponses[keyof ListFileCommentsResponses];
+
+export type CreateFileCommentData = {
+    body?: CreateCommentRequest;
+    path: {
+        /**
+         * Recording File ID
+         */
+        fileId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/{fileId}/comments';
+};
+
+export type CreateFileCommentErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * File or parent comment not found
+     */
+    404: Error;
+};
+
+export type CreateFileCommentError = CreateFileCommentErrors[keyof CreateFileCommentErrors];
+
+export type CreateFileCommentResponses = {
+    /**
+     * Created comment
+     */
+    201: FileCommentResponse;
+};
+
+export type CreateFileCommentResponse = CreateFileCommentResponses[keyof CreateFileCommentResponses];
+
+export type DeleteFileCommentData = {
+    body?: never;
+    path: {
+        /**
+         * Comment ID
+         */
+        commentId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/comments/{commentId}';
+};
+
+export type DeleteFileCommentErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Comment not found
+     */
+    404: Error;
+};
+
+export type DeleteFileCommentError = DeleteFileCommentErrors[keyof DeleteFileCommentErrors];
+
+export type DeleteFileCommentResponses = {
+    /**
+     * Comment deleted
+     */
+    200: DeleteCommentResponse;
+};
+
+export type DeleteFileCommentResponse = DeleteFileCommentResponses[keyof DeleteFileCommentResponses];
+
+export type UpdateFileCommentData = {
+    body?: UpdateCommentRequest;
+    path: {
+        /**
+         * Comment ID
+         */
+        commentId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/comments/{commentId}';
+};
+
+export type UpdateFileCommentErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Comment not found
+     */
+    404: Error;
+};
+
+export type UpdateFileCommentError = UpdateFileCommentErrors[keyof UpdateFileCommentErrors];
+
+export type UpdateFileCommentResponses = {
+    /**
+     * Updated comment
+     */
+    200: FileCommentResponse;
+};
+
+export type UpdateFileCommentResponse = UpdateFileCommentResponses[keyof UpdateFileCommentResponses];
+
+export type MarkCommentCompleteData = {
+    body?: MarkCompleteRequest;
+    path: {
+        /**
+         * Comment ID
+         */
+        commentId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/comments/{commentId}/mark-complete';
+};
+
+export type MarkCommentCompleteErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Comment not found
+     */
+    404: Error;
+};
+
+export type MarkCommentCompleteError = MarkCommentCompleteErrors[keyof MarkCommentCompleteErrors];
+
+export type MarkCommentCompleteResponses = {
+    /**
+     * Updated comment
+     */
+    200: FileCommentResponse;
+};
+
+export type MarkCommentCompleteResponse = MarkCommentCompleteResponses[keyof MarkCommentCompleteResponses];
+
+export type GetCommentEqSettingsData = {
+    body?: never;
+    path: {
+        /**
+         * Comment ID
+         */
+        commentId: number;
+    };
+    query?: never;
+    url: '/api/v1/songs/files/comments/{commentId}/eq-settings';
+};
+
+export type GetCommentEqSettingsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Comment not found or access denied
+     */
+    404: Error;
+};
+
+export type GetCommentEqSettingsError = GetCommentEqSettingsErrors[keyof GetCommentEqSettingsErrors];
+
+export type GetCommentEqSettingsResponses = {
+    /**
+     * EQ settings for the comment, or null if none exist
+     */
+    200: EqSettingsResponse;
+};
+
+export type GetCommentEqSettingsResponse = GetCommentEqSettingsResponses[keyof GetCommentEqSettingsResponses];
+
+export type ListCreatedSplitSheetsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Max items to return (1-100)
+         */
+        limit?: number;
+        /**
+         * Cursor: generatedAt from last item
+         */
+        cursorGeneratedAt?: string;
+        /**
+         * Cursor: id from last item
+         */
+        cursorId?: number;
+        /**
+         * Filter by status
+         */
+        statusFilter?: 'all' | 'pending' | 'completed';
+    };
+    url: '/api/v1/split-sheets/created';
+};
+
+export type ListCreatedSplitSheetsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListCreatedSplitSheetsError = ListCreatedSplitSheetsErrors[keyof ListCreatedSplitSheetsErrors];
+
+export type ListCreatedSplitSheetsResponses = {
+    /**
+     * List of created split sheets
+     */
+    200: CreatedSplitsListResponse;
+};
+
+export type ListCreatedSplitSheetsResponse = ListCreatedSplitSheetsResponses[keyof ListCreatedSplitSheetsResponses];
+
+export type ListReceivedSplitSheetsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/split-sheets/received';
+};
+
+export type ListReceivedSplitSheetsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListReceivedSplitSheetsError = ListReceivedSplitSheetsErrors[keyof ListReceivedSplitSheetsErrors];
+
+export type ListReceivedSplitSheetsResponses = {
+    /**
+     * List of received split sheets
+     */
+    200: ReceivedSplitsListResponse;
+};
+
+export type ListReceivedSplitSheetsResponse = ListReceivedSplitSheetsResponses[keyof ListReceivedSplitSheetsResponses];
+
+export type GetSplitSheetDetailsData = {
+    body?: never;
+    path: {
+        /**
+         * Split sheet version ID
+         */
+        versionId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/{versionId}';
+};
+
+export type GetSplitSheetDetailsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type GetSplitSheetDetailsError = GetSplitSheetDetailsErrors[keyof GetSplitSheetDetailsErrors];
+
+export type GetSplitSheetDetailsResponses = {
+    /**
+     * Split sheet details
+     */
+    200: SplitDetailResponse;
+};
+
+export type GetSplitSheetDetailsResponse = GetSplitSheetDetailsResponses[keyof GetSplitSheetDetailsResponses];
+
+export type GetSplitSheetStatusData = {
+    body?: never;
+    path: {
+        /**
+         * Song ID
+         */
+        songId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/song/{songId}/status';
+};
+
+export type GetSplitSheetStatusErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Song not found
+     */
+    404: Error;
+};
+
+export type GetSplitSheetStatusError = GetSplitSheetStatusErrors[keyof GetSplitSheetStatusErrors];
+
+export type GetSplitSheetStatusResponses = {
+    /**
+     * Split sheet status
+     */
+    200: SplitStatusResponse;
+};
+
+export type GetSplitSheetStatusResponse = GetSplitSheetStatusResponses[keyof GetSplitSheetStatusResponses];
+
+export type CreateSplitSheetData = {
+    body?: CreateSplitSheetRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/split-sheets';
+};
+
+export type CreateSplitSheetErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+    /**
+     * Conflict
+     */
+    409: Error;
+};
+
+export type CreateSplitSheetError = CreateSplitSheetErrors[keyof CreateSplitSheetErrors];
+
+export type CreateSplitSheetResponses = {
+    /**
+     * Split sheet created
+     */
+    201: CreateSplitSheetResponse;
+};
+
+export type CreateSplitSheetResponse2 = CreateSplitSheetResponses[keyof CreateSplitSheetResponses];
+
+export type VoidSplitSheetData = {
+    body?: never;
+    path: {
+        /**
+         * Split sheet version ID
+         */
+        versionId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/{versionId}/void';
+};
+
+export type VoidSplitSheetErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type VoidSplitSheetError = VoidSplitSheetErrors[keyof VoidSplitSheetErrors];
+
+export type VoidSplitSheetResponses = {
+    /**
+     * Split sheet voided
+     */
+    200: SplitSuccessResponse;
+};
+
+export type VoidSplitSheetResponse = VoidSplitSheetResponses[keyof VoidSplitSheetResponses];
+
+export type ResendToUnsignedData = {
+    body?: never;
+    path: {
+        /**
+         * Split sheet version ID
+         */
+        versionId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/{versionId}/resend';
+};
+
+export type ResendToUnsignedErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type ResendToUnsignedError = ResendToUnsignedErrors[keyof ResendToUnsignedErrors];
+
+export type ResendToUnsignedResponses = {
+    /**
+     * Emails sent
+     */
+    200: ResendResponse;
+};
+
+export type ResendToUnsignedResponse = ResendToUnsignedResponses[keyof ResendToUnsignedResponses];
+
+export type ResendToSpecificRecipientData = {
+    body?: never;
+    path: {
+        /**
+         * Split sheet version ID
+         */
+        versionId: number;
+        /**
+         * Signature ID
+         */
+        signatureId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/{versionId}/resend/{signatureId}';
+};
+
+export type ResendToSpecificRecipientErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type ResendToSpecificRecipientError = ResendToSpecificRecipientErrors[keyof ResendToSpecificRecipientErrors];
+
+export type ResendToSpecificRecipientResponses = {
+    /**
+     * Email sent
+     */
+    200: SplitSuccessResponse;
+};
+
+export type ResendToSpecificRecipientResponse = ResendToSpecificRecipientResponses[keyof ResendToSpecificRecipientResponses];
+
+export type UnlinkSplitFromSongData = {
+    body?: never;
+    path: {
+        /**
+         * Split sheet version ID
+         */
+        versionId: number;
+        /**
+         * Song ID
+         */
+        songId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/{versionId}/link-song/{songId}';
+};
+
+export type UnlinkSplitFromSongErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type UnlinkSplitFromSongError = UnlinkSplitFromSongErrors[keyof UnlinkSplitFromSongErrors];
+
+export type UnlinkSplitFromSongResponses = {
+    /**
+     * Unlinked successfully
+     */
+    200: SplitSuccessResponse;
+};
+
+export type UnlinkSplitFromSongResponse = UnlinkSplitFromSongResponses[keyof UnlinkSplitFromSongResponses];
+
+export type LinkSplitToSongData = {
+    body?: never;
+    path: {
+        /**
+         * Split sheet version ID
+         */
+        versionId: number;
+        /**
+         * Song ID
+         */
+        songId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/{versionId}/link-song/{songId}';
+};
+
+export type LinkSplitToSongErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+    /**
+     * Already linked
+     */
+    409: Error;
+};
+
+export type LinkSplitToSongError = LinkSplitToSongErrors[keyof LinkSplitToSongErrors];
+
+export type LinkSplitToSongResponses = {
+    /**
+     * Linked successfully
+     */
+    200: SplitSuccessResponse;
+};
+
+export type LinkSplitToSongResponse = LinkSplitToSongResponses[keyof LinkSplitToSongResponses];
+
+export type CreateSongFromSplitData = {
+    body?: never;
+    path: {
+        /**
+         * Split sheet version ID
+         */
+        versionId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/{versionId}/create-song';
+};
+
+export type CreateSongFromSplitErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type CreateSongFromSplitError = CreateSongFromSplitErrors[keyof CreateSongFromSplitErrors];
+
+export type CreateSongFromSplitResponses = {
+    /**
+     * Song created
+     */
+    201: CreateSongFromSplitResponse;
+};
+
+export type CreateSongFromSplitResponse2 = CreateSongFromSplitResponses[keyof CreateSongFromSplitResponses];
+
+export type MarkProSubmittedData = {
+    body?: never;
+    path: {
+        /**
+         * Song ID
+         */
+        songId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/song/{songId}/mark-pro-submitted';
+};
+
+export type MarkProSubmittedErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type MarkProSubmittedError = MarkProSubmittedErrors[keyof MarkProSubmittedErrors];
+
+export type MarkProSubmittedResponses = {
+    /**
+     * Marked as submitted
+     */
+    200: SplitSuccessResponse;
+};
+
+export type MarkProSubmittedResponse = MarkProSubmittedResponses[keyof MarkProSubmittedResponses];
+
+export type UpdateDesignatedWriterData = {
+    body?: UpdateDesignatedWriterRequest;
+    path: {
+        /**
+         * Song ID
+         */
+        songId: number;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/song/{songId}/designated-writer';
+};
+
+export type UpdateDesignatedWriterErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Forbidden
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type UpdateDesignatedWriterError = UpdateDesignatedWriterErrors[keyof UpdateDesignatedWriterErrors];
+
+export type UpdateDesignatedWriterResponses = {
+    /**
+     * Designated writer updated
+     */
+    200: SplitSuccessResponse;
+};
+
+export type UpdateDesignatedWriterResponse = UpdateDesignatedWriterResponses[keyof UpdateDesignatedWriterResponses];
+
+export type ListDemoFilesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Search by file name or song title
+         */
+        search?: string;
+    };
+    url: '/api/v1/split-sheets/demo-files';
+};
+
+export type ListDemoFilesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type ListDemoFilesError = ListDemoFilesErrors[keyof ListDemoFilesErrors];
+
+export type ListDemoFilesResponses = {
+    /**
+     * List of demo files
+     */
+    200: DemoFilesListResponse;
+};
+
+export type ListDemoFilesResponse = ListDemoFilesResponses[keyof ListDemoFilesResponses];
+
+export type GetSplitSheetByTokenData = {
+    body?: never;
+    path: {
+        /**
+         * Signing token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/public/{token}';
+};
+
+export type GetSplitSheetByTokenErrors = {
+    /**
+     * Expired or invalid
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type GetSplitSheetByTokenError = GetSplitSheetByTokenErrors[keyof GetSplitSheetByTokenErrors];
+
+export type GetSplitSheetByTokenResponses = {
+    /**
+     * Split sheet details
+     */
+    200: PublicSplitDetailResponse;
+};
+
+export type GetSplitSheetByTokenResponse = GetSplitSheetByTokenResponses[keyof GetSplitSheetByTokenResponses];
+
+export type SignSplitSheetByTokenData = {
+    body?: never;
+    path: {
+        /**
+         * Signing token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/public/{token}/sign';
+};
+
+export type SignSplitSheetByTokenErrors = {
+    /**
+     * Expired or invalid
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type SignSplitSheetByTokenError = SignSplitSheetByTokenErrors[keyof SignSplitSheetByTokenErrors];
+
+export type SignSplitSheetByTokenResponses = {
+    /**
+     * Signed successfully
+     */
+    200: SignResponse;
+};
+
+export type SignSplitSheetByTokenResponse = SignSplitSheetByTokenResponses[keyof SignSplitSheetByTokenResponses];
+
+export type DeclineSplitSheetByTokenData = {
+    body?: never;
+    path: {
+        /**
+         * Signing token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/public/{token}/decline';
+};
+
+export type DeclineSplitSheetByTokenErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Expired or invalid
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type DeclineSplitSheetByTokenError = DeclineSplitSheetByTokenErrors[keyof DeclineSplitSheetByTokenErrors];
+
+export type DeclineSplitSheetByTokenResponses = {
+    /**
+     * Declined successfully
+     */
+    200: DeclineResponse;
+};
+
+export type DeclineSplitSheetByTokenResponse = DeclineSplitSheetByTokenResponses[keyof DeclineSplitSheetByTokenResponses];
+
+export type GetSplitSheetPdfByTokenData = {
+    body?: never;
+    path: {
+        /**
+         * Signing token
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/api/v1/split-sheets/public/{token}/pdf';
+};
+
+export type GetSplitSheetPdfByTokenErrors = {
+    /**
+     * Not all writers signed
+     */
+    403: Error;
+    /**
+     * Not found
+     */
+    404: Error;
+};
+
+export type GetSplitSheetPdfByTokenError = GetSplitSheetPdfByTokenErrors[keyof GetSplitSheetPdfByTokenErrors];
+
+export type GetSplitSheetPdfByTokenResponses = {
+    /**
+     * PDF download URL
+     */
+    200: PdfResponse;
+};
+
+export type GetSplitSheetPdfByTokenResponse = GetSplitSheetPdfByTokenResponses[keyof GetSplitSheetPdfByTokenResponses];
+
+export type ListTrashData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/trash';
+};
+
+export type ListTrashErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type ListTrashError = ListTrashErrors[keyof ListTrashErrors];
+
+export type ListTrashResponses = {
+    /**
+     * List of trashed files
+     */
+    200: TrashListResponse;
+};
+
+export type ListTrashResponse = ListTrashResponses[keyof ListTrashResponses];
+
+export type RestoreTrashFilesData = {
+    body?: TrashFileIdsRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/trash/restore';
+};
+
+export type RestoreTrashFilesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Files not found or access denied
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type RestoreTrashFilesError = RestoreTrashFilesErrors[keyof RestoreTrashFilesErrors];
+
+export type RestoreTrashFilesResponses = {
+    /**
+     * Files restored
+     */
+    200: TrashMutationResponse;
+};
+
+export type RestoreTrashFilesResponse = RestoreTrashFilesResponses[keyof RestoreTrashFilesResponses];
+
+export type PermanentlyDeleteTrashFilesData = {
+    body?: TrashFileIdsRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/trash/permanently-delete';
+};
+
+export type PermanentlyDeleteTrashFilesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+    /**
+     * Files not found or access denied
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PermanentlyDeleteTrashFilesError = PermanentlyDeleteTrashFilesErrors[keyof PermanentlyDeleteTrashFilesErrors];
+
+export type PermanentlyDeleteTrashFilesResponses = {
+    /**
+     * Files permanently deleted
+     */
+    200: TrashMutationResponse;
+};
+
+export type PermanentlyDeleteTrashFilesResponse = PermanentlyDeleteTrashFilesResponses[keyof PermanentlyDeleteTrashFilesResponses];
+
+export type GetUserSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/settings';
+};
+
+export type GetUserSettingsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetUserSettingsError = GetUserSettingsErrors[keyof GetUserSettingsErrors];
+
+export type GetUserSettingsResponses = {
+    /**
+     * User settings
+     */
+    200: UserSettingsResponse;
+};
+
+export type GetUserSettingsResponse = GetUserSettingsResponses[keyof GetUserSettingsResponses];
+
+export type UpdateUserSettingsData = {
+    body?: UpdateUserSettingsBody;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/settings';
+};
+
+export type UpdateUserSettingsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type UpdateUserSettingsError = UpdateUserSettingsErrors[keyof UpdateUserSettingsErrors];
+
+export type UpdateUserSettingsResponses = {
+    /**
+     * Updated user settings
+     */
+    200: UserSettingsResponse;
+};
+
+export type UpdateUserSettingsResponse = UpdateUserSettingsResponses[keyof UpdateUserSettingsResponses];
+
+export type GetMySongwriterProfileData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/songwriters/mine';
+};
+
+export type GetMySongwriterProfileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetMySongwriterProfileError = GetMySongwriterProfileErrors[keyof GetMySongwriterProfileErrors];
+
+export type GetMySongwriterProfileResponses = {
+    /**
+     * Songwriter profile or null
+     */
+    200: SongwriterProfileResponse;
+};
+
+export type GetMySongwriterProfileResponse = GetMySongwriterProfileResponses[keyof GetMySongwriterProfileResponses];
+
+export type UpsertMySongwriterProfileData = {
+    body?: UpsertSongwriterBody;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/songwriters/mine';
+};
+
+export type UpsertMySongwriterProfileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type UpsertMySongwriterProfileError = UpsertMySongwriterProfileErrors[keyof UpsertMySongwriterProfileErrors];
+
+export type UpsertMySongwriterProfileResponses = {
+    /**
+     * Updated songwriter profile
+     */
+    200: SongwriterProfileResponse;
+};
+
+export type UpsertMySongwriterProfileResponse = UpsertMySongwriterProfileResponses[keyof UpsertMySongwriterProfileResponses];
+
+export type GetMyRightsOwnerProfileData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/rights-owners/mine';
+};
+
+export type GetMyRightsOwnerProfileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetMyRightsOwnerProfileError = GetMyRightsOwnerProfileErrors[keyof GetMyRightsOwnerProfileErrors];
+
+export type GetMyRightsOwnerProfileResponses = {
+    /**
+     * Rights owner profile or null
+     */
+    200: RightsOwnerProfileResponse;
+};
+
+export type GetMyRightsOwnerProfileResponse = GetMyRightsOwnerProfileResponses[keyof GetMyRightsOwnerProfileResponses];
+
+export type UpsertMyRightsOwnerProfileData = {
+    body?: UpsertRightsOwnerBody;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/rights-owners/mine';
+};
+
+export type UpsertMyRightsOwnerProfileErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type UpsertMyRightsOwnerProfileError = UpsertMyRightsOwnerProfileErrors[keyof UpsertMyRightsOwnerProfileErrors];
+
+export type UpsertMyRightsOwnerProfileResponses = {
+    /**
+     * Updated rights owner profile
+     */
+    200: RightsOwnerProfileResponse;
+};
+
+export type UpsertMyRightsOwnerProfileResponse = UpsertMyRightsOwnerProfileResponses[keyof UpsertMyRightsOwnerProfileResponses];
+
+export type GetSubscriptionStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/subscription-status';
+};
+
+export type GetSubscriptionStatusErrors = {
+    /**
+     * Unauthorized
+     */
+    401: Error;
+};
+
+export type GetSubscriptionStatusError = GetSubscriptionStatusErrors[keyof GetSubscriptionStatusErrors];
+
+export type GetSubscriptionStatusResponses = {
+    /**
+     * Subscription status
+     */
+    200: SubscriptionStatusResponse;
+};
+
+export type GetSubscriptionStatusResponse = GetSubscriptionStatusResponses[keyof GetSubscriptionStatusResponses];

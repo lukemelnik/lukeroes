@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { getApiV1Artists, getApiV1ArtistsById, getApiV1Releases, getApiV1ReleasesById, type Options } from '../sdk.gen';
-import type { GetApiV1ArtistsByIdData, GetApiV1ArtistsByIdError, GetApiV1ArtistsByIdResponse, GetApiV1ArtistsData, GetApiV1ArtistsError, GetApiV1ArtistsResponse, GetApiV1ReleasesByIdData, GetApiV1ReleasesByIdError, GetApiV1ReleasesByIdResponse, GetApiV1ReleasesData, GetApiV1ReleasesError, GetApiV1ReleasesResponse } from '../types.gen';
+import { checkFavorite, getArtist, getCommentEqSettings, getContact, getDashboardActivity, getDashboardChart, getDashboardFollowUps, getDashboardOpenComments, getFile, getIdea, getIdeaLinkedSongs, getIdeaStreamUrl, getInboxFiles, getMyRightsOwnerProfile, getMySongwriterProfile, getPlaylist, getPlaylistShare, getProject, getProjectBilling, getProjectShares, getProjectSongs, getRelease, getShare, getShareActivity, getShareDownloads, getShareFiles, getSharePlays, getShareStreamUrl, getShareUploads, getShareViewers, getSharingIndicator, getSong, getSplitSheetByToken, getSplitSheetDetails, getSplitSheetPdfByToken, getSplitSheetStatus, getSubscriptionStatus, getTrackingSheet, getUserSettings, listArtists, listContactActivities, listContacts, listContactShares, listCreatedSplitSheets, listDemoFiles, listFavorites, listFileComments, listIdeas, listMedia, listPlaylists, listProjects, listReceivedShares, listReceivedSplitSheets, listRecordingVersions, listReleases, listServiceItems, listShares, listSongs, listTrash, listVersionFiles, type Options } from '../sdk.gen';
+import type { CheckFavoriteData, CheckFavoriteError, CheckFavoriteResponse2, GetArtistData, GetArtistError, GetArtistResponse, GetCommentEqSettingsData, GetCommentEqSettingsError, GetCommentEqSettingsResponse, GetContactData, GetContactError, GetContactResponse, GetDashboardActivityData, GetDashboardActivityError, GetDashboardActivityResponse, GetDashboardChartData, GetDashboardChartError, GetDashboardChartResponse, GetDashboardFollowUpsData, GetDashboardFollowUpsError, GetDashboardFollowUpsResponse, GetDashboardOpenCommentsData, GetDashboardOpenCommentsError, GetDashboardOpenCommentsResponse, GetFileData, GetFileError, GetFileResponse, GetIdeaData, GetIdeaError, GetIdeaLinkedSongsData, GetIdeaLinkedSongsError, GetIdeaLinkedSongsResponse, GetIdeaResponse, GetIdeaStreamUrlData, GetIdeaStreamUrlError, GetIdeaStreamUrlResponse, GetInboxFilesData, GetInboxFilesError, GetInboxFilesResponse, GetMyRightsOwnerProfileData, GetMyRightsOwnerProfileError, GetMyRightsOwnerProfileResponse, GetMySongwriterProfileData, GetMySongwriterProfileError, GetMySongwriterProfileResponse, GetPlaylistData, GetPlaylistError, GetPlaylistResponse, GetPlaylistShareData, GetPlaylistShareError, GetPlaylistShareResponse, GetProjectBillingData, GetProjectBillingError, GetProjectBillingResponse, GetProjectData, GetProjectError, GetProjectResponse, GetProjectSharesData, GetProjectSharesError, GetProjectSharesResponse, GetProjectSongsData, GetProjectSongsError, GetProjectSongsResponse, GetReleaseData, GetReleaseError, GetReleaseResponse, GetShareActivityData, GetShareActivityError, GetShareActivityResponse, GetShareData, GetShareDownloadsData, GetShareDownloadsError, GetShareDownloadsResponse, GetShareError, GetShareFilesData, GetShareFilesError, GetShareFilesResponse, GetSharePlaysData, GetSharePlaysError, GetSharePlaysResponse, GetShareResponse, GetShareStreamUrlData, GetShareStreamUrlError, GetShareStreamUrlResponse, GetShareUploadsData, GetShareUploadsError, GetShareUploadsResponse, GetShareViewersData, GetShareViewersError, GetShareViewersResponse, GetSharingIndicatorData, GetSharingIndicatorError, GetSharingIndicatorResponse, GetSongData, GetSongError, GetSongResponse, GetSplitSheetByTokenData, GetSplitSheetByTokenError, GetSplitSheetByTokenResponse, GetSplitSheetDetailsData, GetSplitSheetDetailsError, GetSplitSheetDetailsResponse, GetSplitSheetPdfByTokenData, GetSplitSheetPdfByTokenError, GetSplitSheetPdfByTokenResponse, GetSplitSheetStatusData, GetSplitSheetStatusError, GetSplitSheetStatusResponse, GetSubscriptionStatusData, GetSubscriptionStatusError, GetSubscriptionStatusResponse, GetTrackingSheetData, GetTrackingSheetError, GetTrackingSheetResponse, GetUserSettingsData, GetUserSettingsError, GetUserSettingsResponse, ListArtistsData, ListArtistsError, ListArtistsResponse, ListContactActivitiesData, ListContactActivitiesError, ListContactActivitiesResponse, ListContactsData, ListContactsError, ListContactSharesData, ListContactSharesError, ListContactSharesResponse, ListContactsResponse, ListCreatedSplitSheetsData, ListCreatedSplitSheetsError, ListCreatedSplitSheetsResponse, ListDemoFilesData, ListDemoFilesError, ListDemoFilesResponse, ListFavoritesData, ListFavoritesError, ListFavoritesResponse, ListFileCommentsData, ListFileCommentsError, ListFileCommentsResponse, ListIdeasData, ListIdeasError, ListIdeasResponse, ListMediaData, ListMediaError, ListMediaResponse, ListPlaylistsData, ListPlaylistsError, ListPlaylistsResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, ListReceivedSharesData, ListReceivedSharesError, ListReceivedSharesResponse, ListReceivedSplitSheetsData, ListReceivedSplitSheetsError, ListReceivedSplitSheetsResponse, ListRecordingVersionsData, ListRecordingVersionsError, ListRecordingVersionsResponse, ListReleasesData, ListReleasesError, ListReleasesResponse, ListServiceItemsData, ListServiceItemsError, ListServiceItemsResponse, ListSharesData, ListSharesError, ListSharesResponse, ListSongsData, ListSongsError, ListSongsResponse, ListTrashData, ListTrashError, ListTrashResponse, ListVersionFilesData, ListVersionFilesError, ListVersionFilesResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -39,16 +39,16 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [params];
 };
 
-export const getApiV1ArtistsQueryKey = (options?: Options<GetApiV1ArtistsData>) => createQueryKey('getApiV1Artists', options);
+export const listArtistsQueryKey = (options?: Options<ListArtistsData>) => createQueryKey('listArtists', options);
 
 /**
  * List Artists
  *
  * Retrieve all artists for the authenticated user
  */
-export const getApiV1ArtistsOptions = (options?: Options<GetApiV1ArtistsData>) => queryOptions<GetApiV1ArtistsResponse, GetApiV1ArtistsError, GetApiV1ArtistsResponse, ReturnType<typeof getApiV1ArtistsQueryKey>>({
+export const listArtistsOptions = (options?: Options<ListArtistsData>) => queryOptions<ListArtistsResponse, ListArtistsError, ListArtistsResponse, ReturnType<typeof listArtistsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiV1Artists({
+        const { data } = await listArtists({
             ...options,
             ...queryKey[0],
             signal,
@@ -56,7 +56,7 @@ export const getApiV1ArtistsOptions = (options?: Options<GetApiV1ArtistsData>) =
         });
         return data;
     },
-    queryKey: getApiV1ArtistsQueryKey(options)
+    queryKey: listArtistsQueryKey(options)
 });
 
 const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'headers' | 'path' | 'query'>>(queryKey: QueryKey<Options>, page: K) => {
@@ -88,25 +88,25 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
     return params as unknown as typeof page;
 };
 
-export const getApiV1ArtistsInfiniteQueryKey = (options?: Options<GetApiV1ArtistsData>): QueryKey<Options<GetApiV1ArtistsData>> => createQueryKey('getApiV1Artists', options, true);
+export const listArtistsInfiniteQueryKey = (options?: Options<ListArtistsData>): QueryKey<Options<ListArtistsData>> => createQueryKey('listArtists', options, true);
 
 /**
  * List Artists
  *
  * Retrieve all artists for the authenticated user
  */
-export const getApiV1ArtistsInfiniteOptions = (options?: Options<GetApiV1ArtistsData>) => infiniteQueryOptions<GetApiV1ArtistsResponse, GetApiV1ArtistsError, InfiniteData<GetApiV1ArtistsResponse>, QueryKey<Options<GetApiV1ArtistsData>>, number | Pick<QueryKey<Options<GetApiV1ArtistsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+export const listArtistsInfiniteOptions = (options?: Options<ListArtistsData>) => infiniteQueryOptions<ListArtistsResponse, ListArtistsError, InfiniteData<ListArtistsResponse>, QueryKey<Options<ListArtistsData>>, number | Pick<QueryKey<Options<ListArtistsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
 // @ts-ignore
 {
     queryFn: async ({ pageParam, queryKey, signal }) => {
         // @ts-ignore
-        const page: Pick<QueryKey<Options<GetApiV1ArtistsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        const page: Pick<QueryKey<Options<ListArtistsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
             query: {
                 offset: pageParam
             }
         };
         const params = createInfiniteParams(queryKey, page);
-        const { data } = await getApiV1Artists({
+        const { data } = await listArtists({
             ...options,
             ...params,
             signal,
@@ -114,19 +114,19 @@ export const getApiV1ArtistsInfiniteOptions = (options?: Options<GetApiV1Artists
         });
         return data;
     },
-    queryKey: getApiV1ArtistsInfiniteQueryKey(options)
+    queryKey: listArtistsInfiniteQueryKey(options)
 });
 
-export const getApiV1ArtistsByIdQueryKey = (options: Options<GetApiV1ArtistsByIdData>) => createQueryKey('getApiV1ArtistsById', options);
+export const getArtistQueryKey = (options: Options<GetArtistData>) => createQueryKey('getArtist', options);
 
 /**
  * Get Artist
  *
- * Retrieve details about a specific artist
+ * Retrieve detailed information about a specific artist including promo photos and related counts
  */
-export const getApiV1ArtistsByIdOptions = (options: Options<GetApiV1ArtistsByIdData>) => queryOptions<GetApiV1ArtistsByIdResponse, GetApiV1ArtistsByIdError, GetApiV1ArtistsByIdResponse, ReturnType<typeof getApiV1ArtistsByIdQueryKey>>({
+export const getArtistOptions = (options: Options<GetArtistData>) => queryOptions<GetArtistResponse, GetArtistError, GetArtistResponse, ReturnType<typeof getArtistQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiV1ArtistsById({
+        const { data } = await getArtist({
             ...options,
             ...queryKey[0],
             signal,
@@ -134,19 +134,19 @@ export const getApiV1ArtistsByIdOptions = (options: Options<GetApiV1ArtistsByIdD
         });
         return data;
     },
-    queryKey: getApiV1ArtistsByIdQueryKey(options)
+    queryKey: getArtistQueryKey(options)
 });
 
-export const getApiV1ReleasesQueryKey = (options?: Options<GetApiV1ReleasesData>) => createQueryKey('getApiV1Releases', options);
+export const listContactsQueryKey = (options?: Options<ListContactsData>) => createQueryKey('listContacts', options);
 
 /**
- * List Releases
+ * List Contacts
  *
- * Retrieve all published releases for the authenticated user
+ * Retrieve all contacts for the authenticated user (max 500 records)
  */
-export const getApiV1ReleasesOptions = (options?: Options<GetApiV1ReleasesData>) => queryOptions<GetApiV1ReleasesResponse, GetApiV1ReleasesError, GetApiV1ReleasesResponse, ReturnType<typeof getApiV1ReleasesQueryKey>>({
+export const listContactsOptions = (options?: Options<ListContactsData>) => queryOptions<ListContactsResponse, ListContactsError, ListContactsResponse, ReturnType<typeof listContactsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiV1Releases({
+        const { data } = await listContacts({
             ...options,
             ...queryKey[0],
             signal,
@@ -154,28 +154,408 @@ export const getApiV1ReleasesOptions = (options?: Options<GetApiV1ReleasesData>)
         });
         return data;
     },
-    queryKey: getApiV1ReleasesQueryKey(options)
+    queryKey: listContactsQueryKey(options)
 });
 
-export const getApiV1ReleasesInfiniteQueryKey = (options?: Options<GetApiV1ReleasesData>): QueryKey<Options<GetApiV1ReleasesData>> => createQueryKey('getApiV1Releases', options, true);
+export const getContactQueryKey = (options: Options<GetContactData>) => createQueryKey('getContact', options);
+
+/**
+ * Get Contact
+ *
+ * Retrieve details about a specific contact
+ */
+export const getContactOptions = (options: Options<GetContactData>) => queryOptions<GetContactResponse, GetContactError, GetContactResponse, ReturnType<typeof getContactQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getContact({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getContactQueryKey(options)
+});
+
+export const listContactActivitiesQueryKey = (options: Options<ListContactActivitiesData>) => createQueryKey('listContactActivities', options);
+
+/**
+ * List Contact Activities
+ *
+ * Retrieve all activities for a specific contact
+ */
+export const listContactActivitiesOptions = (options: Options<ListContactActivitiesData>) => queryOptions<ListContactActivitiesResponse, ListContactActivitiesError, ListContactActivitiesResponse, ReturnType<typeof listContactActivitiesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listContactActivities({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listContactActivitiesQueryKey(options)
+});
+
+export const listContactSharesQueryKey = (options: Options<ListContactSharesData>) => createQueryKey('listContactShares', options);
+
+/**
+ * List Contact Shares
+ *
+ * Retrieve all shares associated with a specific contact (max 500 records)
+ */
+export const listContactSharesOptions = (options: Options<ListContactSharesData>) => queryOptions<ListContactSharesResponse, ListContactSharesError, ListContactSharesResponse, ReturnType<typeof listContactSharesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listContactShares({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listContactSharesQueryKey(options)
+});
+
+export const getDashboardActivityQueryKey = (options?: Options<GetDashboardActivityData>) => createQueryKey('getDashboardActivity', options);
+
+/**
+ * Get Dashboard Activity Feed
+ *
+ * Retrieve recent share activity events for the dashboard (views, plays, downloads, comments)
+ */
+export const getDashboardActivityOptions = (options?: Options<GetDashboardActivityData>) => queryOptions<GetDashboardActivityResponse, GetDashboardActivityError, GetDashboardActivityResponse, ReturnType<typeof getDashboardActivityQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getDashboardActivity({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getDashboardActivityQueryKey(options)
+});
+
+export const getDashboardChartQueryKey = (options?: Options<GetDashboardChartData>) => createQueryKey('getDashboardChart', options);
+
+/**
+ * Get Dashboard Activity Chart
+ *
+ * Retrieve aggregated activity time series data for all shares over a time period
+ */
+export const getDashboardChartOptions = (options?: Options<GetDashboardChartData>) => queryOptions<GetDashboardChartResponse, GetDashboardChartError, GetDashboardChartResponse, ReturnType<typeof getDashboardChartQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getDashboardChart({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getDashboardChartQueryKey(options)
+});
+
+export const getDashboardFollowUpsQueryKey = (options?: Options<GetDashboardFollowUpsData>) => createQueryKey('getDashboardFollowUps', options);
+
+/**
+ * Get Dashboard Follow-ups
+ *
+ * Retrieve upcoming or overdue activity next steps, sorted by date
+ */
+export const getDashboardFollowUpsOptions = (options?: Options<GetDashboardFollowUpsData>) => queryOptions<GetDashboardFollowUpsResponse, GetDashboardFollowUpsError, GetDashboardFollowUpsResponse, ReturnType<typeof getDashboardFollowUpsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getDashboardFollowUps({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getDashboardFollowUpsQueryKey(options)
+});
+
+export const getDashboardOpenCommentsQueryKey = (options?: Options<GetDashboardOpenCommentsData>) => createQueryKey('getDashboardOpenComments', options);
+
+/**
+ * Get Dashboard Open Comments
+ *
+ * Retrieve unresolved file comments across all songs, grouped by recording version
+ */
+export const getDashboardOpenCommentsOptions = (options?: Options<GetDashboardOpenCommentsData>) => queryOptions<GetDashboardOpenCommentsResponse, GetDashboardOpenCommentsError, GetDashboardOpenCommentsResponse, ReturnType<typeof getDashboardOpenCommentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getDashboardOpenComments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getDashboardOpenCommentsQueryKey(options)
+});
+
+export const listFavoritesQueryKey = (options?: Options<ListFavoritesData>) => createQueryKey('listFavorites', options);
+
+/**
+ * List Favorites
+ *
+ * Retrieve the authenticated user's favorites, optionally filtered by item type
+ */
+export const listFavoritesOptions = (options?: Options<ListFavoritesData>) => queryOptions<ListFavoritesResponse, ListFavoritesError, ListFavoritesResponse, ReturnType<typeof listFavoritesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listFavorites({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listFavoritesQueryKey(options)
+});
+
+export const checkFavoriteQueryKey = (options: Options<CheckFavoriteData>) => createQueryKey('checkFavorite', options);
+
+/**
+ * Check Favorite
+ *
+ * Check if a specific item is favorited by the user
+ */
+export const checkFavoriteOptions = (options: Options<CheckFavoriteData>) => queryOptions<CheckFavoriteResponse2, CheckFavoriteError, CheckFavoriteResponse2, ReturnType<typeof checkFavoriteQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await checkFavorite({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: checkFavoriteQueryKey(options)
+});
+
+export const listPlaylistsQueryKey = (options?: Options<ListPlaylistsData>) => createQueryKey('listPlaylists', options);
+
+/**
+ * List Playlists
+ *
+ * Retrieve all playlists for the authenticated user
+ */
+export const listPlaylistsOptions = (options?: Options<ListPlaylistsData>) => queryOptions<ListPlaylistsResponse, ListPlaylistsError, ListPlaylistsResponse, ReturnType<typeof listPlaylistsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listPlaylists({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listPlaylistsQueryKey(options)
+});
+
+export const getPlaylistQueryKey = (options: Options<GetPlaylistData>) => createQueryKey('getPlaylist', options);
+
+/**
+ * Get Playlist
+ *
+ * Retrieve a playlist with its tracks
+ */
+export const getPlaylistOptions = (options: Options<GetPlaylistData>) => queryOptions<GetPlaylistResponse, GetPlaylistError, GetPlaylistResponse, ReturnType<typeof getPlaylistQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPlaylist({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPlaylistQueryKey(options)
+});
+
+export const listProjectsQueryKey = (options?: Options<ListProjectsData>) => createQueryKey('listProjects', options);
+
+/**
+ * List Projects
+ *
+ * Retrieve all projects for the authenticated user with optional search
+ */
+export const listProjectsOptions = (options?: Options<ListProjectsData>) => queryOptions<ListProjectsResponse, ListProjectsError, ListProjectsResponse, ReturnType<typeof listProjectsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listProjects({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listProjectsQueryKey(options)
+});
+
+export const listServiceItemsQueryKey = (options?: Options<ListServiceItemsData>) => createQueryKey('listServiceItems', options);
+
+/**
+ * List Service Items
+ *
+ * List all service items for the current user
+ */
+export const listServiceItemsOptions = (options?: Options<ListServiceItemsData>) => queryOptions<ListServiceItemsResponse, ListServiceItemsError, ListServiceItemsResponse, ReturnType<typeof listServiceItemsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listServiceItems({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listServiceItemsQueryKey(options)
+});
+
+export const getProjectQueryKey = (options: Options<GetProjectData>) => createQueryKey('getProject', options);
+
+/**
+ * Get Project
+ *
+ * Retrieve a single project with artist and contact info
+ */
+export const getProjectOptions = (options: Options<GetProjectData>) => queryOptions<GetProjectResponse, GetProjectError, GetProjectResponse, ReturnType<typeof getProjectQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getProject({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProjectQueryKey(options)
+});
+
+export const getProjectSongsQueryKey = (options: Options<GetProjectSongsData>) => createQueryKey('getProjectSongs', options);
+
+/**
+ * Get Project Songs
+ *
+ * Retrieve a project with its songs and recording versions
+ */
+export const getProjectSongsOptions = (options: Options<GetProjectSongsData>) => queryOptions<GetProjectSongsResponse, GetProjectSongsError, GetProjectSongsResponse, ReturnType<typeof getProjectSongsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getProjectSongs({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProjectSongsQueryKey(options)
+});
+
+export const getTrackingSheetQueryKey = (options: Options<GetTrackingSheetData>) => createQueryKey('getTrackingSheet', options);
+
+/**
+ * Get Tracking Sheet
+ *
+ * Get columns, rows and cells for a project tracking sheet
+ */
+export const getTrackingSheetOptions = (options: Options<GetTrackingSheetData>) => queryOptions<GetTrackingSheetResponse, GetTrackingSheetError, GetTrackingSheetResponse, ReturnType<typeof getTrackingSheetQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getTrackingSheet({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getTrackingSheetQueryKey(options)
+});
+
+export const getProjectBillingQueryKey = (options: Options<GetProjectBillingData>) => createQueryKey('getProjectBilling', options);
+
+/**
+ * Get Project Billing
+ *
+ * Get all billable items for a project with summary totals
+ */
+export const getProjectBillingOptions = (options: Options<GetProjectBillingData>) => queryOptions<GetProjectBillingResponse, GetProjectBillingError, GetProjectBillingResponse, ReturnType<typeof getProjectBillingQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getProjectBilling({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProjectBillingQueryKey(options)
+});
+
+export const getProjectSharesQueryKey = (options: Options<GetProjectSharesData>) => createQueryKey('getProjectShares', options);
+
+/**
+ * Get Project Shares
+ *
+ * List all share configurations for a project
+ */
+export const getProjectSharesOptions = (options: Options<GetProjectSharesData>) => queryOptions<GetProjectSharesResponse, GetProjectSharesError, GetProjectSharesResponse, ReturnType<typeof getProjectSharesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getProjectShares({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProjectSharesQueryKey(options)
+});
+
+export const listReleasesQueryKey = (options?: Options<ListReleasesData>) => createQueryKey('listReleases', options);
 
 /**
  * List Releases
  *
  * Retrieve all published releases for the authenticated user
  */
-export const getApiV1ReleasesInfiniteOptions = (options?: Options<GetApiV1ReleasesData>) => infiniteQueryOptions<GetApiV1ReleasesResponse, GetApiV1ReleasesError, InfiniteData<GetApiV1ReleasesResponse>, QueryKey<Options<GetApiV1ReleasesData>>, number | Pick<QueryKey<Options<GetApiV1ReleasesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+export const listReleasesOptions = (options?: Options<ListReleasesData>) => queryOptions<ListReleasesResponse, ListReleasesError, ListReleasesResponse, ReturnType<typeof listReleasesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listReleases({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listReleasesQueryKey(options)
+});
+
+export const listReleasesInfiniteQueryKey = (options?: Options<ListReleasesData>): QueryKey<Options<ListReleasesData>> => createQueryKey('listReleases', options, true);
+
+/**
+ * List Releases
+ *
+ * Retrieve all published releases for the authenticated user
+ */
+export const listReleasesInfiniteOptions = (options?: Options<ListReleasesData>) => infiniteQueryOptions<ListReleasesResponse, ListReleasesError, InfiniteData<ListReleasesResponse>, QueryKey<Options<ListReleasesData>>, number | Pick<QueryKey<Options<ListReleasesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
 // @ts-ignore
 {
     queryFn: async ({ pageParam, queryKey, signal }) => {
         // @ts-ignore
-        const page: Pick<QueryKey<Options<GetApiV1ReleasesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        const page: Pick<QueryKey<Options<ListReleasesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
             query: {
                 offset: pageParam
             }
         };
         const params = createInfiniteParams(queryKey, page);
-        const { data } = await getApiV1Releases({
+        const { data } = await listReleases({
             ...options,
             ...params,
             signal,
@@ -183,19 +563,19 @@ export const getApiV1ReleasesInfiniteOptions = (options?: Options<GetApiV1Releas
         });
         return data;
     },
-    queryKey: getApiV1ReleasesInfiniteQueryKey(options)
+    queryKey: listReleasesInfiniteQueryKey(options)
 });
 
-export const getApiV1ReleasesByIdQueryKey = (options: Options<GetApiV1ReleasesByIdData>) => createQueryKey('getApiV1ReleasesById', options);
+export const getReleaseQueryKey = (options: Options<GetReleaseData>) => createQueryKey('getRelease', options);
 
 /**
  * Get Release
  *
  * Retrieve detailed information about a specific release
  */
-export const getApiV1ReleasesByIdOptions = (options: Options<GetApiV1ReleasesByIdData>) => queryOptions<GetApiV1ReleasesByIdResponse, GetApiV1ReleasesByIdError, GetApiV1ReleasesByIdResponse, ReturnType<typeof getApiV1ReleasesByIdQueryKey>>({
+export const getReleaseOptions = (options: Options<GetReleaseData>) => queryOptions<GetReleaseResponse, GetReleaseError, GetReleaseResponse, ReturnType<typeof getReleaseQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiV1ReleasesById({
+        const { data } = await getRelease({
             ...options,
             ...queryKey[0],
             signal,
@@ -203,5 +583,826 @@ export const getApiV1ReleasesByIdOptions = (options: Options<GetApiV1ReleasesByI
         });
         return data;
     },
-    queryKey: getApiV1ReleasesByIdQueryKey(options)
+    queryKey: getReleaseQueryKey(options)
+});
+
+export const listIdeasQueryKey = (options?: Options<ListIdeasData>) => createQueryKey('listIdeas', options);
+
+/**
+ * List Ideas
+ *
+ * Retrieve a paginated list of ideas for the authenticated user
+ */
+export const listIdeasOptions = (options?: Options<ListIdeasData>) => queryOptions<ListIdeasResponse, ListIdeasError, ListIdeasResponse, ReturnType<typeof listIdeasQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listIdeas({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listIdeasQueryKey(options)
+});
+
+export const listIdeasInfiniteQueryKey = (options?: Options<ListIdeasData>): QueryKey<Options<ListIdeasData>> => createQueryKey('listIdeas', options, true);
+
+/**
+ * List Ideas
+ *
+ * Retrieve a paginated list of ideas for the authenticated user
+ */
+export const listIdeasInfiniteOptions = (options?: Options<ListIdeasData>) => infiniteQueryOptions<ListIdeasResponse, ListIdeasError, InfiniteData<ListIdeasResponse>, QueryKey<Options<ListIdeasData>>, number | Pick<QueryKey<Options<ListIdeasData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<ListIdeasData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await listIdeas({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listIdeasInfiniteQueryKey(options)
+});
+
+export const getIdeaQueryKey = (options: Options<GetIdeaData>) => createQueryKey('getIdea', options);
+
+/**
+ * Get Idea
+ *
+ * Retrieve details about a specific idea
+ */
+export const getIdeaOptions = (options: Options<GetIdeaData>) => queryOptions<GetIdeaResponse, GetIdeaError, GetIdeaResponse, ReturnType<typeof getIdeaQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getIdea({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getIdeaQueryKey(options)
+});
+
+export const getIdeaStreamUrlQueryKey = (options: Options<GetIdeaStreamUrlData>) => createQueryKey('getIdeaStreamUrl', options);
+
+/**
+ * Get Stream URL
+ *
+ * Get a signed URL for streaming the idea's audio file
+ */
+export const getIdeaStreamUrlOptions = (options: Options<GetIdeaStreamUrlData>) => queryOptions<GetIdeaStreamUrlResponse, GetIdeaStreamUrlError, GetIdeaStreamUrlResponse, ReturnType<typeof getIdeaStreamUrlQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getIdeaStreamUrl({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getIdeaStreamUrlQueryKey(options)
+});
+
+export const getIdeaLinkedSongsQueryKey = (options: Options<GetIdeaLinkedSongsData>) => createQueryKey('getIdeaLinkedSongs', options);
+
+/**
+ * Get Linked Songs
+ *
+ * Get the songs that this idea is linked to
+ */
+export const getIdeaLinkedSongsOptions = (options: Options<GetIdeaLinkedSongsData>) => queryOptions<GetIdeaLinkedSongsResponse, GetIdeaLinkedSongsError, GetIdeaLinkedSongsResponse, ReturnType<typeof getIdeaLinkedSongsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getIdeaLinkedSongs({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getIdeaLinkedSongsQueryKey(options)
+});
+
+export const listMediaQueryKey = (options?: Options<ListMediaData>) => createQueryKey('listMedia', options);
+
+/**
+ * List Media Library Items
+ *
+ * Retrieve media library items with cursor-based pagination, ordered by most recent first
+ */
+export const listMediaOptions = (options?: Options<ListMediaData>) => queryOptions<ListMediaResponse, ListMediaError, ListMediaResponse, ReturnType<typeof listMediaQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listMedia({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listMediaQueryKey(options)
+});
+
+export const listMediaInfiniteQueryKey = (options?: Options<ListMediaData>): QueryKey<Options<ListMediaData>> => createQueryKey('listMedia', options, true);
+
+/**
+ * List Media Library Items
+ *
+ * Retrieve media library items with cursor-based pagination, ordered by most recent first
+ */
+export const listMediaInfiniteOptions = (options?: Options<ListMediaData>) => infiniteQueryOptions<ListMediaResponse, ListMediaError, InfiniteData<ListMediaResponse>, QueryKey<Options<ListMediaData>>, string | Pick<QueryKey<Options<ListMediaData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<ListMediaData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                cursor: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await listMedia({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listMediaInfiniteQueryKey(options)
+});
+
+export const listSharesQueryKey = (options?: Options<ListSharesData>) => createQueryKey('listShares', options);
+
+/**
+ * List Shares
+ *
+ * Retrieve all shares for the authenticated user with analytics and contact info (max 500 records)
+ */
+export const listSharesOptions = (options?: Options<ListSharesData>) => queryOptions<ListSharesResponse, ListSharesError, ListSharesResponse, ReturnType<typeof listSharesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listShares({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listSharesQueryKey(options)
+});
+
+export const listReceivedSharesQueryKey = (options?: Options<ListReceivedSharesData>) => createQueryKey('listReceivedShares', options);
+
+/**
+ * List Shares Received by Current User
+ *
+ * Retrieve all non-revoked, non-expired shares where the authenticated user is the recipient
+ */
+export const listReceivedSharesOptions = (options?: Options<ListReceivedSharesData>) => queryOptions<ListReceivedSharesResponse, ListReceivedSharesError, ListReceivedSharesResponse, ReturnType<typeof listReceivedSharesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listReceivedShares({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listReceivedSharesQueryKey(options)
+});
+
+export const getSharingIndicatorQueryKey = (options: Options<GetSharingIndicatorData>) => createQueryKey('getSharingIndicator', options);
+
+/**
+ * Get Sharing Indicator Data
+ *
+ * Get sharing indicator data for a recording version, showing share counts grouped by level
+ */
+export const getSharingIndicatorOptions = (options: Options<GetSharingIndicatorData>) => queryOptions<GetSharingIndicatorResponse, GetSharingIndicatorError, GetSharingIndicatorResponse, ReturnType<typeof getSharingIndicatorQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSharingIndicator({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSharingIndicatorQueryKey(options)
+});
+
+export const getShareQueryKey = (options: Options<GetShareData>) => createQueryKey('getShare', options);
+
+/**
+ * Get Share
+ *
+ * Retrieve details about a specific share
+ */
+export const getShareOptions = (options: Options<GetShareData>) => queryOptions<GetShareResponse, GetShareError, GetShareResponse, ReturnType<typeof getShareQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getShare({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getShareQueryKey(options)
+});
+
+export const getShareActivityQueryKey = (options: Options<GetShareActivityData>) => createQueryKey('getShareActivity', options);
+
+/**
+ * Get Share Activity Time Series
+ *
+ * Retrieve daily activity counts (views, plays, downloads) for a share over a time period
+ */
+export const getShareActivityOptions = (options: Options<GetShareActivityData>) => queryOptions<GetShareActivityResponse, GetShareActivityError, GetShareActivityResponse, ReturnType<typeof getShareActivityQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getShareActivity({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getShareActivityQueryKey(options)
+});
+
+export const getSharePlaysQueryKey = (options: Options<GetSharePlaysData>) => createQueryKey('getSharePlays', options);
+
+/**
+ * Get Share Play Statistics
+ *
+ * Retrieve play statistics per song and file for a share
+ */
+export const getSharePlaysOptions = (options: Options<GetSharePlaysData>) => queryOptions<GetSharePlaysResponse, GetSharePlaysError, GetSharePlaysResponse, ReturnType<typeof getSharePlaysQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSharePlays({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSharePlaysQueryKey(options)
+});
+
+export const getShareDownloadsQueryKey = (options: Options<GetShareDownloadsData>) => createQueryKey('getShareDownloads', options);
+
+/**
+ * Get Share Download Statistics
+ *
+ * Retrieve download statistics per song and file with format breakdowns
+ */
+export const getShareDownloadsOptions = (options: Options<GetShareDownloadsData>) => queryOptions<GetShareDownloadsResponse, GetShareDownloadsError, GetShareDownloadsResponse, ReturnType<typeof getShareDownloadsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getShareDownloads({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getShareDownloadsQueryKey(options)
+});
+
+export const getShareUploadsQueryKey = (options: Options<GetShareUploadsData>) => createQueryKey('getShareUploads', options);
+
+/**
+ * Get Share Upload Statistics
+ *
+ * Retrieve upload statistics per song with file details
+ */
+export const getShareUploadsOptions = (options: Options<GetShareUploadsData>) => queryOptions<GetShareUploadsResponse, GetShareUploadsError, GetShareUploadsResponse, ReturnType<typeof getShareUploadsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getShareUploads({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getShareUploadsQueryKey(options)
+});
+
+export const getShareViewersQueryKey = (options: Options<GetShareViewersData>) => createQueryKey('getShareViewers', options);
+
+/**
+ * Get Share Unique Viewers
+ *
+ * Retrieve a list of unique viewers for a share with device and location info
+ */
+export const getShareViewersOptions = (options: Options<GetShareViewersData>) => queryOptions<GetShareViewersResponse, GetShareViewersError, GetShareViewersResponse, ReturnType<typeof getShareViewersQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getShareViewers({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getShareViewersQueryKey(options)
+});
+
+export const getInboxFilesQueryKey = (options: Options<GetInboxFilesData>) => createQueryKey('getInboxFiles', options);
+
+/**
+ * Get Inbox Files
+ *
+ * Get inbox files for a recording version (files uploaded by collaborators)
+ */
+export const getInboxFilesOptions = (options: Options<GetInboxFilesData>) => queryOptions<GetInboxFilesResponse, GetInboxFilesError, GetInboxFilesResponse, ReturnType<typeof getInboxFilesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getInboxFiles({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getInboxFilesQueryKey(options)
+});
+
+export const getShareFilesQueryKey = (options: Options<GetShareFilesData>) => createQueryKey('getShareFiles', options);
+
+/**
+ * Get Share Files
+ *
+ * Retrieve files for a share by access key. Bearer auth user must be the recipient.
+ */
+export const getShareFilesOptions = (options: Options<GetShareFilesData>) => queryOptions<GetShareFilesResponse, GetShareFilesError, GetShareFilesResponse, ReturnType<typeof getShareFilesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getShareFiles({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getShareFilesQueryKey(options)
+});
+
+export const getPlaylistShareQueryKey = (options: Options<GetPlaylistShareData>) => createQueryKey('getPlaylistShare', options);
+
+/**
+ * Get Playlist Share
+ *
+ * Retrieve playlist data for a playlist share by access key. Bearer auth user must be the recipient.
+ */
+export const getPlaylistShareOptions = (options: Options<GetPlaylistShareData>) => queryOptions<GetPlaylistShareResponse, GetPlaylistShareError, GetPlaylistShareResponse, ReturnType<typeof getPlaylistShareQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPlaylistShare({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPlaylistShareQueryKey(options)
+});
+
+export const getShareStreamUrlQueryKey = (options: Options<GetShareStreamUrlData>) => createQueryKey('getShareStreamUrl', options);
+
+/**
+ * Get File Stream URL
+ *
+ * Get a CDN URL for streaming a file from a share. Bearer auth user must be the recipient.
+ */
+export const getShareStreamUrlOptions = (options: Options<GetShareStreamUrlData>) => queryOptions<GetShareStreamUrlResponse, GetShareStreamUrlError, GetShareStreamUrlResponse, ReturnType<typeof getShareStreamUrlQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getShareStreamUrl({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getShareStreamUrlQueryKey(options)
+});
+
+export const listSongsQueryKey = (options?: Options<ListSongsData>) => createQueryKey('listSongs', options);
+
+/**
+ * List Songs
+ *
+ * Retrieve a paginated list of songs for the authenticated user
+ */
+export const listSongsOptions = (options?: Options<ListSongsData>) => queryOptions<ListSongsResponse, ListSongsError, ListSongsResponse, ReturnType<typeof listSongsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listSongs({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listSongsQueryKey(options)
+});
+
+export const listSongsInfiniteQueryKey = (options?: Options<ListSongsData>): QueryKey<Options<ListSongsData>> => createQueryKey('listSongs', options, true);
+
+/**
+ * List Songs
+ *
+ * Retrieve a paginated list of songs for the authenticated user
+ */
+export const listSongsInfiniteOptions = (options?: Options<ListSongsData>) => infiniteQueryOptions<ListSongsResponse, ListSongsError, InfiniteData<ListSongsResponse>, QueryKey<Options<ListSongsData>>, number | Pick<QueryKey<Options<ListSongsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<ListSongsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await listSongs({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listSongsInfiniteQueryKey(options)
+});
+
+export const getSongQueryKey = (options: Options<GetSongData>) => createQueryKey('getSong', options);
+
+/**
+ * Get Song
+ *
+ * Retrieve a song with its recording versions
+ */
+export const getSongOptions = (options: Options<GetSongData>) => queryOptions<GetSongResponse, GetSongError, GetSongResponse, ReturnType<typeof getSongQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSong({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSongQueryKey(options)
+});
+
+export const listRecordingVersionsQueryKey = (options: Options<ListRecordingVersionsData>) => createQueryKey('listRecordingVersions', options);
+
+/**
+ * List Recording Versions
+ *
+ * List recording versions for a song
+ */
+export const listRecordingVersionsOptions = (options: Options<ListRecordingVersionsData>) => queryOptions<ListRecordingVersionsResponse, ListRecordingVersionsError, ListRecordingVersionsResponse, ReturnType<typeof listRecordingVersionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listRecordingVersions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listRecordingVersionsQueryKey(options)
+});
+
+export const listVersionFilesQueryKey = (options: Options<ListVersionFilesData>) => createQueryKey('listVersionFiles', options);
+
+/**
+ * List Version Files
+ *
+ * List files for a specific recording version
+ */
+export const listVersionFilesOptions = (options: Options<ListVersionFilesData>) => queryOptions<ListVersionFilesResponse, ListVersionFilesError, ListVersionFilesResponse, ReturnType<typeof listVersionFilesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listVersionFiles({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listVersionFilesQueryKey(options)
+});
+
+export const getFileQueryKey = (options: Options<GetFileData>) => createQueryKey('getFile', options);
+
+/**
+ * Get File
+ *
+ * Get a single file with waveform peaks
+ */
+export const getFileOptions = (options: Options<GetFileData>) => queryOptions<GetFileResponse, GetFileError, GetFileResponse, ReturnType<typeof getFileQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getFile({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getFileQueryKey(options)
+});
+
+export const listFileCommentsQueryKey = (options: Options<ListFileCommentsData>) => createQueryKey('listFileComments', options);
+
+/**
+ * List File Comments
+ *
+ * List all comments for a recording file, ordered by creation date
+ */
+export const listFileCommentsOptions = (options: Options<ListFileCommentsData>) => queryOptions<ListFileCommentsResponse, ListFileCommentsError, ListFileCommentsResponse, ReturnType<typeof listFileCommentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listFileComments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listFileCommentsQueryKey(options)
+});
+
+export const getCommentEqSettingsQueryKey = (options: Options<GetCommentEqSettingsData>) => createQueryKey('getCommentEqSettings', options);
+
+/**
+ * Get EQ Settings
+ *
+ * Get EQ settings for a comment. Only the file owner can access.
+ */
+export const getCommentEqSettingsOptions = (options: Options<GetCommentEqSettingsData>) => queryOptions<GetCommentEqSettingsResponse, GetCommentEqSettingsError, GetCommentEqSettingsResponse, ReturnType<typeof getCommentEqSettingsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getCommentEqSettings({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCommentEqSettingsQueryKey(options)
+});
+
+export const listCreatedSplitSheetsQueryKey = (options?: Options<ListCreatedSplitSheetsData>) => createQueryKey('listCreatedSplitSheets', options);
+
+/**
+ * List Created Split Sheets
+ *
+ * List split sheets created by the authenticated user
+ */
+export const listCreatedSplitSheetsOptions = (options?: Options<ListCreatedSplitSheetsData>) => queryOptions<ListCreatedSplitSheetsResponse, ListCreatedSplitSheetsError, ListCreatedSplitSheetsResponse, ReturnType<typeof listCreatedSplitSheetsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listCreatedSplitSheets({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listCreatedSplitSheetsQueryKey(options)
+});
+
+export const listReceivedSplitSheetsQueryKey = (options?: Options<ListReceivedSplitSheetsData>) => createQueryKey('listReceivedSplitSheets', options);
+
+/**
+ * List Received Split Sheets
+ *
+ * List split sheets sent to the authenticated user
+ */
+export const listReceivedSplitSheetsOptions = (options?: Options<ListReceivedSplitSheetsData>) => queryOptions<ListReceivedSplitSheetsResponse, ListReceivedSplitSheetsError, ListReceivedSplitSheetsResponse, ReturnType<typeof listReceivedSplitSheetsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listReceivedSplitSheets({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listReceivedSplitSheetsQueryKey(options)
+});
+
+export const getSplitSheetDetailsQueryKey = (options: Options<GetSplitSheetDetailsData>) => createQueryKey('getSplitSheetDetails', options);
+
+/**
+ * Get Split Sheet Details
+ *
+ * Get full split sheet details with signatures
+ */
+export const getSplitSheetDetailsOptions = (options: Options<GetSplitSheetDetailsData>) => queryOptions<GetSplitSheetDetailsResponse, GetSplitSheetDetailsError, GetSplitSheetDetailsResponse, ReturnType<typeof getSplitSheetDetailsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSplitSheetDetails({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSplitSheetDetailsQueryKey(options)
+});
+
+export const getSplitSheetStatusQueryKey = (options: Options<GetSplitSheetStatusData>) => createQueryKey('getSplitSheetStatus', options);
+
+/**
+ * Get Split Sheet Status for Song
+ *
+ * Get the pending or executed split sheet for a song
+ */
+export const getSplitSheetStatusOptions = (options: Options<GetSplitSheetStatusData>) => queryOptions<GetSplitSheetStatusResponse, GetSplitSheetStatusError, GetSplitSheetStatusResponse, ReturnType<typeof getSplitSheetStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSplitSheetStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSplitSheetStatusQueryKey(options)
+});
+
+export const listDemoFilesQueryKey = (options?: Options<ListDemoFilesData>) => createQueryKey('listDemoFiles', options);
+
+/**
+ * List Demo Files
+ *
+ * List demo and rough mix files available for attachment
+ */
+export const listDemoFilesOptions = (options?: Options<ListDemoFilesData>) => queryOptions<ListDemoFilesResponse, ListDemoFilesError, ListDemoFilesResponse, ReturnType<typeof listDemoFilesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listDemoFiles({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listDemoFilesQueryKey(options)
+});
+
+export const getSplitSheetByTokenQueryKey = (options: Options<GetSplitSheetByTokenData>) => createQueryKey('getSplitSheetByToken', options);
+
+/**
+ * Get Split Sheet by Token
+ *
+ * Get split sheet details using a signing token (no auth required)
+ */
+export const getSplitSheetByTokenOptions = (options: Options<GetSplitSheetByTokenData>) => queryOptions<GetSplitSheetByTokenResponse, GetSplitSheetByTokenError, GetSplitSheetByTokenResponse, ReturnType<typeof getSplitSheetByTokenQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSplitSheetByToken({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSplitSheetByTokenQueryKey(options)
+});
+
+export const getSplitSheetPdfByTokenQueryKey = (options: Options<GetSplitSheetPdfByTokenData>) => createQueryKey('getSplitSheetPdfByToken', options);
+
+/**
+ * Download Signed PDF
+ *
+ * Download the signed split sheet PDF using a signing token
+ */
+export const getSplitSheetPdfByTokenOptions = (options: Options<GetSplitSheetPdfByTokenData>) => queryOptions<GetSplitSheetPdfByTokenResponse, GetSplitSheetPdfByTokenError, GetSplitSheetPdfByTokenResponse, ReturnType<typeof getSplitSheetPdfByTokenQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSplitSheetPdfByToken({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSplitSheetPdfByTokenQueryKey(options)
+});
+
+export const listTrashQueryKey = (options?: Options<ListTrashData>) => createQueryKey('listTrash', options);
+
+/**
+ * List Trash
+ *
+ * Retrieve all soft-deleted files (recording files and inbox files) for the authenticated user
+ */
+export const listTrashOptions = (options?: Options<ListTrashData>) => queryOptions<ListTrashResponse, ListTrashError, ListTrashResponse, ReturnType<typeof listTrashQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listTrash({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listTrashQueryKey(options)
+});
+
+export const getUserSettingsQueryKey = (options?: Options<GetUserSettingsData>) => createQueryKey('getUserSettings', options);
+
+/**
+ * Get User Settings
+ */
+export const getUserSettingsOptions = (options?: Options<GetUserSettingsData>) => queryOptions<GetUserSettingsResponse, GetUserSettingsError, GetUserSettingsResponse, ReturnType<typeof getUserSettingsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getUserSettings({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getUserSettingsQueryKey(options)
+});
+
+export const getMySongwriterProfileQueryKey = (options?: Options<GetMySongwriterProfileData>) => createQueryKey('getMySongwriterProfile', options);
+
+/**
+ * Get My Songwriter Profile
+ */
+export const getMySongwriterProfileOptions = (options?: Options<GetMySongwriterProfileData>) => queryOptions<GetMySongwriterProfileResponse, GetMySongwriterProfileError, GetMySongwriterProfileResponse, ReturnType<typeof getMySongwriterProfileQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getMySongwriterProfile({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getMySongwriterProfileQueryKey(options)
+});
+
+export const getMyRightsOwnerProfileQueryKey = (options?: Options<GetMyRightsOwnerProfileData>) => createQueryKey('getMyRightsOwnerProfile', options);
+
+/**
+ * Get My Rights Owner Profile
+ */
+export const getMyRightsOwnerProfileOptions = (options?: Options<GetMyRightsOwnerProfileData>) => queryOptions<GetMyRightsOwnerProfileResponse, GetMyRightsOwnerProfileError, GetMyRightsOwnerProfileResponse, ReturnType<typeof getMyRightsOwnerProfileQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getMyRightsOwnerProfile({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getMyRightsOwnerProfileQueryKey(options)
+});
+
+export const getSubscriptionStatusQueryKey = (options?: Options<GetSubscriptionStatusData>) => createQueryKey('getSubscriptionStatus', options);
+
+/**
+ * Get Subscription Status
+ *
+ * Returns the current subscription state for the authenticated user. Used by mobile apps to determine access level.
+ */
+export const getSubscriptionStatusOptions = (options?: Options<GetSubscriptionStatusData>) => queryOptions<GetSubscriptionStatusResponse, GetSubscriptionStatusError, GetSubscriptionStatusResponse, ReturnType<typeof getSubscriptionStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSubscriptionStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSubscriptionStatusQueryKey(options)
 });

@@ -1,7 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	Link,
+	notFound,
+	useNavigate,
+} from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { z } from "zod";
 import {
 	type ReleaseDetail,
 	releaseDetailsQueryOptions,
@@ -22,7 +28,12 @@ import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { msToMMSS } from "@/lib/utils";
 
+const searchSchema = z.object({
+	track: z.coerce.number().int().positive().optional(),
+});
+
 export const Route = createFileRoute("/(nav)/music/$releaseId")({
+	validateSearch: searchSchema,
 	loader: async ({ params, context }) => {
 		const releaseId = Number(params.releaseId);
 		if (Number.isNaN(releaseId)) {
@@ -83,19 +94,17 @@ function ReleaseDetailPage() {
 		releaseDetailsQueryOptions(Number.isNaN(numericId) ? null : numericId),
 	);
 
-	const [selectedTrackId, setSelectedTrackId] = useState<number | null>(null);
-
-	useEffect(() => {
-		if (release?.tracks?.length && selectedTrackId === null) {
-			setSelectedTrackId(release.tracks[0].id);
-		}
-	}, [release, selectedTrackId]);
+	const { track: trackParam } = Route.useSearch();
+	const navigate = useNavigate();
 
 	const selectedTrack: DetailedTrack | undefined = useMemo(() => {
 		if (!release?.tracks?.length) return undefined;
-		if (selectedTrackId === null) return release.tracks[0];
-		return release.tracks.find((track) => track.id === selectedTrackId);
-	}, [release, selectedTrackId]);
+		if (trackParam) {
+			const found = release.tracks.find((t) => t.id === trackParam);
+			if (found) return found;
+		}
+		return release.tracks[0];
+	}, [release, trackParam]);
 
 	if (isPending) {
 		return (
@@ -213,7 +222,13 @@ function ReleaseDetailPage() {
 												<button
 													type="button"
 													key={track.id}
-													onClick={() => setSelectedTrackId(track.id)}
+													onClick={() =>
+									navigate({
+										to: ".",
+										search: { track: track.id },
+										replace: true,
+									})
+								}
 													className={`flex w-full items-center justify-between rounded pr-1 transition-colors ${
 														isActive
 															? "bg-accent text-foreground"
