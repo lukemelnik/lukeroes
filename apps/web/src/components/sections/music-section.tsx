@@ -125,9 +125,13 @@ export default function MusicSection() {
 														params={{ slug: slugify(item.title) }}
 														aria-label="Release info"
 													>
-														<Button size="sm" variant="outline">
-															Details
-														</Button>
+														<Button
+														size="sm"
+														variant="outline"
+														className="hover:border-primary hover:text-primary"
+													>
+														Details
+													</Button>
 													</Link>
 												</div>
 												<p className="text-muted-foreground text-sm">
