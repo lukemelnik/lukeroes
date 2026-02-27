@@ -122,7 +122,7 @@ function ProductionPageComponent() {
 					className="absolute inset-0 bg-center bg-cover"
 					style={{ backgroundImage: "url('/studio.webp')" }}
 				>
-					<div className="absolute inset-0 bg-linear-to-b from-background/80 to-background" />
+					<div className="absolute inset-0 bg-linear-to-b from-background/30 via-background/50 to-background" />
 				</div>
 
 				{/* Content */}
