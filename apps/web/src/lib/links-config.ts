@@ -33,7 +33,7 @@ export interface LinksConfig {
 
 export const linksConfig: LinksConfig = {
 	profile: {
-		image: "/bg-desktop-dirty.jpg", // Add your profile image to public/profile.jpg
+		image: "/bg-organic-film.webp",
 		name: "Luke Roes",
 		tagline: "Artist • Producer • Mixer",
 	},
