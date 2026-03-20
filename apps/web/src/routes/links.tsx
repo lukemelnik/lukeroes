@@ -26,7 +26,8 @@ export const Route = createFileRoute("/links")({
 
 function LinksPage() {
 	const { profile, links, showMailingList } = linksConfig;
-	const { data: releases } = useQuery(musicQueryOptions);
+	const { data: releases, isLoading: isLoadingReleases } =
+		useQuery(musicQueryOptions);
 	const featuredRelease = releases?.[0];
 
 	const streamingLinks = featuredRelease
@@ -100,8 +101,25 @@ function LinksPage() {
 				</div>
 
 				{/* Featured Release */}
-				{featuredRelease && (
+				{isLoadingReleases && (
 					<div className="rounded-lg border border-border bg-card p-4">
+						<div className="flex items-center gap-4">
+							<div className="h-20 w-20 flex-shrink-0 animate-pulse rounded-md bg-muted/30" />
+							<div className="flex flex-col justify-center space-y-3">
+								<div className="h-5 w-32 animate-pulse rounded bg-muted/30" />
+								<div className="flex gap-2">
+									<div className="h-8 w-24 animate-pulse rounded-full bg-muted/30" />
+									<div className="h-8 w-28 animate-pulse rounded-full bg-muted/30" />
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
+				{featuredRelease && (
+					<div className="relative rounded-lg border border-border bg-card p-4">
+						<span className="absolute -top-2.5 right-3 animate-pulse rounded bg-muted px-1.5 py-0.5 font-semibold text-[10px] text-foreground uppercase tracking-widest">
+							New {featuredRelease.type}
+						</span>
 						<div className="flex items-center gap-4">
 							<div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
 								<ArtworkImage
@@ -111,31 +129,26 @@ function LinksPage() {
 								/>
 							</div>
 							<div className="flex flex-col justify-center space-y-2">
-								<div className="flex items-start justify-between gap-2">
-									<h2 className="font-semibold">{featuredRelease.title}</h2>
-									<span className="rounded bg-primary px-1.5 py-0.5 font-semibold text-[10px] text-primary-foreground uppercase tracking-widest">
-										New {featuredRelease.type}
-									</span>
-								</div>
+								<h2 className="font-semibold">{featuredRelease.title}</h2>
 								{streamingLinks.length > 0 && (
-									<div className="flex gap-2">
+									<div className="flex flex-wrap gap-2">
 										{streamingLinks.map(({ href, icon: Icon, label }) => (
 											<a
 												key={label}
 												href={href}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="rounded-full bg-muted p-1.5 transition-colors hover:bg-muted/80"
+												className="flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-sm text-primary transition-colors hover:border-primary/50 hover:bg-accent"
 											>
-												<Icon size={18} />
-												<span className="sr-only">{label}</span>
+												<Icon size={16} className="text-primary" />
+												<span>{label}</span>
 											</a>
-										))}
-									</div>
-								)}
+											))}
+										</div>
+									)}
+								</div>
 							</div>
 						</div>
-					</div>
 				)}
 
 				{/* Link Buttons */}

@@ -55,11 +55,6 @@ export default function HeroSection() {
 			<div className="relative flex h-full items-end px-4 pb-10 sm:pb-20">
 				{mostRecentRelease && (
 					<div className="flex w-full max-w-4xl flex-col items-center">
-						{/* New Release Label */}
-						<p className="animate-fade-in-up text-center font-bold text-foreground text-sm uppercase tracking-wider sm:text-lg">
-							New {mostRecentRelease.type.toUpperCase()} Out Now
-						</p>
-
 						{/* Artwork and Title/Links */}
 						<div className="flex w-full items-center justify-center gap-4 md:gap-8">
 							{/* Album Artwork */}
@@ -74,6 +69,10 @@ export default function HeroSection() {
 
 							{/* Title and Streaming Links */}
 							<div className="flex flex-col justify-center">
+								{/* New Release Label */}
+								<p className="mb-1 animate-fade-in-up font-sans font-bold text-muted-foreground text-sm uppercase tracking-wider sm:mb-2 sm:text-lg">
+									New {mostRecentRelease.type.toUpperCase()}
+								</p>
 								<h1
 									className={`font-bold tracking-tight ${titleIsLong ? "mb-1 text-xl md:mb-2 md:text-5xl" : "text-2xl md:text-6xl"}`}
 								>

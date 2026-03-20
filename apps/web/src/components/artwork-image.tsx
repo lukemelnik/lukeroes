@@ -15,9 +15,11 @@ export function ArtworkImage({
 	priority,
 }: ArtworkImageProps) {
 	const [hasError, setHasError] = useState(!src);
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
 		setHasError(!src);
+		setIsLoaded(false);
 	}, [src]);
 
 	if (hasError) {
@@ -34,8 +36,9 @@ export function ArtworkImage({
 		<img
 			src={src}
 			alt={alt}
-			className={className}
+			className={`${className} ${isLoaded ? "" : "animate-pulse bg-muted/30"}`}
 			loading={priority ? "eager" : "lazy"}
+			onLoad={() => setIsLoaded(true)}
 			onError={() => setHasError(true)}
 		/>
 	);
