@@ -22,7 +22,6 @@ export default function Header() {
 		{ to: "/videos", label: "Videos" },
 		{ to: "/tour", label: "Tour" },
 		{ to: "/work-with-me", label: "Work With Me" },
-		{ to: "/writing", label: "Writing" },
 	]);
 
 	const socialLinks = siteConfig.socials.filter(({ href }) => !!href);

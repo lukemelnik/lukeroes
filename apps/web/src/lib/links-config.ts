@@ -66,12 +66,12 @@ export const linksConfig: LinksConfig = {
 			icon: Mail,
 			external: false,
 		},
-		{
-			label: "Writing",
-			href: "/writing",
-			icon: BookOpenText,
-			external: false,
-		},
+		// {
+		// 	label: "Writing",
+		// 	href: "/writing",
+		// 	icon: BookOpenText,
+		// 	external: false,
+		// },
 		// Add more links as needed:
 		// {
 		//   label: "Listen to My Music",
