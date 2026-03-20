@@ -2,12 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExternalLink, Mail } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { ArtworkImage } from "@/components/artwork-image";
 import { AppleMusicIcon } from "@/components/icons/apple-music-icon";
 import { SpotifyIcon } from "@/components/icons/spotify-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { subscribeToMailingList } from "@/functions/subscribe-to-mailing-list";
 import { musicQueryOptions } from "@/hooks/use-music";
 import { linksConfig } from "@/lib/links-config";
 import { seoHead } from "@/lib/seo";
@@ -61,10 +63,15 @@ function LinksPage() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		// TODO: Implement mailing list subscription
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		setEmail("");
-		setIsSubmitting(false);
+		try {
+			await subscribeToMailingList({ data: { email } });
+			setEmail("");
+			toast.success("You're subscribed! Thanks for joining.");
+		} catch {
+			toast.error("Something went wrong. Please try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	// Filter socials that have URLs

@@ -1,7 +1,9 @@
 import { Mail } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { subscribeToMailingList } from "@/functions/subscribe-to-mailing-list";
 
 export default function MailingListSection() {
 	const [email, setEmail] = useState("");
@@ -10,10 +12,15 @@ export default function MailingListSection() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		// TODO: Implement mailing list subscription
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		setEmail("");
-		setIsSubmitting(false);
+		try {
+			await subscribeToMailingList({ data: { email } });
+			setEmail("");
+			toast.success("You're subscribed! Thanks for joining.");
+		} catch {
+			toast.error("Something went wrong. Please try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
