@@ -138,17 +138,17 @@ function LinksPage() {
 							<div className="flex flex-col justify-center space-y-2">
 								<h2 className="font-semibold">{featuredRelease.title}</h2>
 								{streamingLinks.length > 0 && (
-									<div className="flex flex-wrap gap-2">
+									<div className="flex gap-2">
 										{streamingLinks.map(({ href, icon: Icon, label }) => (
 											<a
 												key={label}
 												href={href}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-sm text-primary transition-colors hover:border-primary/50 hover:bg-accent"
+												className="flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-1 text-xs text-primary transition-colors hover:border-primary/50 hover:bg-accent sm:gap-1.5 sm:px-3 sm:text-sm"
 											>
-												<Icon size={16} className="text-primary" />
-												<span>{label}</span>
+												<Icon size={16} className="shrink-0 text-primary" />
+												<span className="whitespace-nowrap">{label}</span>
 											</a>
 											))}
 										</div>
