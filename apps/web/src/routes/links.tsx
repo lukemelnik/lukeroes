@@ -146,6 +146,8 @@ function LinksPage() {
 												target="_blank"
 												rel="noopener noreferrer"
 												className="flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-1 text-xs text-primary transition-colors hover:border-primary/50 hover:bg-accent sm:gap-1.5 sm:px-3 sm:text-sm"
+												data-umami-event="Streaming click"
+												data-umami-event-platform={label.toLowerCase()}
 											>
 												<Icon size={16} className="shrink-0 text-primary" />
 												<span className="whitespace-nowrap">{label}</span>
@@ -172,6 +174,8 @@ function LinksPage() {
 									target="_blank"
 									rel="noopener noreferrer"
 									className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 font-medium transition-all hover:border-primary/50 hover:bg-accent"
+									data-umami-event="Link click"
+									data-umami-event-label={link.label}
 								>
 									<Icon className="size-4" />
 									<span>{link.label}</span>
@@ -185,6 +189,8 @@ function LinksPage() {
 								key={link.href}
 								to={link.href}
 								className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 font-medium transition-all hover:border-primary/50 hover:bg-accent"
+								data-umami-event="Link click"
+								data-umami-event-label={link.label}
 							>
 								<Icon className="size-4" />
 								<span className="mt-0.75">{link.label}</span>
@@ -206,6 +212,8 @@ function LinksPage() {
 									rel="noopener noreferrer"
 									aria-label={social.label}
 									className="rounded-full border border-border bg-card p-2.5 transition-all hover:border-primary/50 hover:bg-accent"
+									data-umami-event="Social click"
+									data-umami-event-platform={social.key}
 								>
 									<Icon size={20} />
 								</a>
@@ -231,7 +239,7 @@ function LinksPage() {
 									required
 									className="flex-1"
 								/>
-								<Button type="submit" disabled={isSubmitting} size="default">
+								<Button type="submit" disabled={isSubmitting} size="default" data-umami-event="Mailing list subscribe">
 									{isSubmitting ? "..." : "Join"}
 								</Button>
 							</form>

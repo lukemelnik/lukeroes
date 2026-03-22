@@ -110,6 +110,11 @@ function RootDocument() {
 		<html lang="en" className="dark">
 			<head>
 				<HeadContent />
+				<script
+					defer
+					src="https://analytics.lukeroes.com/script.js"
+					data-website-id="9411c20e-2f59-466e-8b0e-6ab690a00cbb"
+				/>
 			</head>
 			<body>
 				<Outlet />
