@@ -6,8 +6,12 @@ import { memberMiddleware } from "@/middleware/member";
 import {
   createPost,
   deletePost,
+  getAdminPostById,
   getPostBySlug,
+  listAdminPosts,
   listPosts,
+  syncPostInlineMedia,
+  syncPostMediaAttachments,
   updatePost,
 } from "@/server/posts.server";
 
@@ -40,24 +44,87 @@ export const getPostBySlugFn = createServerFn({ method: "GET" })
     return getPostBySlug(data.slug, context.isMember);
   });
 
+const listAdminPostsSchema = z.object({
+  type: z.string().optional(),
+  search: z.string().optional(),
+});
+
+export const listAdminPostsFn = createServerFn({ method: "GET" })
+  .middleware([adminMiddleware])
+  .inputValidator(listAdminPostsSchema)
+  .handler(async ({ data }) => {
+    return listAdminPosts(data);
+  });
+
+const getAdminPostSchema = z.object({
+  id: z.number().int().positive(),
+});
+
+export const getAdminPostByIdFn = createServerFn({ method: "GET" })
+  .middleware([adminMiddleware])
+  .inputValidator(getAdminPostSchema)
+  .handler(async ({ data }) => {
+    return getAdminPostById(data.id);
+  });
+
+const mediaAttachmentSchema = z.object({
+  mediaId: z.number().int().positive(),
+  role: z.enum(["artwork", "audio", "photo"]),
+  displayOrder: z.number().int().nonnegative(),
+});
+
+const rolesToSyncSchema = z.array(z.enum(["artwork", "audio", "photo"])).optional();
+
+const createPostWithMediaSchema = createPostSchema.extend({
+  mediaAttachments: z.array(mediaAttachmentSchema).optional(),
+  rolesToSync: rolesToSyncSchema,
+});
+
 export const createPostFn = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
-  .inputValidator(createPostSchema)
+  .inputValidator(createPostWithMediaSchema)
   .handler(async ({ data, context }) => {
-    return createPost({
-      ...data,
+    const { mediaAttachments, rolesToSync, ...postData } = data;
+    const post = await createPost({
+      ...postData,
       authorId: context.user.id,
     });
+
+    if (post.content && (post.type === "writing" || post.type === "note")) {
+      await syncPostInlineMedia(post.id, post.content);
+    }
+
+    if (mediaAttachments || rolesToSync) {
+      await syncPostMediaAttachments(post.id, mediaAttachments ?? [], rolesToSync ?? []);
+    }
+
+    return post;
   });
+
+const updatePostWithMediaSchema = updatePostSchema.extend({
+  mediaAttachments: z.array(mediaAttachmentSchema).optional(),
+  rolesToSync: rolesToSyncSchema,
+});
 
 export const updatePostFn = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
-  .inputValidator(updatePostSchema)
+  .inputValidator(updatePostWithMediaSchema)
   .handler(async ({ data, context }) => {
-    return updatePost(data, {
+    const { mediaAttachments, rolesToSync, ...postData } = data;
+    const post = await updatePost(postData, {
       actorUserId: context.user.id,
       requestMetadata: context.requestMetadata,
     });
+
+    if (post.content !== undefined) {
+      await syncPostInlineMedia(post.id, post.content);
+    }
+
+    if (mediaAttachments !== undefined || rolesToSync !== undefined) {
+      await syncPostMediaAttachments(post.id, mediaAttachments ?? [], rolesToSync ?? []);
+    }
+
+    return post;
   });
 
 const deletePostSchema = z.object({ id: z.number().int().positive() });

@@ -5,6 +5,7 @@ import { MembershipProvider } from "@/lib/members/membership-context";
 import { useMembership } from "@/lib/members/membership-context";
 import { useAudioPlayer } from "@/lib/members/audio-player-context";
 import { getMembershipStatusFn } from "@/functions/membership.functions";
+import { getPostBySlugFn } from "@/functions/posts.functions";
 import { postQueryOptions } from "@/hooks/use-posts";
 import type { FeedPost } from "@/lib/members/types";
 import {
@@ -15,28 +16,35 @@ import {
   getPostImages,
 } from "@/lib/members/types";
 import { PostTags } from "@/components/members/post-tags";
-import { seoHead } from "@/lib/seo";
+import { buildPostSeoHead } from "@/lib/post-seo";
 
 export const Route = createFileRoute("/(nav)/members/post/$slug")({
   component: PostDetailPage,
-  beforeLoad: async () => {
-    const membership = await getMembershipStatusFn();
-    return { membership };
+  beforeLoad: async ({ params }) => {
+    const [membership, post] = await Promise.all([
+      getMembershipStatusFn(),
+      getPostBySlugFn({ data: { slug: params.slug } }),
+    ]);
+
+    return { membership, post };
   },
-  head: ({ params }) => ({
-    ...seoHead({
-      title: "Post",
-      path: `/members/post/${params.slug}`,
-    }),
-  }),
+  head: ({ match }) => {
+    const context = match.context as { post?: FeedPost | null } | undefined;
+    const post = context?.post ?? null;
+
+    return buildPostSeoHead(post, match.params.slug);
+  },
 });
 
 function PostDetailPage() {
   const { slug } = Route.useParams();
-  const { membership } = Route.useRouteContext();
-  const { data: post, isLoading } = useQuery(postQueryOptions(slug));
+  const { membership, post: ssrPost } = Route.useRouteContext();
+  const { data: post, isLoading } = useQuery({
+    ...postQueryOptions(slug),
+    initialData: ssrPost ?? undefined,
+  });
 
-  if (isLoading) {
+  if (isLoading && !post) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-20 text-center text-muted-foreground">
         Loading...
@@ -58,7 +66,6 @@ function PostDetailPage() {
   return (
     <MembershipProvider isMember={membership.isMember} isLoggedIn={membership.isLoggedIn}>
       <div className="mx-auto max-w-2xl px-4 pb-32 pt-10 sm:px-6 sm:pt-16">
-        {/* Back link */}
         <Link
           to="/members"
           className="mb-8 inline-flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground"
@@ -67,7 +74,6 @@ function PostDetailPage() {
           Back to feed
         </Link>
 
-        {/* Render based on type */}
         {post.type === "writing" && <WritingDetail post={post} />}
         {post.type === "audio" && <AudioDetail post={post} />}
         {post.type === "photo" && <PhotoDetail post={post} />}
@@ -76,8 +82,6 @@ function PostDetailPage() {
     </MembershipProvider>
   );
 }
-
-// ─── Writing Detail ──────────────────────────────────────────
 
 function WritingDetail({ post }: { post: FeedPost }) {
   const { isMember } = useMembership();
@@ -114,8 +118,6 @@ function WritingDetail({ post }: { post: FeedPost }) {
   );
 }
 
-// ─── Audio Detail ────────────────────────────────────────────
-
 function AudioDetail({ post }: { post: FeedPost }) {
   const { isMember } = useMembership();
   const player = useAudioPlayer();
@@ -124,7 +126,7 @@ function AudioDetail({ post }: { post: FeedPost }) {
   const isPlaying = isCurrentTrack && player.isPlaying;
   const duration = getAudioDuration(post);
   const audioUrl = getAudioUrl(post);
-  const label = post.label ?? "voice-memo";
+  const labelValue = post.label ?? "voice-memo";
   const description = post.content ?? "";
 
   function handlePlay() {
@@ -135,7 +137,7 @@ function AudioDetail({ post }: { post: FeedPost }) {
       player.play({
         id: String(post.id),
         title: post.title ?? "",
-        label,
+        label: labelValue,
         audioUrl,
         duration,
       });
@@ -149,7 +151,7 @@ function AudioDetail({ post }: { post: FeedPost }) {
   return (
     <article>
       <div className="mb-4 flex items-center gap-2 text-muted-foreground text-xs uppercase tracking-wider">
-        <span>{AUDIO_LABEL_DISPLAY[label] ?? label}</span>
+        <span>{AUDIO_LABEL_DISPLAY[labelValue] ?? labelValue}</span>
         <span className="text-border">&middot;</span>
         <span>{durationStr}</span>
         <span className="text-border">&middot;</span>
@@ -211,8 +213,6 @@ function AudioDetail({ post }: { post: FeedPost }) {
   );
 }
 
-// ─── Photo Detail ────────────────────────────────────────────
-
 function PhotoDetail({ post }: { post: FeedPost }) {
   const { isMember } = useMembership();
   const locked = post.visibility === "members" && !isMember;
@@ -255,8 +255,6 @@ function PhotoDetail({ post }: { post: FeedPost }) {
   );
 }
 
-// ─── Note Detail ─────────────────────────────────────────────
-
 function NoteDetail({ post }: { post: FeedPost }) {
   return (
     <article>
@@ -268,8 +266,6 @@ function NoteDetail({ post }: { post: FeedPost }) {
     </article>
   );
 }
-
-// ─── Shared components ───────────────────────────────────────
 
 function FormattedDate({ date }: { date: string }) {
   const d = new Date(date);

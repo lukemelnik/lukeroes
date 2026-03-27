@@ -18,6 +18,7 @@ import {
   encodePostCursor,
   ensureUniquePostSlug,
   getPostPublicationState,
+  type PostPublicationState,
 } from "@/server/post-helpers.server";
 import type { RequestMetadata } from "@/server/request.server";
 import { getPublicUrl } from "@/server/services/storage.service";
@@ -364,6 +365,177 @@ export async function updatePost(
   }
 
   return post;
+}
+
+export interface AdminPostSummary {
+  id: number;
+  type: Post["type"];
+  visibility: "public" | "members";
+  slug: string;
+  title: string;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  status: PostPublicationState;
+}
+
+export async function listAdminPosts(params?: { type?: string; search?: string }) {
+  const nowIso = getUtcNowIso();
+  const searchTerm = params?.search?.trim();
+
+  const conditions = [
+    params?.type && isPostType(params.type) ? eq(posts.type, params.type) : undefined,
+    searchTerm
+      ? or(
+          sql`${posts.title} LIKE ${"%" + searchTerm + "%"}`,
+          sql`${posts.slug} LIKE ${"%" + searchTerm + "%"}`,
+        )
+      : undefined,
+  ].filter(isDefined);
+
+  const whereCondition =
+    conditions.length === 0
+      ? undefined
+      : conditions.length === 1
+        ? conditions[0]
+        : and(...conditions);
+
+  const baseQuery = db
+    .select({
+      id: posts.id,
+      type: posts.type,
+      visibility: posts.visibility,
+      slug: posts.slug,
+      title: posts.title,
+      publishedAt: posts.publishedAt,
+      createdAt: posts.createdAt,
+      updatedAt: posts.updatedAt,
+    })
+    .from(posts);
+
+  const filteredQuery = whereCondition ? baseQuery.where(whereCondition) : baseQuery;
+
+  const rows = await filteredQuery.orderBy(desc(posts.updatedAt), desc(posts.id)).limit(200);
+
+  return rows.map(
+    (row): AdminPostSummary => ({
+      ...row,
+      type: row.type,
+      visibility: row.visibility,
+      status: getPostPublicationState(row.publishedAt, nowIso),
+    }),
+  );
+}
+
+export async function getAdminPostById(id: number) {
+  const post = await db.select().from(posts).where(eq(posts.id, id)).get();
+
+  if (!post) {
+    return null;
+  }
+
+  const [tagsByPostId, mediaByPostId] = await Promise.all([
+    loadTagsByPostId([post.id]),
+    loadMediaByPostId([post.id], true),
+  ]);
+
+  const nowIso = getUtcNowIso();
+
+  return {
+    ...post,
+    tags: tagsByPostId.get(post.id) ?? [],
+    media: mediaByPostId.get(post.id) ?? [],
+    status: getPostPublicationState(post.publishedAt, nowIso),
+  };
+}
+
+function extractInlineMediaIds(html: string): number[] {
+  const regex = /data-media-id="(\d+)"/g;
+  const ids = new Set<number>();
+  let match = regex.exec(html);
+
+  while (match) {
+    const parsed = Number(match[1]);
+
+    if (Number.isFinite(parsed) && parsed > 0) {
+      ids.add(parsed);
+    }
+
+    match = regex.exec(html);
+  }
+
+  return Array.from(ids);
+}
+
+export async function syncPostInlineMedia(postId: number, html: string | null) {
+  const inlineMediaIds = html ? extractInlineMediaIds(html) : [];
+
+  const existingInlineRows = await db
+    .select({ mediaId: postMedia.mediaId })
+    .from(postMedia)
+    .where(and(eq(postMedia.postId, postId), eq(postMedia.role, "inline")));
+
+  const existingIds = new Set(existingInlineRows.map((r) => r.mediaId));
+  const desiredIds = new Set(inlineMediaIds);
+
+  const toAdd = inlineMediaIds.filter((id) => !existingIds.has(id));
+  const toRemove = existingInlineRows.map((r) => r.mediaId).filter((id) => !desiredIds.has(id));
+
+  if (toRemove.length > 0) {
+    await db
+      .delete(postMedia)
+      .where(
+        and(
+          eq(postMedia.postId, postId),
+          eq(postMedia.role, "inline"),
+          inArray(postMedia.mediaId, toRemove),
+        ),
+      );
+  }
+
+  for (const mediaId of toAdd) {
+    await db
+      .insert(postMedia)
+      .values({
+        postId,
+        mediaId,
+        role: "inline",
+        displayOrder: 0,
+        altOverride: null,
+        caption: null,
+      })
+      .onConflictDoNothing();
+  }
+}
+
+export async function syncPostMediaAttachments(
+  postId: number,
+  attachments: Array<{
+    mediaId: number;
+    role: "artwork" | "audio" | "photo";
+    displayOrder: number;
+  }>,
+  rolesToSync: Array<"artwork" | "audio" | "photo"> = [],
+) {
+  const allRoles = new Set([...attachments.map((a) => a.role), ...rolesToSync]);
+
+  for (const role of allRoles) {
+    await db.delete(postMedia).where(and(eq(postMedia.postId, postId), eq(postMedia.role, role)));
+  }
+
+  for (const attachment of attachments) {
+    await db
+      .insert(postMedia)
+      .values({
+        postId,
+        mediaId: attachment.mediaId,
+        role: attachment.role,
+        displayOrder: attachment.displayOrder,
+        altOverride: null,
+        caption: null,
+      })
+      .onConflictDoNothing();
+  }
 }
 
 export async function deletePost(

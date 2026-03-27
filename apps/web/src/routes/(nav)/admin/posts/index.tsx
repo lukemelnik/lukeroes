@@ -2,10 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { listPostsFn, deletePostFn } from "@/functions/posts.functions";
+import { listAdminPostsFn, deletePostFn } from "@/functions/posts.functions";
 import { getAdminStatusFn } from "@/functions/admin.functions";
 import { seoHead } from "@/lib/seo";
-import type { FeedPost } from "@/lib/members/types";
+import type { AdminPostSummary } from "@/server/posts.server";
 
 export const Route = createFileRoute("/(nav)/admin/posts/")({
   component: AdminPostsPage,
@@ -17,11 +17,17 @@ export const Route = createFileRoute("/(nav)/admin/posts/")({
   }),
 });
 
+const STATUS_STYLES: Record<string, string> = {
+  draft: "bg-muted text-muted-foreground",
+  scheduled: "bg-secondary/20 text-secondary",
+  published: "bg-primary/15 text-primary",
+};
+
 function AdminPostsPage() {
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({
+  const { data: posts = [], isLoading } = useQuery({
     queryKey: ["admin-posts"],
-    queryFn: () => listPostsFn({ data: { limit: 50 } }),
+    queryFn: () => listAdminPostsFn({ data: {} }),
   });
 
   const deleteMutation = useMutation({
@@ -31,8 +37,6 @@ function AdminPostsPage() {
       toast.success("Post deleted");
     },
   });
-
-  const posts = data?.posts ?? [];
 
   return (
     <div className="mx-auto max-w-3xl px-4 pb-20 pt-10 sm:px-6 sm:pt-16">
@@ -53,7 +57,7 @@ function AdminPostsPage() {
         <p className="text-muted-foreground">No posts yet.</p>
       ) : (
         <div className="space-y-2">
-          {posts.map((post: FeedPost) => (
+          {posts.map((post: AdminPostSummary) => (
             <div
               key={post.id}
               className="flex items-center justify-between rounded-lg border border-border/50 p-4"
@@ -72,14 +76,17 @@ function AdminPostsPage() {
                   >
                     {post.visibility}
                   </span>
-                  {!post.publishedAt && (
-                    <span className="rounded bg-muted px-1.5 py-0.5 text-muted-foreground text-xs">
-                      draft
-                    </span>
-                  )}
+                  <span
+                    className={`rounded px-1.5 py-0.5 text-xs capitalize ${
+                      STATUS_STYLES[post.status] ?? STATUS_STYLES.draft
+                    }`}
+                  >
+                    {post.status}
+                  </span>
                 </div>
-                <p className="mt-1 truncate font-medium text-sm">
-                  {post.title || post.content?.slice(0, 60) || post.slug}
+                <p className="mt-1 truncate font-medium text-sm">{post.title || post.slug}</p>
+                <p className="mt-0.5 truncate font-mono text-muted-foreground text-xs">
+                  /{post.slug}
                 </p>
               </div>
               <div className="ml-4 flex items-center gap-2">

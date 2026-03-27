@@ -3,9 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { PostEditor } from "@/components/admin/post-editor";
 import { getAdminStatusFn } from "@/functions/admin.functions";
+import { getAdminPostByIdFn } from "@/functions/posts.functions";
 import { seoHead } from "@/lib/seo";
-import type { FeedPost } from "@/lib/members/types";
-import { listPostsFn } from "@/functions/posts.functions";
 
 export const Route = createFileRoute("/(nav)/admin/posts/$postId")({
   component: EditPostPage,
@@ -19,12 +18,10 @@ export const Route = createFileRoute("/(nav)/admin/posts/$postId")({
 
 function EditPostPage() {
   const { postId } = Route.useParams();
-  const { data, isLoading } = useQuery({
-    queryKey: ["admin-posts"],
-    queryFn: () => listPostsFn({ data: { limit: 50 } }),
+  const { data: post, isLoading } = useQuery({
+    queryKey: ["admin-post", postId],
+    queryFn: () => getAdminPostByIdFn({ data: { id: Number(postId) } }),
   });
-
-  const post = data?.posts.find((p: FeedPost) => p.id === Number(postId));
 
   if (isLoading) {
     return (

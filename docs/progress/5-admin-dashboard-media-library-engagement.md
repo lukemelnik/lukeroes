@@ -6,7 +6,7 @@ Last Updated: 2026-03-27
 
 ## Status
 
-Current Sprint: Sprint 3
+Current Sprint: Sprint 4
 
 ## Completed Work
 
@@ -44,9 +44,33 @@ Completed: 2026-03-27
   - Added direct tests covering image signature detection, waveform peak extraction, list reordering, filename validation, and UI duration formatting helpers.
   - Files: `apps/web/src/server/media-helpers.test.ts`
 
+### Sprint 3: Admin post authoring, Tiptap integration, and publishing
+
+Completed: 2026-03-27
+
+- Task 3.1: Build admin post management with status badges and admin-specific listing - DONE
+  - Added `listAdminPosts` and `getAdminPostById` server functions that return all posts (not just published), with computed status badges (draft/scheduled/published). Updated admin posts list to use admin-specific queries with status indicators.
+  - Files: `apps/web/src/server/posts.server.ts`, `apps/web/src/functions/posts.functions.ts`, `apps/web/src/routes/(nav)/admin/posts/index.tsx`, `apps/web/src/routes/(nav)/admin/posts/$postId.tsx`
+- Task 3.2: Build custom Tiptap image extension with data-media-id and media picker toolbar - DONE
+  - Created `MediaImage` custom Tiptap extension extending the Image node with `data-media-id` attribute support. Added image toolbar button, media picker integration, drag-drop image upload, and paste image upload to the editor.
+  - Files: `apps/web/src/lib/tiptap-extensions.ts`, `apps/web/src/components/admin/tiptap-editor.tsx`
+- Task 3.3: Implement comprehensive post creation/editing forms for all 4 post types - DONE
+  - Rebuilt PostEditor with type-specific media attachment UIs: writing (Tiptap with inline images), audio (audio picker + artwork picker), photo (multi-image picker with drag reorder), note (Tiptap without inline images). Added scheduling UI (draft/schedule/publish), slug editing with auto-generation and manual override, and post preview link.
+  - Files: `apps/web/src/components/admin/post-editor.tsx`
+- Task 3.4: Implement post save flow with inline media sync and media attachment sync - DONE
+  - Added `syncPostInlineMedia` that parses HTML, extracts `data-media-id` values, and syncs `post_media` rows with `role="inline"`. Added `syncPostMediaAttachments` with `rolesToSync` for deterministic clearing of artwork/audio/photo attachments on save.
+  - Files: `apps/web/src/server/posts.server.ts`, `apps/web/src/functions/posts.functions.ts`
+- Task 3.5: Add SEO meta tags per post in the route head function - DONE
+  - Created `buildPostSeoHead` helper implementing spec rules: post title, excerpt/stripped description, OG image selection respecting members-only access (never exposing members-only media URLs to non-members), SSR-rendered via `beforeLoad` data.
+  - Files: `apps/web/src/lib/post-seo.ts`, `apps/web/src/routes/(nav)/members/post/$slug.tsx`
+
 ## Implementation Notes
 
 - The repo did not have a tracked Drizzle migration baseline, so Sprint 1 ships the schema in code plus validation; apply the updated schema to environments with `drizzle-kit push` or an equivalent reviewed migration plan before deploying.
 - `storage.service.ts` now treats absolute URLs as pass-through media keys so the existing seed data still renders while the new media-variant model is phased in.
+- The `@tiptap/extension-image` package was added as a dependency for Sprint 3's custom image extension.
+- The custom `MediaImage` Tiptap extension stores `data-media-id` for stable media references; the save flow uses regex extraction rather than DOM parsing to avoid server-side JSDOM overhead for this simple pattern.
+- `syncPostMediaAttachments` accepts a `rolesToSync` parameter to deterministically clear roles even when no attachments are present for that role, preventing orphaned media associations.
+- Post SEO uses `beforeLoad` to fetch post data server-side, making all SEO tags available in the initial SSR HTML.
 
 ## Blockers
