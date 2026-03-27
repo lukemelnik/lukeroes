@@ -1,11 +1,19 @@
 import { db } from "@lukeroes/db";
 import { media, mediaVariants, postMedia, posts } from "@lukeroes/db/schema/membership";
-import { and, eq, ne, sql } from "drizzle-orm";
+import { and, eq, inArray, ne, sql } from "drizzle-orm";
 import { createAdminAuditLogEntry } from "@/server/audit-log.server";
 import { generateUuidV7 } from "@/server/id.server";
 import type { RequestMetadata } from "@/server/request.server";
 import {
+  type AdminMediaAsset,
+  type AdminMediaVariant,
+  type MediaAccess,
+  type MediaType,
+  resolveMediaFormat,
+} from "@/lib/media";
+import {
   deleteFile,
+  getFileMetadata,
   getPresignedUploadUrl,
   getPublicUrl,
   getSignedUrl,
@@ -16,44 +24,7 @@ function isDefined<T>(value: T | undefined): value is T {
   return value !== undefined;
 }
 
-function normalizeFileExtension(input: string): string | null {
-  const dotIndex = input.lastIndexOf(".");
-
-  if (dotIndex >= 0) {
-    const extension = input
-      .slice(dotIndex + 1)
-      .trim()
-      .toLowerCase();
-
-    if (extension.length > 0) {
-      return extension;
-    }
-  }
-
-  const mimeToExtension = new Map<string, string>([
-    ["image/jpeg", "jpg"],
-    ["image/png", "png"],
-    ["image/webp", "webp"],
-    ["image/gif", "gif"],
-    ["audio/mpeg", "mp3"],
-    ["audio/wav", "wav"],
-    ["audio/x-wav", "wav"],
-    ["audio/mp4", "m4a"],
-    ["audio/x-m4a", "m4a"],
-  ]);
-
-  return mimeToExtension.get(input.trim().toLowerCase()) ?? null;
-}
-
-function resolveFileExtension(originalFilename: string, mimeType: string): string {
-  return normalizeFileExtension(originalFilename) ?? normalizeFileExtension(mimeType) ?? "bin";
-}
-
-function buildOriginalFileKey(
-  type: "audio" | "image",
-  assetKey: string,
-  extension: string,
-): string {
+function buildOriginalFileKey(type: MediaType, assetKey: string, extension: string): string {
   return type === "image"
     ? `images/${assetKey}/original.${extension}`
     : `audio/${assetKey}/original.${extension}`;
@@ -67,8 +38,12 @@ function buildThumbFileKey(assetKey: string): string {
   return `images/${assetKey}/thumb.webp`;
 }
 
-function getPreferredVariantKind(type: "audio" | "image") {
+function getPreferredVariantKind(type: MediaType) {
   return type === "audio" ? "original" : "display";
+}
+
+function getPreviewVariantKind(type: MediaType) {
+  return type === "audio" ? "original" : "thumb";
 }
 
 function assertPostSupportsMediaRole(
@@ -92,9 +67,177 @@ function isSingleAttachmentRole(role: "artwork" | "audio" | "photo" | "inline") 
   return role === "audio" || role === "artwork";
 }
 
-export async function createMediaWithUploadUrl(input: {
-  type: "audio" | "image";
-  access?: "public" | "members";
+function buildVariantUrl(access: MediaAccess, fileKey: string) {
+  if (access === "public") {
+    return Promise.resolve(getPublicUrl(fileKey));
+  }
+
+  return getSignedUrl(fileKey, 3600);
+}
+
+function parseWaveformPeaks(waveformPeaks: string | null): number[] | null {
+  if (!waveformPeaks) {
+    return null;
+  }
+
+  try {
+    const parsedValue: unknown = JSON.parse(waveformPeaks);
+
+    if (!Array.isArray(parsedValue)) {
+      return null;
+    }
+
+    return parsedValue.filter((value): value is number => typeof value === "number");
+  } catch {
+    return null;
+  }
+}
+
+async function hydrateMediaAssets(
+  rows: Array<{
+    id: number;
+    assetKey: string;
+    type: MediaType;
+    access: MediaAccess;
+    status: "uploading" | "processing" | "ready" | "failed";
+    originalFilename: string;
+    mimeType: string;
+    byteSize: number | null;
+    defaultAlt: string | null;
+    durationSeconds: number | null;
+    waveformPeaks: string | null;
+    processingError: string | null;
+    createdAt: string;
+    updatedAt: string;
+    usageCount: number;
+  }>,
+): Promise<AdminMediaAsset[]> {
+  if (rows.length === 0) {
+    return [];
+  }
+
+  const mediaIds = rows.map((row) => row.id);
+  const variantRows = await db
+    .select({
+      mediaId: mediaVariants.mediaId,
+      kind: mediaVariants.kind,
+      fileKey: mediaVariants.fileKey,
+      format: mediaVariants.format,
+      width: mediaVariants.width,
+      height: mediaVariants.height,
+      byteSize: mediaVariants.byteSize,
+    })
+    .from(mediaVariants)
+    .where(inArray(mediaVariants.mediaId, mediaIds));
+
+  const variantsByMediaId = new Map<number, typeof variantRows>();
+
+  for (const variantRow of variantRows) {
+    const existingVariants = variantsByMediaId.get(variantRow.mediaId) ?? [];
+    existingVariants.push(variantRow);
+    variantsByMediaId.set(variantRow.mediaId, existingVariants);
+  }
+
+  return Promise.all(
+    rows.map(async (row) => {
+      const rawVariants = variantsByMediaId.get(row.id) ?? [];
+      const variants = await Promise.all(
+        rawVariants.map(
+          async (variantRow): Promise<AdminMediaVariant> => ({
+            kind: variantRow.kind,
+            fileKey: variantRow.fileKey,
+            url: await buildVariantUrl(row.access, variantRow.fileKey),
+            format: variantRow.format,
+            width: variantRow.width,
+            height: variantRow.height,
+            byteSize: variantRow.byteSize,
+          }),
+        ),
+      );
+
+      const previewVariant =
+        variants.find((variant) => variant.kind === getPreviewVariantKind(row.type)) ??
+        variants.find((variant) => variant.kind === getPreferredVariantKind(row.type)) ??
+        variants.find((variant) => variant.kind === "original") ??
+        null;
+      const displayVariant =
+        variants.find((variant) => variant.kind === "display") ??
+        variants.find((variant) => variant.kind === "original") ??
+        null;
+      const thumbVariant =
+        variants.find((variant) => variant.kind === "thumb") ??
+        variants.find((variant) => variant.kind === "display") ??
+        variants.find((variant) => variant.kind === "original") ??
+        null;
+
+      return {
+        id: row.id,
+        assetKey: row.assetKey,
+        type: row.type,
+        access: row.access,
+        status: row.status,
+        originalFilename: row.originalFilename,
+        mimeType: row.mimeType,
+        byteSize: row.byteSize,
+        defaultAlt: row.defaultAlt,
+        durationSeconds: row.durationSeconds,
+        waveformPeaks: parseWaveformPeaks(row.waveformPeaks),
+        processingError: row.processingError,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        usageCount: row.usageCount,
+        canDelete: row.usageCount === 0,
+        previewUrl: previewVariant?.url ?? null,
+        displayUrl: displayVariant?.url ?? null,
+        thumbUrl: thumbVariant?.url ?? null,
+        variants,
+      };
+    }),
+  );
+}
+
+async function getMediaRowById(mediaId: number) {
+  return db
+    .select({
+      id: media.id,
+      assetKey: media.assetKey,
+      type: media.type,
+      access: media.access,
+      status: media.status,
+      originalFilename: media.originalFilename,
+      mimeType: media.mimeType,
+      byteSize: media.byteSize,
+      defaultAlt: media.defaultAlt,
+      durationSeconds: media.durationSeconds,
+      waveformPeaks: media.waveformPeaks,
+      processingError: media.processingError,
+      createdAt: media.createdAt,
+      updatedAt: media.updatedAt,
+      usageCount: sql<number>`(
+        SELECT count(*)
+        FROM ${postMedia}
+        WHERE ${postMedia.mediaId} = ${media.id}
+      )`,
+    })
+    .from(media)
+    .where(eq(media.id, mediaId))
+    .get();
+}
+
+export async function getAdminMediaAssetById(mediaId: number): Promise<AdminMediaAsset | null> {
+  const row = await getMediaRowById(mediaId);
+
+  if (!row) {
+    return null;
+  }
+
+  const [asset] = await hydrateMediaAssets([row]);
+
+  return asset ?? null;
+}
+
+export async function createAudioUploadSession(input: {
+  access?: MediaAccess;
   originalFilename: string;
   mimeType: string;
   createdByUserId: string;
@@ -103,14 +246,14 @@ export async function createMediaWithUploadUrl(input: {
 }) {
   const nowIso = getUtcNowIso();
   const assetKey = generateUuidV7();
-  const extension = resolveFileExtension(input.originalFilename, input.mimeType);
-  const originalFileKey = buildOriginalFileKey(input.type, assetKey, extension);
+  const extension = resolveMediaFormat(input.originalFilename, input.mimeType) ?? "bin";
+  const originalFileKey = buildOriginalFileKey("audio", assetKey, extension);
 
   const [record] = await db
     .insert(media)
     .values({
       assetKey,
-      type: input.type,
+      type: "audio",
       access: input.access ?? "public",
       status: "uploading",
       originalFilename: input.originalFilename,
@@ -144,24 +287,17 @@ export async function createMediaWithUploadUrl(input: {
     media: record,
     uploadUrl,
     originalFileKey,
-    displayFileKey: input.type === "image" ? buildDisplayFileKey(assetKey) : null,
-    thumbFileKey: input.type === "image" ? buildThumbFileKey(assetKey) : null,
   };
 }
 
-export async function confirmUpload(input: {
+export async function finalizeAudioUpload(input: {
   mediaId: number;
-  status?: "processing" | "ready" | "failed";
-  defaultAlt?: string;
-  durationSeconds?: number;
-  waveformPeaks?: number[];
-  processingError?: string;
-  width?: number;
-  height?: number;
+  status?: "ready" | "failed";
+  durationSeconds?: number | null;
+  waveformPeaks?: number[] | null;
+  processingError?: string | null;
   byteSize?: number;
   format?: string;
-  displayVariantByteSize?: number;
-  thumbVariantByteSize?: number;
 }) {
   const nowIso = getUtcNowIso();
   const existingMedia = await db.select().from(media).where(eq(media.id, input.mediaId)).get();
@@ -170,24 +306,15 @@ export async function confirmUpload(input: {
     throw new Error("Media not found.");
   }
 
-  const [record] = await db
-    .update(media)
-    .set({
-      status: input.status ?? "ready",
-      defaultAlt: input.defaultAlt ?? existingMedia.defaultAlt,
-      durationSeconds: input.durationSeconds ?? existingMedia.durationSeconds,
-      waveformPeaks: input.waveformPeaks
-        ? JSON.stringify(input.waveformPeaks)
-        : existingMedia.waveformPeaks,
-      processingError: input.processingError ?? null,
-      byteSize: input.byteSize ?? existingMedia.byteSize,
-      updatedAt: nowIso,
-    })
-    .where(eq(media.id, input.mediaId))
-    .returning();
+  if (existingMedia.type !== "audio") {
+    throw new Error("Media is not an audio asset.");
+  }
 
   const originalVariant = await db
-    .select({ id: mediaVariants.id, fileKey: mediaVariants.fileKey })
+    .select({
+      id: mediaVariants.id,
+      fileKey: mediaVariants.fileKey,
+    })
     .from(mediaVariants)
     .where(and(eq(mediaVariants.mediaId, input.mediaId), eq(mediaVariants.kind, "original")))
     .get();
@@ -196,68 +323,280 @@ export async function confirmUpload(input: {
     throw new Error("Media original variant not found.");
   }
 
-  if (input.byteSize !== undefined || input.format !== undefined) {
-    await db
-      .update(mediaVariants)
+  const uploadedFileMetadata =
+    input.status === "failed" ? null : await getFileMetadata(originalVariant.fileKey);
+
+  if (input.status !== "failed" && !uploadedFileMetadata) {
+    throw new Error("Uploaded audio file not found in storage.");
+  }
+
+  const resolvedByteSize =
+    input.byteSize ?? uploadedFileMetadata?.contentLength ?? existingMedia.byteSize ?? null;
+
+  const [record] = await db
+    .update(media)
+    .set({
+      status: input.status ?? "ready",
+      durationSeconds:
+        input.durationSeconds !== undefined ? input.durationSeconds : existingMedia.durationSeconds,
+      waveformPeaks:
+        input.waveformPeaks !== undefined
+          ? input.waveformPeaks
+            ? JSON.stringify(input.waveformPeaks)
+            : null
+          : existingMedia.waveformPeaks,
+      processingError:
+        input.status === "failed"
+          ? (input.processingError ?? "Audio upload failed.")
+          : (input.processingError ?? null),
+      byteSize: resolvedByteSize,
+      updatedAt: nowIso,
+    })
+    .where(eq(media.id, input.mediaId))
+    .returning();
+
+  await db
+    .update(mediaVariants)
+    .set({
+      byteSize: resolvedByteSize,
+      format:
+        input.format ?? resolveMediaFormat(existingMedia.originalFilename, existingMedia.mimeType),
+    })
+    .where(eq(mediaVariants.id, originalVariant.id));
+
+  const asset = await getAdminMediaAssetById(record.id);
+
+  if (!asset) {
+    throw new Error("Media not found.");
+  }
+
+  return asset;
+}
+
+export async function createPendingImageUpload(input: {
+  access?: MediaAccess;
+  originalFilename: string;
+  mimeType: string;
+  createdByUserId: string;
+  byteSize: number;
+  checksum: string;
+  defaultAlt?: string | null;
+}) {
+  const nowIso = getUtcNowIso();
+  const assetKey = generateUuidV7();
+  const extension = resolveMediaFormat(input.originalFilename, input.mimeType) ?? "bin";
+  const originalFileKey = buildOriginalFileKey("image", assetKey, extension);
+
+  const [record] = await db
+    .insert(media)
+    .values({
+      assetKey,
+      type: "image",
+      access: input.access ?? "public",
+      status: "processing",
+      originalFilename: input.originalFilename,
+      mimeType: input.mimeType,
+      byteSize: input.byteSize,
+      checksum: input.checksum,
+      createdByUserId: input.createdByUserId,
+      defaultAlt: input.defaultAlt ?? null,
+      durationSeconds: null,
+      waveformPeaks: null,
+      processingError: null,
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    })
+    .returning();
+
+  await db.insert(mediaVariants).values({
+    mediaId: record.id,
+    kind: "original",
+    fileKey: originalFileKey,
+    format: extension,
+    width: null,
+    height: null,
+    byteSize: input.byteSize,
+    createdAt: nowIso,
+  });
+
+  return {
+    media: record,
+    originalFileKey,
+    displayFileKey: buildDisplayFileKey(assetKey),
+    thumbFileKey: buildThumbFileKey(assetKey),
+  };
+}
+
+export async function finalizeImageUpload(input: {
+  mediaId: number;
+  original: {
+    width: number | null;
+    height: number | null;
+    byteSize: number;
+    format: string;
+  };
+  display: {
+    width: number;
+    height: number;
+    byteSize: number;
+  };
+  thumb: {
+    width: number;
+    height: number;
+    byteSize: number;
+  };
+}) {
+  const nowIso = getUtcNowIso();
+  const existingMedia = await db.select().from(media).where(eq(media.id, input.mediaId)).get();
+
+  if (!existingMedia) {
+    throw new Error("Media not found.");
+  }
+
+  if (existingMedia.type !== "image") {
+    throw new Error("Media is not an image asset.");
+  }
+
+  const originalVariant = await db
+    .select({ id: mediaVariants.id })
+    .from(mediaVariants)
+    .where(and(eq(mediaVariants.mediaId, input.mediaId), eq(mediaVariants.kind, "original")))
+    .get();
+
+  if (!originalVariant) {
+    throw new Error("Media original variant not found.");
+  }
+
+  db.transaction((tx) => {
+    tx.update(media)
       .set({
-        byteSize: input.byteSize ?? null,
-        format: input.format ?? null,
+        status: "ready",
+        processingError: null,
+        byteSize: input.original.byteSize,
+        updatedAt: nowIso,
       })
-      .where(eq(mediaVariants.id, originalVariant.id));
-  }
+      .where(eq(media.id, input.mediaId))
+      .run();
 
-  if (record.type === "image" && input.width && input.height) {
-    const displayFileKey = buildDisplayFileKey(record.assetKey);
-    const thumbFileKey = buildThumbFileKey(record.assetKey);
+    tx.update(mediaVariants)
+      .set({
+        format: input.original.format,
+        width: input.original.width,
+        height: input.original.height,
+        byteSize: input.original.byteSize,
+      })
+      .where(eq(mediaVariants.id, originalVariant.id))
+      .run();
 
-    await db
-      .insert(mediaVariants)
+    tx.insert(mediaVariants)
       .values({
-        mediaId: record.id,
+        mediaId: input.mediaId,
         kind: "display",
-        fileKey: displayFileKey,
+        fileKey: buildDisplayFileKey(existingMedia.assetKey),
         format: "webp",
-        width: input.width,
-        height: input.height,
-        byteSize: input.displayVariantByteSize ?? null,
+        width: input.display.width,
+        height: input.display.height,
+        byteSize: input.display.byteSize,
         createdAt: nowIso,
       })
       .onConflictDoUpdate({
         target: [mediaVariants.mediaId, mediaVariants.kind],
         set: {
-          fileKey: displayFileKey,
+          fileKey: buildDisplayFileKey(existingMedia.assetKey),
           format: "webp",
-          width: input.width,
-          height: input.height,
-          byteSize: input.displayVariantByteSize ?? null,
+          width: input.display.width,
+          height: input.display.height,
+          byteSize: input.display.byteSize,
         },
-      });
+      })
+      .run();
 
-    await db
-      .insert(mediaVariants)
+    tx.insert(mediaVariants)
       .values({
-        mediaId: record.id,
+        mediaId: input.mediaId,
         kind: "thumb",
-        fileKey: thumbFileKey,
+        fileKey: buildThumbFileKey(existingMedia.assetKey),
         format: "webp",
-        width: input.width,
-        height: input.height,
-        byteSize: input.thumbVariantByteSize ?? null,
+        width: input.thumb.width,
+        height: input.thumb.height,
+        byteSize: input.thumb.byteSize,
         createdAt: nowIso,
       })
       .onConflictDoUpdate({
         target: [mediaVariants.mediaId, mediaVariants.kind],
         set: {
-          fileKey: thumbFileKey,
+          fileKey: buildThumbFileKey(existingMedia.assetKey),
           format: "webp",
-          width: input.width,
-          height: input.height,
-          byteSize: input.thumbVariantByteSize ?? null,
+          width: input.thumb.width,
+          height: input.thumb.height,
+          byteSize: input.thumb.byteSize,
         },
-      });
+      })
+      .run();
+  });
+
+  const asset = await getAdminMediaAssetById(input.mediaId);
+
+  if (!asset) {
+    throw new Error("Media not found.");
   }
 
-  return record;
+  return asset;
+}
+
+export async function markMediaUploadFailed(mediaId: number, processingError: string) {
+  const nowIso = getUtcNowIso();
+  const [record] = await db
+    .update(media)
+    .set({
+      status: "failed",
+      processingError,
+      updatedAt: nowIso,
+    })
+    .where(eq(media.id, mediaId))
+    .returning();
+
+  if (!record) {
+    throw new Error("Media not found.");
+  }
+
+  const asset = await getAdminMediaAssetById(mediaId);
+
+  if (!asset) {
+    throw new Error("Media not found.");
+  }
+
+  return asset;
+}
+
+export async function updateMediaDefaultAlt(input: { mediaId: number; defaultAlt: string | null }) {
+  const existingMedia = await db.select().from(media).where(eq(media.id, input.mediaId)).get();
+
+  if (!existingMedia) {
+    throw new Error("Media not found.");
+  }
+
+  if (existingMedia.type !== "image") {
+    throw new Error("Only image media supports alt text.");
+  }
+
+  const nowIso = getUtcNowIso();
+
+  await db
+    .update(media)
+    .set({
+      defaultAlt: input.defaultAlt,
+      updatedAt: nowIso,
+    })
+    .where(eq(media.id, input.mediaId));
+
+  const asset = await getAdminMediaAssetById(input.mediaId);
+
+  if (!asset) {
+    throw new Error("Media not found.");
+  }
+
+  return asset;
 }
 
 export async function attachMediaToPost(input: {
@@ -310,7 +649,10 @@ export async function attachMediaToPost(input: {
     throw new Error("Audio role requires audio media.");
   }
 
-  if (["artwork", "photo", "inline"].includes(input.role) && mediaRecord.type !== "image") {
+  if (
+    (input.role === "artwork" || input.role === "photo" || input.role === "inline") &&
+    mediaRecord.type !== "image"
+  ) {
     throw new Error("Image media is required for artwork, photo, and inline roles.");
   }
 
@@ -349,7 +691,7 @@ export async function attachMediaToPost(input: {
 export async function getMediaUrl(mediaId: number, isAuthorized: boolean) {
   const mediaRecord = await db.select().from(media).where(eq(media.id, mediaId)).get();
 
-  if (!mediaRecord) {
+  if (!mediaRecord || mediaRecord.status !== "ready") {
     return null;
   }
 
@@ -371,26 +713,29 @@ export async function getMediaUrl(mediaId: number, isAuthorized: boolean) {
     return null;
   }
 
-  if (mediaRecord.access === "public") {
-    return getPublicUrl(preferredVariant.fileKey);
-  }
+  return buildVariantUrl(mediaRecord.access, preferredVariant.fileKey);
+}
 
-  return getSignedUrl(preferredVariant.fileKey, 3600);
+async function assertMediaUnused(mediaIds: number[]) {
+  const usageRows = await db
+    .select({
+      mediaId: postMedia.mediaId,
+      usageCount: sql<number>`count(*)`,
+    })
+    .from(postMedia)
+    .where(inArray(postMedia.mediaId, mediaIds))
+    .groupBy(postMedia.mediaId);
+
+  if (usageRows.length > 0) {
+    throw new Error("Media cannot be deleted while it is attached to a post.");
+  }
 }
 
 export async function deleteMedia(
   mediaId: number,
   auditContext?: { actorUserId: string; requestMetadata?: RequestMetadata | null },
 ) {
-  const usageRow = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(postMedia)
-    .where(eq(postMedia.mediaId, mediaId))
-    .get();
-
-  if ((usageRow?.count ?? 0) > 0) {
-    throw new Error("Media cannot be deleted while it is attached to a post.");
-  }
+  await assertMediaUnused([mediaId]);
 
   const mediaRecord = await db
     .select({
@@ -409,7 +754,7 @@ export async function deleteMedia(
   }
 
   const variants = await db
-    .select({ id: mediaVariants.id, fileKey: mediaVariants.fileKey })
+    .select({ fileKey: mediaVariants.fileKey })
     .from(mediaVariants)
     .where(eq(mediaVariants.mediaId, mediaId));
 
@@ -437,17 +782,48 @@ export async function deleteMedia(
   }
 }
 
+export async function bulkDeleteMedia(
+  mediaIds: number[],
+  auditContext: { actorUserId: string; requestMetadata?: RequestMetadata | null },
+) {
+  const uniqueMediaIds = Array.from(new Set(mediaIds));
+
+  if (uniqueMediaIds.length === 0) {
+    return [];
+  }
+
+  await assertMediaUnused(uniqueMediaIds);
+
+  for (const mediaId of uniqueMediaIds) {
+    await deleteMedia(mediaId, auditContext);
+  }
+
+  return uniqueMediaIds;
+}
+
 export async function listMediaAssets(input?: {
-  type?: "audio" | "image";
-  access?: "public" | "members";
+  ids?: number[];
+  type?: MediaType;
+  access?: MediaAccess;
   search?: string;
   limit?: number;
 }) {
+  if (input?.ids && input.ids.length === 0) {
+    return [];
+  }
+
+  const trimmedSearch = input?.search?.trim();
+  const searchValue = trimmedSearch ? `%${trimmedSearch}%` : undefined;
   const conditions = [
+    input?.ids ? inArray(media.id, input.ids) : undefined,
     input?.type ? eq(media.type, input.type) : undefined,
     input?.access ? eq(media.access, input.access) : undefined,
-    input?.search && input.search.trim().length > 0
-      ? orLike(`%${input.search.trim()}%`)
+    searchValue
+      ? sql`(
+          ${media.originalFilename} LIKE ${searchValue}
+          OR ${media.defaultAlt} LIKE ${searchValue}
+          OR ${media.type} LIKE ${searchValue}
+        )`
       : undefined,
   ].filter(isDefined);
 
@@ -468,6 +844,9 @@ export async function listMediaAssets(input?: {
       mimeType: media.mimeType,
       byteSize: media.byteSize,
       defaultAlt: media.defaultAlt,
+      durationSeconds: media.durationSeconds,
+      waveformPeaks: media.waveformPeaks,
+      processingError: media.processingError,
       createdAt: media.createdAt,
       updatedAt: media.updatedAt,
       usageCount: sql<number>`(
@@ -476,17 +855,10 @@ export async function listMediaAssets(input?: {
         WHERE ${postMedia.mediaId} = ${media.id}
       )`,
     })
-    .from(media)
-    .orderBy(sql`${media.createdAt} DESC`, sql`${media.id} DESC`)
-    .limit(input?.limit ?? 100);
+    .from(media);
+  const filteredQuery = whereCondition ? baseQuery.where(whereCondition) : baseQuery;
+  const orderedQuery = filteredQuery.orderBy(sql`${media.createdAt} DESC`, sql`${media.id} DESC`);
+  const rows = input?.limit ? await orderedQuery.limit(input.limit) : await orderedQuery;
 
-  if (!whereCondition) {
-    return baseQuery;
-  }
-
-  return baseQuery.where(whereCondition);
-}
-
-function orLike(searchValue: string) {
-  return sql`(${media.originalFilename} LIKE ${searchValue} OR ${media.defaultAlt} LIKE ${searchValue})`;
+  return hydrateMediaAssets(rows);
 }

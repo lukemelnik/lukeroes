@@ -6,7 +6,7 @@ Last Updated: 2026-03-27
 
 ## Status
 
-Current Sprint: Sprint 1
+Current Sprint: Sprint 3
 
 ## Completed Work
 
@@ -26,6 +26,23 @@ Completed: 2026-03-27
 - Task 1.4: Add validation coverage for core backend helpers - DONE
   - Added direct Node/tsx tests for slugging, publication states, cursor encoding, request metadata parsing, UUIDv7 generation, and UTC ISO utilities, and added repository check-types scripts plus a root test script.
   - Files: `apps/web/src/server/core-foundations.test.ts`, `package.json`, `packages/db/package.json`, `packages/auth/package.json`
+
+### Sprint 2: Media ingestion and library UX
+
+Completed: 2026-03-27
+
+- Task 2.1: Complete image upload ingestion, processing, and persistence - DONE
+  - Added a streaming multipart admin image upload endpoint that validates magic bytes, streams originals through the server, generates Sharp display/thumb WebP variants, and persists media plus variant metadata in the new tables.
+  - Files: `apps/web/src/server/image-upload.server.ts`, `apps/web/src/server/media.server.ts`, `apps/web/src/server/admin-request.server.ts`, `apps/web/src/server/services/storage.service.ts`, `apps/web/src/routes/api/admin/media/images.ts`, `apps/web/src/lib/media.ts`, `apps/web/src/lib/media-upload-client.ts`, `apps/web/package.json`, `pnpm-lock.yaml`
+- Task 2.2: Complete audio direct-upload initiation and confirmation - DONE
+  - Added admin server functions and client helpers for presigned audio uploads to R2, client-side duration and waveform extraction, upload confirmation, and storage-backed ready-state verification before persisting metadata.
+  - Files: `apps/web/src/functions/media.functions.ts`, `apps/web/src/server/media.server.ts`, `apps/web/src/server/services/storage.service.ts`, `apps/web/src/lib/media.ts`, `apps/web/src/lib/media-upload-client.ts`
+- Task 2.3: Build the admin media library and reusable media picker UX - DONE
+  - Added the `/admin/media` admin route, shared media library UI, picker dialog, upload panel, filtering/search, status/access metadata, alt-text editing, safe delete actions, waveform previews, and drag reorder support for multi-select workflows.
+  - Files: `apps/web/src/routes/(nav)/admin/media/index.tsx`, `apps/web/src/components/admin/media-library-manager.tsx`, `apps/web/src/components/admin/media-library-shared.tsx`, `apps/web/src/components/admin/media-picker-dialog.tsx`, `apps/web/src/components/admin/audio-waveform.tsx`, `apps/web/src/routeTree.gen.ts`
+- Task 2.4: Add validation coverage for media helper behavior - DONE
+  - Added direct tests covering image signature detection, waveform peak extraction, list reordering, filename validation, and UI duration formatting helpers.
+  - Files: `apps/web/src/server/media-helpers.test.ts`
 
 ## Implementation Notes
 

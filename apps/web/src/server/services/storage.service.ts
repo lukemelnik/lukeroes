@@ -1,6 +1,8 @@
+import type { Readable } from "node:stream";
 import {
   DeleteObjectCommand,
   GetObjectCommand,
+  HeadObjectCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -33,8 +35,9 @@ function mediaKey(key: string) {
 
 export async function uploadFile(
   key: string,
-  body: Buffer | Uint8Array | ReadableStream,
+  body: Buffer | Uint8Array | ReadableStream | Readable,
   contentType: string,
+  contentLength?: number,
 ) {
   await s3.send(
     new PutObjectCommand({
@@ -42,6 +45,7 @@ export async function uploadFile(
       Key: mediaKey(key),
       Body: body,
       ContentType: contentType,
+      ContentLength: contentLength,
     }),
   );
 }
@@ -73,6 +77,54 @@ export function getPublicUrl(key: string) {
   }
 
   return `${PUBLIC_URL_BASE}/${mediaKey(key)}`;
+}
+
+function getNumberProperty(value: object | null | undefined, propertyName: string): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const propertyValue = Reflect.get(value, propertyName);
+
+  return typeof propertyValue === "number" ? propertyValue : null;
+}
+
+export async function getFileMetadata(key: string) {
+  if (isAbsoluteUrl(key)) {
+    return null;
+  }
+
+  try {
+    const result = await s3.send(
+      new HeadObjectCommand({
+        Bucket: BUCKET,
+        Key: mediaKey(key),
+      }),
+    );
+
+    return {
+      contentLength: result.ContentLength ?? null,
+      contentType: result.ContentType ?? null,
+      eTag: result.ETag ?? null,
+    };
+  } catch (error) {
+    if (error instanceof Error && error.name === "NotFound") {
+      return null;
+    }
+
+    const metadata =
+      error instanceof Error && typeof error === "object" ? Reflect.get(error, "$metadata") : null;
+    const httpStatusCode =
+      metadata && typeof metadata === "object"
+        ? getNumberProperty(metadata, "httpStatusCode")
+        : null;
+
+    if (httpStatusCode === 404) {
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 export async function deleteFile(key: string) {
