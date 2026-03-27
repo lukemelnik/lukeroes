@@ -1,18 +1,22 @@
 export interface FeedMedia {
-  role: "artwork" | "audio" | "photo";
+  role: "artwork" | "audio" | "photo" | "inline";
   displayOrder: number;
   url: string | null;
   duration: number | null;
   width: number | null;
   height: number | null;
   alt: string | null;
-  // These fields come from different query shapes
   postId?: number;
   mediaId?: number;
   mediaType?: string;
   id?: number;
   type?: string;
-  fileKey?: string;
+  fileKey?: string | null;
+  caption?: string | null;
+  access?: "public" | "members";
+  variantKind?: "original" | "display" | "thumb" | null;
+  format?: string | null;
+  byteSize?: number | null;
 }
 
 export interface FeedTag {
@@ -29,7 +33,7 @@ export interface FeedPost {
   format: string | null;
   label: string | null;
   slug: string;
-  title: string | null;
+  title: string;
   excerpt: string | null;
   content: string | null;
   readingTime: string | null;

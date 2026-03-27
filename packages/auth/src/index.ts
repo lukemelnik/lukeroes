@@ -4,13 +4,14 @@ import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { Stripe } from "stripe";
+import { recordStripeMembershipLifecycleEvent } from "./membership-events";
 
 const stripeKey = process.env.STRIPE_SECRET_KEY;
 const stripeClient = stripeKey
-  ? new Stripe(stripeKey, { apiVersion: "2025-04-30.basil" })
+  ? new Stripe(stripeKey, { apiVersion: "2026-02-25.clover" })
   : undefined;
 
-const plugins = [
+const plugins: BetterAuthOptions["plugins"] = [
   tanstackStartCookies(),
   admin({
     adminRoles: ["admin"],
@@ -31,6 +32,27 @@ if (stripeClient) {
             priceId: process.env.STRIPE_PRICE_ID || "",
           },
         ],
+        onSubscriptionCreated: async ({ event, subscription }) => {
+          await recordStripeMembershipLifecycleEvent({
+            type: "subscription_started",
+            event,
+            subscription,
+          });
+        },
+        onSubscriptionUpdate: async ({ event, subscription }) => {
+          await recordStripeMembershipLifecycleEvent({
+            type: "subscription_updated",
+            event,
+            subscription,
+          });
+        },
+        onSubscriptionCancel: async ({ event, subscription }) => {
+          await recordStripeMembershipLifecycleEvent({
+            type: "subscription_canceled",
+            event,
+            subscription,
+          });
+        },
       },
     }),
   );

@@ -7,6 +7,6 @@ export const getMembershipStatusFn = createServerFn({ method: "GET" })
     return {
       isMember: context.isMember,
       isLoggedIn: !!context.session?.user,
-      isAdmin: (context.session?.user as { role?: string } | undefined)?.role === "admin",
+      isAdmin: context.isAdmin,
     };
   });

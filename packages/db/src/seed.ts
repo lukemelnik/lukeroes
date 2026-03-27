@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
-import { posts, media, postMedia, tags, postTags } from "./schema/membership";
+import { media, mediaVariants, postMedia, postTags, posts, tags } from "./schema/membership";
 import { user } from "./schema/auth";
 import dotenv from "dotenv";
 
@@ -83,7 +83,10 @@ async function seed() {
   ];
   for (const name of tagNames) {
     const slug = name.toLowerCase().replace(/\s+/g, "-");
-    const [t] = db.insert(tags).values({ name, slug }).returning().all();
+    const t = db.insert(tags).values({ name, slug }).returning().get();
+    if (!t) {
+      throw new Error("Failed to insert seed tag.");
+    }
     tagMap.set(name, t.id);
   }
 
@@ -143,17 +146,70 @@ async function seed() {
   ];
 
   const mediaIds = new Map<string, number>();
+  const nowIso = new Date().toISOString();
   for (const entry of mediaEntries) {
-    const [m] = db
+    const assetKey = entry.fileKey.replace(/\.[^.]+$/, "");
+    const m = db
       .insert(media)
       .values({
+        assetKey,
         type: entry.type,
-        fileKey: entry.fileKey,
-        url: entry.url,
-        alt: entry.alt,
+        access: "public",
+        status: "ready",
+        originalFilename: entry.fileKey,
+        mimeType: "image/jpeg",
+        byteSize: null,
+        checksum: null,
+        createdByUserId: authorId,
+        defaultAlt: entry.alt,
+        durationSeconds: null,
+        waveformPeaks: null,
+        processingError: null,
+        createdAt: nowIso,
+        updatedAt: nowIso,
       })
       .returning()
-      .all();
+      .get();
+
+    if (!m) {
+      throw new Error("Failed to insert seed media.");
+    }
+
+    db.insert(mediaVariants)
+      .values([
+        {
+          mediaId: m.id,
+          kind: "original",
+          fileKey: entry.url,
+          format: "jpg",
+          width: null,
+          height: null,
+          byteSize: null,
+          createdAt: nowIso,
+        },
+        {
+          mediaId: m.id,
+          kind: "display",
+          fileKey: entry.url,
+          format: "jpg",
+          width: null,
+          height: null,
+          byteSize: null,
+          createdAt: nowIso,
+        },
+        {
+          mediaId: m.id,
+          kind: "thumb",
+          fileKey: entry.url,
+          format: "jpg",
+          width: null,
+          height: null,
+          byteSize: null,
+          createdAt: nowIso,
+        },
+      ])
+      .run();
+
     mediaIds.set(entry.fileKey, m.id);
   }
 
@@ -199,6 +255,7 @@ Now I spend that time here — writing to you, sharing demos, working on the cra
       slug: "studio-notebook-entry",
       type: "note" as const,
       visibility: "members" as const,
+      title: "Studio Notebook Entry",
       content:
         "Been in the studio all week. Something special is coming together — a song I've been sitting on for over a year finally found its arrangement. Can't wait to share the first demo with you all.",
       publishedAt: "2026-03-22T16:30:00Z",
@@ -219,6 +276,7 @@ Now I spend that time here — writing to you, sharing demos, working on the cra
       slug: "studio-shots-march",
       type: "photo" as const,
       visibility: "members" as const,
+      title: "Studio Shots — March",
       excerpt: "A few shots from this week's sessions. The console at 2am hits different.",
       publishedAt: "2026-03-19T11:00:00Z",
       tags: ["Studio", "Groundwork"],
@@ -228,6 +286,7 @@ Now I spend that time here — writing to you, sharing demos, working on the cra
       slug: "old-notebook-lyrics",
       type: "note" as const,
       visibility: "members" as const,
+      title: "Old Notebook Lyrics",
       content:
         "Found this old notebook from 2019 with lyrics I completely forgot about. One of them might become the next single. It's funny how sometimes the best ideas are the ones you abandon and come back to years later with fresh ears.",
       publishedAt: "2026-03-18T09:15:00Z",
@@ -312,6 +371,7 @@ I saved the rock version. Maybe I'll share it here sometime so you can hear the 
       slug: "handwritten-lyrics-photo",
       type: "photo" as const,
       visibility: "members" as const,
+      title: "Handwritten Lyrics",
       excerpt: "First draft of the new one. The crossed-out lines are usually the best part.",
       publishedAt: "2026-03-11T15:00:00Z",
       tags: ["Songwriting"],
@@ -321,6 +381,7 @@ I saved the rock version. Maybe I'll share it here sometime so you can hear the 
       slug: "question-for-members",
       type: "note" as const,
       visibility: "public" as const,
+      title: "Question for Members",
       content:
         "Question for you — would you rather hear the acoustic demos or the full production versions first when I'm working on new music? I've been going back and forth on this. The demos feel more intimate but the productions are more exciting. What do you think?",
       publishedAt: "2026-03-10T12:00:00Z",
@@ -370,6 +431,7 @@ The technical stuff matters less than I thought. The emotional stuff matters mor
       slug: "tour-snapshots-february",
       type: "photo" as const,
       visibility: "public" as const,
+      title: "Tour Snapshots — February",
       excerpt:
         "A few highlights from the February run. Hamilton → Ottawa → Montreal → Quebec City.",
       publishedAt: "2026-02-28T18:00:00Z",
@@ -379,27 +441,39 @@ The technical stuff matters less than I thought. The emotional stuff matters mor
   ];
 
   for (const postData of seedPosts) {
-    const {
-      tags: postTagNames,
-      photos,
-      ...postValues
-    } = postData as typeof postData & { photos?: string[] };
-
-    const [p] = db
+    const photos = "photos" in postData ? postData.photos : undefined;
+    const format = "format" in postData ? (postData.format ?? null) : null;
+    const label = "label" in postData ? (postData.label ?? null) : null;
+    const readingTime = "readingTime" in postData ? (postData.readingTime ?? null) : null;
+    const excerpt = "excerpt" in postData ? (postData.excerpt ?? null) : null;
+    const content = "content" in postData ? (postData.content ?? null) : null;
+    const createdAt = postData.publishedAt ?? nowIso;
+    const p = db
       .insert(posts)
       .values({
-        ...postValues,
         authorId,
-        readingTime: (postValues as { readingTime?: string }).readingTime ?? null,
-        format: (postValues as { format?: string }).format ?? null,
-        label: (postValues as { label?: string }).label ?? null,
+        type: postData.type,
+        visibility: postData.visibility,
+        format,
+        label,
+        slug: postData.slug,
+        title: postData.title,
+        excerpt,
+        content,
+        readingTime,
+        publishedAt: postData.publishedAt ?? null,
+        createdAt,
+        updatedAt: createdAt,
       })
       .returning()
-      .all();
+      .get();
 
-    // Attach tags
-    if (postTagNames && postTagNames.length > 0) {
-      for (const tagName of postTagNames) {
+    if (!p) {
+      throw new Error("Failed to insert seed post.");
+    }
+
+    if (postData.tags.length > 0) {
+      for (const tagName of postData.tags) {
         const tagId = tagMap.get(tagName);
         if (tagId) {
           db.insert(postTags).values({ postId: p.id, tagId }).run();
@@ -407,13 +481,25 @@ The technical stuff matters less than I thought. The emotional stuff matters mor
       }
     }
 
-    // Attach photos
     if (photos && photos.length > 0) {
-      for (let i = 0; i < photos.length; i++) {
-        const mediaId = mediaIds.get(photos[i]);
+      for (let i = 0; i < photos.length; i += 1) {
+        const photoKey = photos[i];
+
+        if (!photoKey) {
+          continue;
+        }
+
+        const mediaId = mediaIds.get(photoKey);
         if (mediaId) {
           db.insert(postMedia)
-            .values({ postId: p.id, mediaId, role: "photo", displayOrder: i })
+            .values({
+              postId: p.id,
+              mediaId,
+              role: "photo",
+              displayOrder: i,
+              altOverride: null,
+              caption: null,
+            })
             .run();
         }
       }

@@ -1,34 +1,32 @@
-import { db } from "@lukeroes/db";
-import { sql } from "drizzle-orm";
 import { createMiddleware } from "@tanstack/react-start";
-import { authMiddleware } from "./auth";
+import { authMiddleware } from "@/middleware/auth";
+import { resolveMembershipForUser } from "@/server/membership.server";
+import { getRequestMetadata } from "@/server/request.server";
+
+function getUserRole(user: object | null | undefined): string | null {
+  if (!user) {
+    return null;
+  }
+
+  const role = Reflect.get(user, "role");
+
+  return typeof role === "string" ? role : null;
+}
 
 export const memberMiddleware = createMiddleware()
   .middleware([authMiddleware])
-  .server(async ({ next, context }) => {
-    let isMember = false;
-
-    if (context.session?.user) {
-      const role = (context.session.user as { role?: string }).role;
-
-      if (role === "admin") {
-        isMember = true;
-      } else {
-        try {
-          const result = db.all<{ id: string }>(
-            sql`SELECT id FROM subscription WHERE "referenceId" = ${context.session.user.id} AND status = 'active' LIMIT 1`,
-          );
-          isMember = result.length > 0;
-        } catch {
-          // subscription table doesn't exist yet (Stripe plugin not configured)
-        }
-      }
-    }
+  .server(async ({ next, context, request }) => {
+    const membership = await resolveMembershipForUser({
+      userId: context.session?.user.id,
+      role: getUserRole(context.session?.user),
+    });
 
     return next({
       context: {
         session: context.session,
-        isMember,
+        isMember: membership.isMember,
+        isAdmin: membership.isAdmin,
+        requestMetadata: getRequestMetadata(request),
       },
     });
   });

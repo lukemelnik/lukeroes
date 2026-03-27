@@ -54,15 +54,15 @@ export function PostEditor({ post }: PostEditorProps) {
     mutationFn: async () => {
       const postData = {
         type,
-        slug,
-        title: title || null,
+        slug: slug || undefined,
+        title: title.trim(),
         excerpt: excerpt || null,
         content: content || null,
         visibility,
         format: type === "writing" ? format : null,
         label: type === "audio" ? label : null,
         publishedAt: publishNow ? new Date().toISOString() : null,
-        authorId: "", // filled by middleware
+        authorId: "",
       };
       const created = await createPostFn({ data: postData });
       if (created && selectedTags.length > 0) {
@@ -84,13 +84,13 @@ export function PostEditor({ post }: PostEditorProps) {
       await updatePostFn({
         data: {
           id: post.id,
-          title: title || null,
+          title: title.trim(),
           excerpt: excerpt || null,
           content: content || null,
           visibility,
           format: type === "writing" ? format : null,
           label: type === "audio" ? label : null,
-          publishedAt: publishNow ? post.publishedAt || new Date().toISOString() : null,
+          publishedAt: publishNow ? post.publishedAt || new Date().toISOString() : undefined,
         },
       });
       await syncPostTagsFn({ data: { postId: post.id, tagNames: selectedTags } });

@@ -4,11 +4,11 @@ import { createPostSchema, updatePostSchema } from "@lukeroes/db/schema/membersh
 import { adminMiddleware } from "@/middleware/admin";
 import { memberMiddleware } from "@/middleware/member";
 import {
-  listPosts,
-  getPostBySlug,
   createPost,
-  updatePost,
   deletePost,
+  getPostBySlug,
+  listPosts,
+  updatePost,
 } from "@/server/posts.server";
 
 const listPostsSchema = z.object({
@@ -53,15 +53,21 @@ export const createPostFn = createServerFn({ method: "POST" })
 export const updatePostFn = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
   .inputValidator(updatePostSchema)
-  .handler(async ({ data }) => {
-    return updatePost(data);
+  .handler(async ({ data, context }) => {
+    return updatePost(data, {
+      actorUserId: context.user.id,
+      requestMetadata: context.requestMetadata,
+    });
   });
 
-const deletePostSchema = z.object({ id: z.number() });
+const deletePostSchema = z.object({ id: z.number().int().positive() });
 
 export const deletePostFn = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
   .inputValidator(deletePostSchema)
-  .handler(async ({ data }) => {
-    return deletePost(data.id);
+  .handler(async ({ data, context }) => {
+    return deletePost(data.id, {
+      actorUserId: context.user.id,
+      requestMetadata: context.requestMetadata,
+    });
   });

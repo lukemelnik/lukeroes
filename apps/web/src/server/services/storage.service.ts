@@ -19,7 +19,15 @@ const BUCKET = process.env.R2_BUCKET || "";
 const MEDIA_PREFIX = "media/";
 const PUBLIC_URL_BASE = process.env.R2_PUBLIC_URL || "";
 
+function isAbsoluteUrl(key: string) {
+  return key.startsWith("https://") || key.startsWith("http://");
+}
+
 function mediaKey(key: string) {
+  if (isAbsoluteUrl(key)) {
+    return key;
+  }
+
   return key.startsWith(MEDIA_PREFIX) ? key : `${MEDIA_PREFIX}${key}`;
 }
 
@@ -48,6 +56,10 @@ export async function getPresignedUploadUrl(key: string, contentType: string, ex
 }
 
 export async function getSignedUrl(key: string, expiresIn = 3600) {
+  if (isAbsoluteUrl(key)) {
+    return key;
+  }
+
   const command = new GetObjectCommand({
     Bucket: BUCKET,
     Key: mediaKey(key),
@@ -56,10 +68,18 @@ export async function getSignedUrl(key: string, expiresIn = 3600) {
 }
 
 export function getPublicUrl(key: string) {
+  if (isAbsoluteUrl(key)) {
+    return key;
+  }
+
   return `${PUBLIC_URL_BASE}/${mediaKey(key)}`;
 }
 
 export async function deleteFile(key: string) {
+  if (isAbsoluteUrl(key)) {
+    return;
+  }
+
   await s3.send(
     new DeleteObjectCommand({
       Bucket: BUCKET,

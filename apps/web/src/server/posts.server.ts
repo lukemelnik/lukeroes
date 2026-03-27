@@ -1,40 +1,180 @@
 import { db } from "@lukeroes/db";
 import {
-  posts,
+  media,
+  mediaVariants,
   postMedia,
   postTags,
+  posts,
   tags,
-  media,
-  type Post,
   type CreatePostInput,
+  type Post,
   type UpdatePostInput,
 } from "@lukeroes/db/schema/membership";
-import { and, desc, eq, inArray, lt, or, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, lt, lte, or, sql } from "drizzle-orm";
+import { createAdminAuditLogEntry } from "@/server/audit-log.server";
+import {
+  calculateReadingTimeLabel,
+  decodePostCursor,
+  encodePostCursor,
+  ensureUniquePostSlug,
+  getPostPublicationState,
+} from "@/server/post-helpers.server";
+import type { RequestMetadata } from "@/server/request.server";
+import { getPublicUrl } from "@/server/services/storage.service";
+import { getUtcNowIso } from "@/server/utc";
 
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+function isDefined<T>(value: T | undefined): value is T {
+  return value !== undefined;
 }
 
-function computeReadingTime(content: string | null | undefined): string | null {
-  if (!content) return null;
-  const text = stripHtml(content);
-  if (!text) return null;
-  const words = text.split(/\s+/).length;
-  const minutes = Math.max(1, Math.ceil(words / 200));
-  return `${minutes} min read`;
+function isPostType(value: string): value is Post["type"] {
+  return ["writing", "audio", "note", "photo"].includes(value);
 }
 
-function encodeCursor(publishedAt: string, id: number): string {
-  return Buffer.from(`${publishedAt}|${id}`).toString("base64");
+interface PostMediaItem {
+  postId: number;
+  mediaId: number;
+  id: number;
+  role: "artwork" | "audio" | "photo" | "inline";
+  displayOrder: number;
+  type: "image" | "audio";
+  mediaType: "image" | "audio";
+  fileKey: string | null;
+  url: string | null;
+  duration: number | null;
+  width: number | null;
+  height: number | null;
+  alt: string | null;
+  caption: string | null;
+  access: "public" | "members";
+  variantKind: "original" | "display" | "thumb" | null;
+  format: string | null;
+  byteSize: number | null;
 }
 
-function decodeCursor(cursor: string): { publishedAt: string; id: number } {
-  const decoded = Buffer.from(cursor, "base64").toString("utf-8");
-  const [publishedAt, idStr] = decoded.split("|");
-  return { publishedAt, id: Number(idStr) };
+function getPreferredVariantKind(role: string, type: "image" | "audio") {
+  if (type === "audio" || role === "audio") {
+    return "original";
+  }
+
+  return "display";
+}
+
+async function loadTagsByPostId(postIds: number[]) {
+  if (postIds.length === 0) {
+    return new Map<number, Array<{ id: number; name: string; slug: string }>>();
+  }
+
+  const tagRows = await db
+    .select({
+      postId: postTags.postId,
+      tagId: tags.id,
+      tagName: tags.name,
+      tagSlug: tags.slug,
+    })
+    .from(postTags)
+    .innerJoin(tags, eq(postTags.tagId, tags.id))
+    .where(inArray(postTags.postId, postIds));
+
+  const tagsByPostId = new Map<number, Array<{ id: number; name: string; slug: string }>>();
+  for (const row of tagRows) {
+    const existingTags = tagsByPostId.get(row.postId) ?? [];
+    existingTags.push({
+      id: row.tagId,
+      name: row.tagName,
+      slug: row.tagSlug,
+    });
+    tagsByPostId.set(row.postId, existingTags);
+  }
+
+  return tagsByPostId;
+}
+
+async function loadMediaByPostId(postIds: number[], isMember: boolean) {
+  if (postIds.length === 0) {
+    return new Map<number, PostMediaItem[]>();
+  }
+
+  const relationRows = await db
+    .select({
+      postId: postMedia.postId,
+      mediaId: media.id,
+      role: postMedia.role,
+      displayOrder: postMedia.displayOrder,
+      altOverride: postMedia.altOverride,
+      caption: postMedia.caption,
+      mediaType: media.type,
+      access: media.access,
+      defaultAlt: media.defaultAlt,
+      durationSeconds: media.durationSeconds,
+    })
+    .from(postMedia)
+    .innerJoin(media, eq(postMedia.mediaId, media.id))
+    .where(inArray(postMedia.postId, postIds))
+    .orderBy(postMedia.postId, postMedia.displayOrder, postMedia.mediaId);
+
+  const mediaIds = relationRows.map((row) => row.mediaId);
+
+  if (mediaIds.length === 0) {
+    return new Map<number, PostMediaItem[]>();
+  }
+
+  const variantRows = await db
+    .select({
+      mediaId: mediaVariants.mediaId,
+      kind: mediaVariants.kind,
+      fileKey: mediaVariants.fileKey,
+      format: mediaVariants.format,
+      width: mediaVariants.width,
+      height: mediaVariants.height,
+      byteSize: mediaVariants.byteSize,
+    })
+    .from(mediaVariants)
+    .where(inArray(mediaVariants.mediaId, mediaIds));
+
+  const variantsByMediaId = new Map<number, typeof variantRows>();
+  for (const variantRow of variantRows) {
+    const existingVariants = variantsByMediaId.get(variantRow.mediaId) ?? [];
+    existingVariants.push(variantRow);
+    variantsByMediaId.set(variantRow.mediaId, existingVariants);
+  }
+
+  const mediaByPostId = new Map<number, PostMediaItem[]>();
+  for (const relationRow of relationRows) {
+    const preferredVariantKind = getPreferredVariantKind(relationRow.role, relationRow.mediaType);
+    const variants = variantsByMediaId.get(relationRow.mediaId) ?? [];
+    const selectedVariant =
+      variants.find((variant) => variant.kind === preferredVariantKind) ??
+      variants.find((variant) => variant.kind === "original") ??
+      variants[0];
+    const isAccessible = relationRow.access === "public" || isMember;
+    const existingMedia = mediaByPostId.get(relationRow.postId) ?? [];
+
+    existingMedia.push({
+      postId: relationRow.postId,
+      mediaId: relationRow.mediaId,
+      id: relationRow.mediaId,
+      role: relationRow.role,
+      displayOrder: relationRow.displayOrder,
+      type: relationRow.mediaType,
+      mediaType: relationRow.mediaType,
+      fileKey: selectedVariant?.fileKey ?? null,
+      url: isAccessible && selectedVariant ? getPublicUrl(selectedVariant.fileKey) : null,
+      duration: relationRow.durationSeconds,
+      width: selectedVariant?.width ?? null,
+      height: selectedVariant?.height ?? null,
+      alt: relationRow.altOverride ?? relationRow.defaultAlt,
+      caption: relationRow.caption,
+      access: relationRow.access,
+      variantKind: selectedVariant?.kind ?? null,
+      format: selectedVariant?.format ?? null,
+      byteSize: selectedVariant?.byteSize ?? null,
+    });
+
+    mediaByPostId.set(relationRow.postId, existingMedia);
+  }
+
+  return mediaByPostId;
 }
 
 export interface ListPostsParams {
@@ -47,206 +187,216 @@ export interface ListPostsParams {
 }
 
 export async function listPosts(params: ListPostsParams) {
-  const { limit = 10, cursor, type, tag, search, isMember = false } = params;
+  const nowIso = getUtcNowIso();
+  const cursorValues = params.cursor ? decodePostCursor(params.cursor) : null;
+  const searchTerm = params.search?.trim();
+  const conditions = [
+    isNotNull(posts.publishedAt),
+    lte(posts.publishedAt, nowIso),
+    params.type && isPostType(params.type) ? eq(posts.type, params.type) : undefined,
+    cursorValues
+      ? or(
+          lt(posts.publishedAt, cursorValues.publishedAt),
+          and(eq(posts.publishedAt, cursorValues.publishedAt), lt(posts.id, cursorValues.id)),
+        )
+      : undefined,
+    params.tag
+      ? sql`${posts.id} IN (
+          SELECT pt.post_id FROM post_tags pt
+          JOIN tags t ON t.id = pt.tag_id
+          WHERE t.slug = ${params.tag}
+        )`
+      : undefined,
+    searchTerm
+      ? sql`${posts.id} IN (
+          SELECT rowid FROM posts_fts WHERE posts_fts MATCH ${`"${searchTerm.replace(/"/g, '""')}"*`}
+        )`
+      : undefined,
+  ].filter(isDefined);
 
-  const conditions = [sql`${posts.publishedAt} IS NOT NULL`];
-
-  if (type) {
-    conditions.push(eq(posts.type, type as "writing" | "audio" | "note" | "photo"));
-  }
-
-  if (cursor) {
-    const { publishedAt, id } = decodeCursor(cursor);
-    conditions.push(
-      or(
-        lt(posts.publishedAt, publishedAt),
-        and(eq(posts.publishedAt, publishedAt), lt(posts.id, id)),
-      )!,
-    );
-  }
-
-  // Tag filter via subquery
-  if (tag) {
-    conditions.push(
-      sql`${posts.id} IN (
-				SELECT pt.post_id FROM post_tags pt
-				JOIN tags t ON t.id = pt.tag_id
-				WHERE t.slug = ${tag}
-			)`,
-    );
-  }
-
-  // FTS5 search
-  if (search && search.trim()) {
-    const searchTerm = search.trim().replace(/"/g, '""');
-    conditions.push(
-      sql`${posts.id} IN (
-				SELECT rowid FROM posts_fts WHERE posts_fts MATCH ${`"${searchTerm}"*`}
-			)`,
-    );
-  }
-
+  const whereCondition = conditions.length === 1 ? conditions[0] : and(...conditions);
   const rows = await db
     .select()
     .from(posts)
-    .where(and(...conditions))
+    .where(whereCondition)
     .orderBy(desc(posts.publishedAt), desc(posts.id))
-    .limit(limit + 1);
+    .limit((params.limit ?? 10) + 1);
 
-  const hasMore = rows.length > limit;
-  const items = hasMore ? rows.slice(0, limit) : rows;
-
-  // Strip content for non-members viewing members-only posts
-  const processed = items.map((post: Post) => {
-    if (post.visibility === "members" && !isMember) {
-      return { ...post, content: null };
-    }
-    return post;
-  });
-
-  // Load tags for all posts
-  const postIds = processed.map((p: Post) => p.id);
-  const tagRows =
-    postIds.length > 0
-      ? await db
-          .select({
-            postId: postTags.postId,
-            tagId: tags.id,
-            tagName: tags.name,
-            tagSlug: tags.slug,
-          })
-          .from(postTags)
-          .innerJoin(tags, eq(postTags.tagId, tags.id))
-          .where(inArray(postTags.postId, postIds))
-      : [];
-
-  // Load media for all posts
-  const mediaRows =
-    postIds.length > 0
-      ? await db
-          .select({
-            postId: postMedia.postId,
-            role: postMedia.role,
-            displayOrder: postMedia.displayOrder,
-            mediaId: media.id,
-            mediaType: media.type,
-            fileKey: media.fileKey,
-            url: media.url,
-            duration: media.duration,
-            width: media.width,
-            height: media.height,
-            alt: media.alt,
-          })
-          .from(postMedia)
-          .innerJoin(media, eq(postMedia.mediaId, media.id))
-          .where(inArray(postMedia.postId, postIds))
-          .orderBy(postMedia.displayOrder)
-      : [];
-
-  const tagsByPostId = new Map<number, { id: number; name: string; slug: string }[]>();
-  for (const row of tagRows) {
-    const arr = tagsByPostId.get(row.postId) || [];
-    arr.push({ id: row.tagId, name: row.tagName, slug: row.tagSlug });
-    tagsByPostId.set(row.postId, arr);
-  }
-
-  const mediaByPostId = new Map<number, typeof mediaRows>();
-  for (const row of mediaRows) {
-    const arr = mediaByPostId.get(row.postId) || [];
-    arr.push(row);
-    mediaByPostId.set(row.postId, arr);
-  }
-
-  const postsWithRelations = processed.map((post: Post) => ({
+  const hasMore = rows.length > (params.limit ?? 10);
+  const items = hasMore ? rows.slice(0, params.limit ?? 10) : rows;
+  const processedPosts = items.map((post) =>
+    post.visibility === "members" && !params.isMember ? { ...post, content: null } : post,
+  );
+  const postIds = processedPosts.map((post) => post.id);
+  const [tagsByPostId, mediaByPostId] = await Promise.all([
+    loadTagsByPostId(postIds),
+    loadMediaByPostId(postIds, params.isMember ?? false),
+  ]);
+  const postsWithRelations = processedPosts.map((post) => ({
     ...post,
-    tags: tagsByPostId.get(post.id) || [],
-    media: mediaByPostId.get(post.id) || [],
+    tags: tagsByPostId.get(post.id) ?? [],
+    media: mediaByPostId.get(post.id) ?? [],
   }));
-
   const lastItem = items[items.length - 1];
-  const nextCursor =
-    hasMore && lastItem?.publishedAt ? encodeCursor(lastItem.publishedAt, lastItem.id) : undefined;
 
-  return { posts: postsWithRelations, nextCursor };
+  return {
+    posts: postsWithRelations,
+    nextCursor:
+      hasMore && lastItem?.publishedAt
+        ? encodePostCursor(lastItem.publishedAt, lastItem.id)
+        : undefined,
+  };
 }
 
 export async function getPostBySlug(slug: string, isMember: boolean) {
-  const [post] = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1);
+  const nowIso = getUtcNowIso();
+  const post = await db
+    .select()
+    .from(posts)
+    .where(and(eq(posts.slug, slug), isNotNull(posts.publishedAt), lte(posts.publishedAt, nowIso)))
+    .get();
 
-  if (!post) return null;
-
-  // Strip content for non-members viewing members-only posts
-  if (post.visibility === "members" && !isMember) {
-    post.content = null;
+  if (!post) {
+    return null;
   }
 
-  // Load tags
-  const tagRows = await db
-    .select({
-      id: tags.id,
-      name: tags.name,
-      slug: tags.slug,
-    })
-    .from(postTags)
-    .innerJoin(tags, eq(postTags.tagId, tags.id))
-    .where(eq(postTags.postId, post.id));
+  const visiblePost =
+    post.visibility === "members" && !isMember ? { ...post, content: null } : post;
+  const [tagsByPostId, mediaByPostId] = await Promise.all([
+    loadTagsByPostId([post.id]),
+    loadMediaByPostId([post.id], isMember),
+  ]);
 
-  // Load media
-  const mediaRows = await db
-    .select({
-      role: postMedia.role,
-      displayOrder: postMedia.displayOrder,
-      id: media.id,
-      type: media.type,
-      fileKey: media.fileKey,
-      url: media.url,
-      duration: media.duration,
-      width: media.width,
-      height: media.height,
-      alt: media.alt,
-    })
-    .from(postMedia)
-    .innerJoin(media, eq(postMedia.mediaId, media.id))
-    .where(eq(postMedia.postId, post.id))
-    .orderBy(postMedia.displayOrder);
-
-  return { ...post, tags: tagRows, media: mediaRows };
+  return {
+    ...visiblePost,
+    tags: tagsByPostId.get(post.id) ?? [],
+    media: mediaByPostId.get(post.id) ?? [],
+  };
 }
 
-export async function createPost(input: CreatePostInput) {
-  const readingTime = input.type === "writing" ? computeReadingTime(input.content) : null;
-
+export async function createPost(input: CreatePostInput & { authorId: string }) {
+  const nowIso = getUtcNowIso();
+  const slug = await ensureUniquePostSlug({
+    title: input.title,
+    slug: input.slug,
+  });
+  const readingTime = input.type === "writing" ? calculateReadingTimeLabel(input.content) : null;
   const [post] = await db
     .insert(posts)
     .values({
       ...input,
+      slug,
       readingTime,
+      createdAt: nowIso,
+      updatedAt: nowIso,
     })
     .returning();
 
   return post;
 }
 
-export async function updatePost(input: UpdatePostInput) {
+export async function updatePost(
+  input: UpdatePostInput,
+  auditContext?: { actorUserId: string; requestMetadata?: RequestMetadata | null },
+) {
   const { id, ...updates } = input;
+  const existingPost = await db
+    .select({
+      id: posts.id,
+      type: posts.type,
+      title: posts.title,
+      slug: posts.slug,
+      content: posts.content,
+      publishedAt: posts.publishedAt,
+    })
+    .from(posts)
+    .where(eq(posts.id, id))
+    .get();
 
-  // Recompute reading time if content changed on a writing post
-  if (updates.content !== undefined) {
-    const [existing] = await db.select({ type: posts.type }).from(posts).where(eq(posts.id, id));
-    if (existing?.type === "writing") {
-      (updates as Record<string, unknown>).readingTime = computeReadingTime(updates.content);
-    }
+  if (!existingPost) {
+    throw new Error("Post not found.");
   }
 
+  const nextType = updates.type ?? existingPost.type;
+  const nextContent = updates.content === undefined ? existingPost.content : updates.content;
+  const nextPublishedAt =
+    updates.publishedAt === undefined ? existingPost.publishedAt : updates.publishedAt;
+  const slug =
+    updates.slug !== undefined
+      ? await ensureUniquePostSlug({
+          title: updates.title ?? existingPost.title,
+          slug: updates.slug,
+          excludePostId: id,
+        })
+      : existingPost.slug;
+  const readingTime = nextType === "writing" ? calculateReadingTimeLabel(nextContent) : null;
+  const nowIso = getUtcNowIso();
   const [post] = await db
     .update(posts)
-    .set({ ...updates, updatedAt: new Date().toISOString() })
+    .set({
+      ...updates,
+      slug,
+      readingTime,
+      updatedAt: nowIso,
+    })
     .where(eq(posts.id, id))
     .returning();
+
+  if (auditContext) {
+    const previousState = getPostPublicationState(existingPost.publishedAt, nowIso);
+    const nextState = getPostPublicationState(nextPublishedAt, nowIso);
+
+    if (previousState !== nextState) {
+      await createAdminAuditLogEntry({
+        actorUserId: auditContext.actorUserId,
+        action: "post.publish_state_changed",
+        targetType: "post",
+        targetId: `${post.id}`,
+        metadata: {
+          previousState,
+          nextState,
+          previousPublishedAt: existingPost.publishedAt,
+          nextPublishedAt: nextPublishedAt ?? null,
+        },
+        requestMetadata: auditContext.requestMetadata,
+      });
+    }
+  }
 
   return post;
 }
 
-export async function deletePost(id: number) {
+export async function deletePost(
+  id: number,
+  auditContext?: { actorUserId: string; requestMetadata?: RequestMetadata | null },
+) {
+  const existingPost = await db
+    .select({
+      id: posts.id,
+      slug: posts.slug,
+      title: posts.title,
+    })
+    .from(posts)
+    .where(eq(posts.id, id))
+    .get();
+
+  if (!existingPost) {
+    throw new Error("Post not found.");
+  }
+
   await db.delete(posts).where(eq(posts.id, id));
+
+  if (auditContext) {
+    await createAdminAuditLogEntry({
+      actorUserId: auditContext.actorUserId,
+      action: "post.delete",
+      targetType: "post",
+      targetId: `${existingPost.id}`,
+      metadata: {
+        slug: existingPost.slug,
+        title: existingPost.title,
+      },
+      requestMetadata: auditContext.requestMetadata,
+    });
+  }
 }
