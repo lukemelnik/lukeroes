@@ -91,7 +91,7 @@ export default function Header() {
           ))}
           {session?.user && (
             <Link
-              to="/members"
+              to="/account"
               className="ml-2 text-foreground transition-colors hover:text-primary"
               aria-label="Notifications"
             >

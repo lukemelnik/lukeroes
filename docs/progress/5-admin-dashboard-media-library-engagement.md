@@ -6,7 +6,7 @@ Last Updated: 2026-03-27
 
 ## Status
 
-Current Sprint: Sprint 5
+Current Sprint: Sprint 5 (Complete)
 
 ## Completed Work
 
@@ -98,5 +98,31 @@ Completed: 2026-03-27
 - The notification bell polls every 60 seconds for unread count. Future optimization could use SSE/WebSocket.
 - `getPostImages` now returns `caption`, `width`, and `height` to support lightbox captions and masonry aspect ratios.
 - `getMembershipStatusFn` now returns `userId` so the comments UI can determine comment ownership for delete permissions.
+
+### Sprint 5: Admin dashboard, user management, comment moderation, account page
+
+Completed: 2026-03-27
+
+- Task 5.1: Admin dashboard at /admin with metric cards and Recharts charts - DONE
+  - Built dashboard with total users, paid members, published posts, unseen comments metrics; user signup bar chart and paid member line chart with 30/60/90 day toggle.
+  - Files: `apps/web/src/routes/(nav)/admin/index.tsx`, `apps/web/src/server/admin-dashboard.server.ts`, `apps/web/src/functions/admin-dashboard.functions.ts`
+- Task 5.2: Admin sidebar layout with unseen comments badge - DONE
+  - Built AdminSidebar component with Dashboard/Posts/Media/Users/Comments nav items and live unseen comment count badge.
+  - Files: `apps/web/src/components/admin/admin-sidebar.tsx`
+- Task 5.3: Admin user management at /admin/users - DONE
+  - Built user list with name/email/role/joined/subscription columns; change role, ban/unban with reason dialog, impersonate, revoke sessions, gift membership actions with audit logging.
+  - Files: `apps/web/src/routes/(nav)/admin/users/index.tsx`, `apps/web/src/functions/admin-users.functions.ts`, `apps/web/src/server/admin-users.server.ts`
+- Task 5.4: Admin comments moderation at /admin/comments - DONE
+  - Built moderation view with newest-first comments, unseen-only filter, mark seen/bulk mark all seen, tombstone delete actions.
+  - Files: `apps/web/src/routes/(nav)/admin/comments/index.tsx`, `apps/web/src/functions/admin-comments.functions.ts`
+- Task 5.5: User account page at /account - DONE
+  - Built profile section (avatar/initials, editable name, read-only email, change password via authClient), subscription status/manage, notifications list, danger zone with typed DELETE confirmation and account deletion with comment anonymization.
+  - Files: `apps/web/src/routes/(nav)/account.tsx`, `apps/web/src/functions/account.functions.ts`
+- Task 5.6: Wire notification bell to /account and add sidebar to existing admin pages - DONE
+  - Updated header notification bell link from /members to /account; added AdminSidebar to posts and media admin pages.
+  - Files: `apps/web/src/components/header.tsx`, `apps/web/src/routes/(nav)/admin/posts/index.tsx`, `apps/web/src/routes/(nav)/admin/media/index.tsx`
+- Task 5.7: Audit log entries for admin actions - DONE
+  - All admin actions (role change, ban/unban, impersonation, revoke sessions, gift membership, comment moderation delete) write audit log entries with actor, target, metadata, IP, and user agent.
+  - Files: `apps/web/src/functions/admin-users.functions.ts`
 
 ## Blockers

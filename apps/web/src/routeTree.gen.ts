@@ -19,13 +19,17 @@ import { Route as navVideosRouteImport } from './routes/(nav)/videos'
 import { Route as navTourRouteImport } from './routes/(nav)/tour'
 import { Route as navLoginRouteImport } from './routes/(nav)/login'
 import { Route as navContactRouteImport } from './routes/(nav)/contact'
+import { Route as navAccountRouteImport } from './routes/(nav)/account'
 import { Route as navMusicIndexRouteImport } from './routes/(nav)/music/index'
 import { Route as navMembersIndexRouteImport } from './routes/(nav)/members/index'
+import { Route as navAdminIndexRouteImport } from './routes/(nav)/admin/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as navMusicSlugRouteRouteImport } from './routes/(nav)/music/$slug/route'
 import { Route as navMusicSlugIndexRouteImport } from './routes/(nav)/music/$slug/index'
+import { Route as navAdminUsersIndexRouteImport } from './routes/(nav)/admin/users/index'
 import { Route as navAdminPostsIndexRouteImport } from './routes/(nav)/admin/posts/index'
 import { Route as navAdminMediaIndexRouteImport } from './routes/(nav)/admin/media/index'
+import { Route as navAdminCommentsIndexRouteImport } from './routes/(nav)/admin/comments/index'
 import { Route as ApiAdminMediaImagesRouteImport } from './routes/api/admin/media/images'
 import { Route as navMusicSlugTrackRouteImport } from './routes/(nav)/music/$slug/$track'
 import { Route as navMembersPostSlugRouteImport } from './routes/(nav)/members/post/$slug'
@@ -81,6 +85,11 @@ const navContactRoute = navContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => navRouteRoute,
 } as any)
+const navAccountRoute = navAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const navMusicIndexRoute = navMusicIndexRouteImport.update({
   id: '/music/',
   path: '/music/',
@@ -89,6 +98,11 @@ const navMusicIndexRoute = navMusicIndexRouteImport.update({
 const navMembersIndexRoute = navMembersIndexRouteImport.update({
   id: '/members/',
   path: '/members/',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navAdminIndexRoute = navAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => navRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -106,6 +120,11 @@ const navMusicSlugIndexRoute = navMusicSlugIndexRouteImport.update({
   path: '/',
   getParentRoute: () => navMusicSlugRouteRoute,
 } as any)
+const navAdminUsersIndexRoute = navAdminUsersIndexRouteImport.update({
+  id: '/admin/users/',
+  path: '/admin/users/',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const navAdminPostsIndexRoute = navAdminPostsIndexRouteImport.update({
   id: '/admin/posts/',
   path: '/admin/posts/',
@@ -114,6 +133,11 @@ const navAdminPostsIndexRoute = navAdminPostsIndexRouteImport.update({
 const navAdminMediaIndexRoute = navAdminMediaIndexRouteImport.update({
   id: '/admin/media/',
   path: '/admin/media/',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navAdminCommentsIndexRoute = navAdminCommentsIndexRouteImport.update({
+  id: '/admin/comments/',
+  path: '/admin/comments/',
   getParentRoute: () => navRouteRoute,
 } as any)
 const ApiAdminMediaImagesRoute = ApiAdminMediaImagesRouteImport.update({
@@ -145,6 +169,7 @@ const navAdminPostsPostIdRoute = navAdminPostsPostIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/links': typeof LinksRoute
+  '/account': typeof navAccountRoute
   '/contact': typeof navContactRoute
   '/login': typeof navLoginRoute
   '/tour': typeof navTourRoute
@@ -154,20 +179,24 @@ export interface FileRoutesByFullPath {
   '/': typeof navIndexRoute
   '/music/$slug': typeof navMusicSlugRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/members': typeof navMembersIndexRoute
-  '/music': typeof navMusicIndexRoute
+  '/admin/': typeof navAdminIndexRoute
+  '/members/': typeof navMembersIndexRoute
+  '/music/': typeof navMusicIndexRoute
   '/admin/posts/$postId': typeof navAdminPostsPostIdRoute
   '/admin/posts/new': typeof navAdminPostsNewRoute
   '/members/post/$slug': typeof navMembersPostSlugRoute
   '/music/$slug/$track': typeof navMusicSlugTrackRoute
   '/api/admin/media/images': typeof ApiAdminMediaImagesRoute
-  '/admin/media': typeof navAdminMediaIndexRoute
-  '/admin/posts': typeof navAdminPostsIndexRoute
+  '/admin/comments/': typeof navAdminCommentsIndexRoute
+  '/admin/media/': typeof navAdminMediaIndexRoute
+  '/admin/posts/': typeof navAdminPostsIndexRoute
+  '/admin/users/': typeof navAdminUsersIndexRoute
   '/music/$slug/': typeof navMusicSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/links': typeof LinksRoute
+  '/account': typeof navAccountRoute
   '/contact': typeof navContactRoute
   '/login': typeof navLoginRoute
   '/tour': typeof navTourRoute
@@ -176,6 +205,7 @@ export interface FileRoutesByTo {
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin': typeof navAdminIndexRoute
   '/members': typeof navMembersIndexRoute
   '/music': typeof navMusicIndexRoute
   '/admin/posts/$postId': typeof navAdminPostsPostIdRoute
@@ -183,8 +213,10 @@ export interface FileRoutesByTo {
   '/members/post/$slug': typeof navMembersPostSlugRoute
   '/music/$slug/$track': typeof navMusicSlugTrackRoute
   '/api/admin/media/images': typeof ApiAdminMediaImagesRoute
+  '/admin/comments': typeof navAdminCommentsIndexRoute
   '/admin/media': typeof navAdminMediaIndexRoute
   '/admin/posts': typeof navAdminPostsIndexRoute
+  '/admin/users': typeof navAdminUsersIndexRoute
   '/music/$slug': typeof navMusicSlugIndexRoute
 }
 export interface FileRoutesById {
@@ -192,6 +224,7 @@ export interface FileRoutesById {
   '/(nav)': typeof navRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/links': typeof LinksRoute
+  '/(nav)/account': typeof navAccountRoute
   '/(nav)/contact': typeof navContactRoute
   '/(nav)/login': typeof navLoginRoute
   '/(nav)/tour': typeof navTourRoute
@@ -201,6 +234,7 @@ export interface FileRoutesById {
   '/(nav)/': typeof navIndexRoute
   '/(nav)/music/$slug': typeof navMusicSlugRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/(nav)/admin/': typeof navAdminIndexRoute
   '/(nav)/members/': typeof navMembersIndexRoute
   '/(nav)/music/': typeof navMusicIndexRoute
   '/(nav)/admin/posts/$postId': typeof navAdminPostsPostIdRoute
@@ -208,8 +242,10 @@ export interface FileRoutesById {
   '/(nav)/members/post/$slug': typeof navMembersPostSlugRoute
   '/(nav)/music/$slug/$track': typeof navMusicSlugTrackRoute
   '/api/admin/media/images': typeof ApiAdminMediaImagesRoute
+  '/(nav)/admin/comments/': typeof navAdminCommentsIndexRoute
   '/(nav)/admin/media/': typeof navAdminMediaIndexRoute
   '/(nav)/admin/posts/': typeof navAdminPostsIndexRoute
+  '/(nav)/admin/users/': typeof navAdminUsersIndexRoute
   '/(nav)/music/$slug/': typeof navMusicSlugIndexRoute
 }
 export interface FileRouteTypes {
@@ -217,6 +253,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/dashboard'
     | '/links'
+    | '/account'
     | '/contact'
     | '/login'
     | '/tour'
@@ -226,20 +263,24 @@ export interface FileRouteTypes {
     | '/'
     | '/music/$slug'
     | '/api/auth/$'
-    | '/members'
-    | '/music'
+    | '/admin/'
+    | '/members/'
+    | '/music/'
     | '/admin/posts/$postId'
     | '/admin/posts/new'
     | '/members/post/$slug'
     | '/music/$slug/$track'
     | '/api/admin/media/images'
-    | '/admin/media'
-    | '/admin/posts'
+    | '/admin/comments/'
+    | '/admin/media/'
+    | '/admin/posts/'
+    | '/admin/users/'
     | '/music/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
     | '/links'
+    | '/account'
     | '/contact'
     | '/login'
     | '/tour'
@@ -248,6 +289,7 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/'
     | '/api/auth/$'
+    | '/admin'
     | '/members'
     | '/music'
     | '/admin/posts/$postId'
@@ -255,14 +297,17 @@ export interface FileRouteTypes {
     | '/members/post/$slug'
     | '/music/$slug/$track'
     | '/api/admin/media/images'
+    | '/admin/comments'
     | '/admin/media'
     | '/admin/posts'
+    | '/admin/users'
     | '/music/$slug'
   id:
     | '__root__'
     | '/(nav)'
     | '/dashboard'
     | '/links'
+    | '/(nav)/account'
     | '/(nav)/contact'
     | '/(nav)/login'
     | '/(nav)/tour'
@@ -272,6 +317,7 @@ export interface FileRouteTypes {
     | '/(nav)/'
     | '/(nav)/music/$slug'
     | '/api/auth/$'
+    | '/(nav)/admin/'
     | '/(nav)/members/'
     | '/(nav)/music/'
     | '/(nav)/admin/posts/$postId'
@@ -279,8 +325,10 @@ export interface FileRouteTypes {
     | '/(nav)/members/post/$slug'
     | '/(nav)/music/$slug/$track'
     | '/api/admin/media/images'
+    | '/(nav)/admin/comments/'
     | '/(nav)/admin/media/'
     | '/(nav)/admin/posts/'
+    | '/(nav)/admin/users/'
     | '/(nav)/music/$slug/'
   fileRoutesById: FileRoutesById
 }
@@ -365,18 +413,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navContactRouteImport
       parentRoute: typeof navRouteRoute
     }
+    '/(nav)/account': {
+      id: '/(nav)/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof navAccountRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/(nav)/music/': {
       id: '/(nav)/music/'
       path: '/music'
-      fullPath: '/music'
+      fullPath: '/music/'
       preLoaderRoute: typeof navMusicIndexRouteImport
       parentRoute: typeof navRouteRoute
     }
     '/(nav)/members/': {
       id: '/(nav)/members/'
       path: '/members'
-      fullPath: '/members'
+      fullPath: '/members/'
       preLoaderRoute: typeof navMembersIndexRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/admin/': {
+      id: '/(nav)/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof navAdminIndexRouteImport
       parentRoute: typeof navRouteRoute
     }
     '/api/auth/$': {
@@ -400,18 +462,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navMusicSlugIndexRouteImport
       parentRoute: typeof navMusicSlugRouteRoute
     }
+    '/(nav)/admin/users/': {
+      id: '/(nav)/admin/users/'
+      path: '/admin/users'
+      fullPath: '/admin/users/'
+      preLoaderRoute: typeof navAdminUsersIndexRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/(nav)/admin/posts/': {
       id: '/(nav)/admin/posts/'
       path: '/admin/posts'
-      fullPath: '/admin/posts'
+      fullPath: '/admin/posts/'
       preLoaderRoute: typeof navAdminPostsIndexRouteImport
       parentRoute: typeof navRouteRoute
     }
     '/(nav)/admin/media/': {
       id: '/(nav)/admin/media/'
       path: '/admin/media'
-      fullPath: '/admin/media'
+      fullPath: '/admin/media/'
       preLoaderRoute: typeof navAdminMediaIndexRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/admin/comments/': {
+      id: '/(nav)/admin/comments/'
+      path: '/admin/comments'
+      fullPath: '/admin/comments/'
+      preLoaderRoute: typeof navAdminCommentsIndexRouteImport
       parentRoute: typeof navRouteRoute
     }
     '/api/admin/media/images': {
@@ -466,6 +542,7 @@ const navMusicSlugRouteRouteWithChildren =
   navMusicSlugRouteRoute._addFileChildren(navMusicSlugRouteRouteChildren)
 
 interface navRouteRouteChildren {
+  navAccountRoute: typeof navAccountRoute
   navContactRoute: typeof navContactRoute
   navLoginRoute: typeof navLoginRoute
   navTourRoute: typeof navTourRoute
@@ -473,16 +550,20 @@ interface navRouteRouteChildren {
   navWorkWithMeRoute: typeof navWorkWithMeRoute
   navIndexRoute: typeof navIndexRoute
   navMusicSlugRouteRoute: typeof navMusicSlugRouteRouteWithChildren
+  navAdminIndexRoute: typeof navAdminIndexRoute
   navMembersIndexRoute: typeof navMembersIndexRoute
   navMusicIndexRoute: typeof navMusicIndexRoute
   navAdminPostsPostIdRoute: typeof navAdminPostsPostIdRoute
   navAdminPostsNewRoute: typeof navAdminPostsNewRoute
   navMembersPostSlugRoute: typeof navMembersPostSlugRoute
+  navAdminCommentsIndexRoute: typeof navAdminCommentsIndexRoute
   navAdminMediaIndexRoute: typeof navAdminMediaIndexRoute
   navAdminPostsIndexRoute: typeof navAdminPostsIndexRoute
+  navAdminUsersIndexRoute: typeof navAdminUsersIndexRoute
 }
 
 const navRouteRouteChildren: navRouteRouteChildren = {
+  navAccountRoute: navAccountRoute,
   navContactRoute: navContactRoute,
   navLoginRoute: navLoginRoute,
   navTourRoute: navTourRoute,
@@ -490,13 +571,16 @@ const navRouteRouteChildren: navRouteRouteChildren = {
   navWorkWithMeRoute: navWorkWithMeRoute,
   navIndexRoute: navIndexRoute,
   navMusicSlugRouteRoute: navMusicSlugRouteRouteWithChildren,
+  navAdminIndexRoute: navAdminIndexRoute,
   navMembersIndexRoute: navMembersIndexRoute,
   navMusicIndexRoute: navMusicIndexRoute,
   navAdminPostsPostIdRoute: navAdminPostsPostIdRoute,
   navAdminPostsNewRoute: navAdminPostsNewRoute,
   navMembersPostSlugRoute: navMembersPostSlugRoute,
+  navAdminCommentsIndexRoute: navAdminCommentsIndexRoute,
   navAdminMediaIndexRoute: navAdminMediaIndexRoute,
   navAdminPostsIndexRoute: navAdminPostsIndexRoute,
+  navAdminUsersIndexRoute: navAdminUsersIndexRoute,
 }
 
 const navRouteRouteWithChildren = navRouteRoute._addFileChildren(
@@ -514,12 +598,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
