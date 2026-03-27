@@ -98,11 +98,12 @@ export function TiptapEditor({
       }
 
       isUploadingRef.current = true;
+      let placeholderUrl: string | null = null;
 
       try {
         await validateClientImageFile(file);
 
-        const placeholderUrl = URL.createObjectURL(file);
+        placeholderUrl = URL.createObjectURL(file);
         editor.chain().focus().setImage({ src: placeholderUrl, alt: file.name }).run();
 
         await uploadImageAsset({ file, access: "public" });
@@ -136,7 +137,31 @@ export function TiptapEditor({
         }
 
         URL.revokeObjectURL(placeholderUrl);
+        placeholderUrl = null;
       } catch (error) {
+        if (placeholderUrl) {
+          const url = placeholderUrl;
+          const { state } = editor;
+          const { tr } = state;
+          let deleted = false;
+
+          state.doc.descendants((node, pos) => {
+            if (deleted || node.type.name !== "mediaImage" || node.attrs.src !== url) {
+              return;
+            }
+
+            tr.delete(pos, pos + node.nodeSize);
+            deleted = true;
+          });
+
+          if (deleted) {
+            editor.view.dispatch(tr);
+            onChange(editor.getHTML());
+          }
+
+          URL.revokeObjectURL(url);
+        }
+
         toast.error(error instanceof Error ? error.message : "Image upload failed.");
       } finally {
         isUploadingRef.current = false;
