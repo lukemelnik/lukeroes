@@ -1,0 +1,394 @@
+import { useEditor, EditorContent } from "@tiptap/react";
+import { useState, useCallback, useRef } from "react";
+import {
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Heading1,
+  Heading2,
+  Heading3,
+  Link2,
+  Unlink,
+  ImagePlus,
+} from "lucide-react";
+import { toast } from "sonner";
+import { getEditorExtensions } from "@/lib/tiptap-extensions";
+import { uploadImageAsset, validateClientImageFile } from "@/lib/media-upload-client";
+import { MediaPickerDialog } from "@/components/admin/media-picker-dialog";
+import type { AdminMediaAsset } from "@/lib/media";
+
+interface TiptapEditorProps {
+  content: string;
+  onChange: (html: string) => void;
+  placeholder?: string;
+  enableImages?: boolean;
+}
+
+export function TiptapEditor({
+  content,
+  onChange,
+  placeholder,
+  enableImages = false,
+}: TiptapEditorProps) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const isUploadingRef = useRef(false);
+  const editor = useEditor({
+    extensions: getEditorExtensions(placeholder, enableImages),
+    content,
+    onUpdate: ({ editor: e }) => {
+      onChange(e.getHTML());
+    },
+    editorProps: enableImages
+      ? {
+          handleDrop: (_view, event, _slice, moved) => {
+            if (moved || !event.dataTransfer?.files.length) {
+              return false;
+            }
+
+            const files = Array.from(event.dataTransfer.files).filter((f) =>
+              f.type.startsWith("image/"),
+            );
+
+            if (files.length === 0) {
+              return false;
+            }
+
+            event.preventDefault();
+
+            for (const file of files) {
+              handleImageFileUpload(file);
+            }
+
+            return true;
+          },
+          handlePaste: (_view, event) => {
+            const items = event.clipboardData?.items;
+
+            if (!items) {
+              return false;
+            }
+
+            const imageItems = Array.from(items).filter((item) => item.type.startsWith("image/"));
+
+            if (imageItems.length === 0) {
+              return false;
+            }
+
+            event.preventDefault();
+
+            for (const item of imageItems) {
+              const file = item.getAsFile();
+
+              if (file) {
+                handleImageFileUpload(file);
+              }
+            }
+
+            return true;
+          },
+        }
+      : undefined,
+  });
+
+  const handleImageFileUpload = useCallback(
+    async (file: File) => {
+      if (!editor || isUploadingRef.current) {
+        return;
+      }
+
+      isUploadingRef.current = true;
+      let placeholderUrl: string | null = null;
+
+      try {
+        await validateClientImageFile(file);
+
+        placeholderUrl = URL.createObjectURL(file);
+        editor.chain().focus().setImage({ src: placeholderUrl, alt: file.name }).run();
+
+        await uploadImageAsset({ file, access: "public" });
+
+        const { listMediaFn } = await import("@/functions/media.functions");
+        const assets = await listMediaFn({ data: { type: "image", limit: 1 } });
+        const asset = assets[0];
+
+        if (asset?.displayUrl) {
+          const { state } = editor;
+          const { tr } = state;
+          let replaced = false;
+
+          state.doc.descendants((node, pos) => {
+            if (replaced || node.type.name !== "mediaImage" || node.attrs.src !== placeholderUrl) {
+              return;
+            }
+
+            tr.setNodeMarkup(pos, undefined, {
+              ...node.attrs,
+              src: asset.displayUrl,
+              "data-media-id": String(asset.id),
+            });
+            replaced = true;
+          });
+
+          if (replaced) {
+            editor.view.dispatch(tr);
+            onChange(editor.getHTML());
+          }
+        }
+
+        URL.revokeObjectURL(placeholderUrl);
+        placeholderUrl = null;
+      } catch (error) {
+        if (placeholderUrl) {
+          const url = placeholderUrl;
+          const { state } = editor;
+          const { tr } = state;
+          let deleted = false;
+
+          state.doc.descendants((node, pos) => {
+            if (deleted || node.type.name !== "mediaImage" || node.attrs.src !== url) {
+              return;
+            }
+
+            tr.delete(pos, pos + node.nodeSize);
+            deleted = true;
+          });
+
+          if (deleted) {
+            editor.view.dispatch(tr);
+            onChange(editor.getHTML());
+          }
+
+          URL.revokeObjectURL(url);
+        }
+
+        toast.error(error instanceof Error ? error.message : "Image upload failed.");
+      } finally {
+        isUploadingRef.current = false;
+      }
+    },
+    [editor, onChange],
+  );
+
+  const handlePickerConfirm = useCallback(
+    (assets: AdminMediaAsset[]) => {
+      if (!editor) {
+        return;
+      }
+
+      for (const asset of assets) {
+        if (asset.displayUrl) {
+          editor
+            .chain()
+            .focus()
+            .insertContent({
+              type: "mediaImage",
+              attrs: {
+                src: asset.displayUrl,
+                alt: asset.defaultAlt ?? "",
+                "data-media-id": String(asset.id),
+              },
+            })
+            .run();
+        }
+      }
+
+      onChange(editor.getHTML());
+    },
+    [editor, onChange],
+  );
+
+  if (!editor) return null;
+
+  return (
+    <div className="overflow-hidden rounded-md border border-border">
+      <Toolbar
+        editor={editor}
+        enableImages={enableImages}
+        onOpenImagePicker={() => setPickerOpen(true)}
+      />
+      <EditorContent
+        editor={editor}
+        className="tiptap min-h-[300px] px-4 py-3 text-sm focus-within:outline-none"
+      />
+      {enableImages && (
+        <MediaPickerDialog
+          open={pickerOpen}
+          onOpenChange={setPickerOpen}
+          onConfirm={handlePickerConfirm}
+          title="Insert image"
+          description="Choose an image from the media library or upload a new one."
+          confirmLabel="Insert"
+          allowedTypes={["image"]}
+          multiSelect
+        />
+      )}
+    </div>
+  );
+}
+
+function Toolbar({
+  editor,
+  enableImages,
+  onOpenImagePicker,
+}: {
+  editor: ReturnType<typeof useEditor>;
+  enableImages: boolean;
+  onOpenImagePicker: () => void;
+}) {
+  const [linkUrl, setLinkUrl] = useState("");
+  const [showLinkInput, setShowLinkInput] = useState(false);
+
+  const setLink = useCallback(() => {
+    if (!editor || !linkUrl) return;
+    const url = linkUrl.match(/^https?:\/\//) ? linkUrl : `https://${linkUrl}`;
+    editor.chain().focus().setLink({ href: url }).run();
+    setLinkUrl("");
+    setShowLinkInput(false);
+  }, [editor, linkUrl]);
+
+  if (!editor) return null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-0.5 border-b border-border bg-muted/30 p-1.5">
+      <ToolbarButton
+        active={editor.isActive("bold")}
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        title="Bold"
+      >
+        <Bold className="size-4" />
+      </ToolbarButton>
+      <ToolbarButton
+        active={editor.isActive("italic")}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        title="Italic"
+      >
+        <Italic className="size-4" />
+      </ToolbarButton>
+
+      <div className="mx-1 h-5 w-px bg-border" />
+
+      <ToolbarButton
+        active={editor.isActive("heading", { level: 1 })}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        title="Heading 1"
+      >
+        <Heading1 className="size-4" />
+      </ToolbarButton>
+      <ToolbarButton
+        active={editor.isActive("heading", { level: 2 })}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        title="Heading 2"
+      >
+        <Heading2 className="size-4" />
+      </ToolbarButton>
+      <ToolbarButton
+        active={editor.isActive("heading", { level: 3 })}
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        title="Heading 3"
+      >
+        <Heading3 className="size-4" />
+      </ToolbarButton>
+
+      <div className="mx-1 h-5 w-px bg-border" />
+
+      <ToolbarButton
+        active={editor.isActive("bulletList")}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        title="Bullet list"
+      >
+        <List className="size-4" />
+      </ToolbarButton>
+      <ToolbarButton
+        active={editor.isActive("orderedList")}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        title="Ordered list"
+      >
+        <ListOrdered className="size-4" />
+      </ToolbarButton>
+
+      <div className="mx-1 h-5 w-px bg-border" />
+
+      {showLinkInput ? (
+        <div className="flex items-center gap-1">
+          <input
+            type="url"
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                setLink();
+              }
+              if (e.key === "Escape") {
+                setShowLinkInput(false);
+                setLinkUrl("");
+              }
+            }}
+            placeholder="https://..."
+            className="h-7 w-48 rounded border border-border bg-background px-2 text-xs"
+            // oxlint-disable-next-line jsx-a11y/no-autofocus -- intentional: focus link input on toolbar click
+            autoFocus
+          />
+          <button
+            type="button"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={setLink}
+            className="rounded px-1.5 py-1 text-xs text-primary hover:bg-primary/10"
+          >
+            Set
+          </button>
+        </div>
+      ) : (
+        <ToolbarButton
+          active={editor.isActive("link")}
+          onClick={() => {
+            if (editor.isActive("link")) {
+              editor.chain().focus().unsetLink().run();
+            } else {
+              setShowLinkInput(true);
+            }
+          }}
+          title={editor.isActive("link") ? "Remove link" : "Add link"}
+        >
+          {editor.isActive("link") ? <Unlink className="size-4" /> : <Link2 className="size-4" />}
+        </ToolbarButton>
+      )}
+
+      {enableImages && (
+        <>
+          <div className="mx-1 h-5 w-px bg-border" />
+          <ToolbarButton active={false} onClick={onOpenImagePicker} title="Insert image">
+            <ImagePlus className="size-4" />
+          </ToolbarButton>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ToolbarButton({
+  active,
+  onClick,
+  title,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      title={title}
+      className={`flex size-7 items-center justify-center rounded transition-colors ${
+        active ? "bg-foreground/10 text-foreground" : "text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}

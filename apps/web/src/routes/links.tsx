@@ -16,243 +16,244 @@ import { seoHead } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 
 export const Route = createFileRoute("/links")({
-	component: LinksPage,
-	head: () => ({
-		...seoHead({
-			title: "Links",
-			description: "All links for Luke Roes — streaming, socials, and more.",
-			path: "/links",
-		}),
-	}),
+  component: LinksPage,
+  head: () => ({
+    ...seoHead({
+      title: "Links",
+      description: "All links for Luke Roes — streaming, socials, and more.",
+      path: "/links",
+    }),
+  }),
 });
 
 function LinksPage() {
-	const { profile, links, showMailingList } = linksConfig;
-	const { data: releases, isLoading: isLoadingReleases } =
-		useQuery(musicQueryOptions);
-	const featuredRelease = releases?.[0];
+  const { profile, links, showMailingList } = linksConfig;
+  const { data: releases, isLoading: isLoadingReleases } = useQuery(musicQueryOptions);
+  const featuredRelease = releases?.[0];
 
-	const streamingLinks = featuredRelease
-		? [
-				{
-					href: featuredRelease.streamingLinks?.spotify,
-					icon: SpotifyIcon,
-					label: "Spotify",
-				},
-				{
-					href: featuredRelease.streamingLinks?.appleMusic,
-					icon: AppleMusicIcon,
-					label: "Apple Music",
-				},
-				{
-					href: featuredRelease.streamingLinks?.youtube,
-					icon: YoutubeIcon,
-					label: "YouTube",
-				},
-			].filter(
-				(
-					link,
-				): link is { href: string; icon: typeof SpotifyIcon; label: string } =>
-					!!link.href,
-			)
-		: [];
+  const streamingLinks = featuredRelease
+    ? [
+        {
+          href: featuredRelease.streamingLinks?.spotify,
+          icon: SpotifyIcon,
+          label: "Spotify",
+        },
+        {
+          href: featuredRelease.streamingLinks?.appleMusic,
+          icon: AppleMusicIcon,
+          label: "Apple Music",
+        },
+        {
+          href: featuredRelease.streamingLinks?.youtube,
+          icon: YoutubeIcon,
+          label: "YouTube",
+        },
+      ].filter(
+        (link): link is { href: string; icon: typeof SpotifyIcon; label: string } => !!link.href,
+      )
+    : [];
 
-	const [email, setEmail] = useState("");
-	const [isSubmitting, setIsSubmitting] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setIsSubmitting(true);
-		try {
-			await subscribeToMailingList({ data: { email } });
-			setEmail("");
-			toast.success("You're subscribed! Thanks for joining.");
-		} catch {
-			toast.error("Something went wrong. Please try again.");
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await subscribeToMailingList({ data: { email } });
+      setEmail("");
+      toast.success("You're subscribed! Thanks for joining.");
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-	// Filter socials that have URLs
-	const activeSocials = siteConfig.socials.filter((social) => social.href);
+  // Filter socials that have URLs
+  const activeSocials = siteConfig.socials.filter((social) => social.href);
 
-	return (
-		<div className="flex min-h-screen flex-col items-center bg-background px-4 py-8">
-			<div className="w-full max-w-md space-y-8">
-				{/* Profile Section */}
-				<div className="flex flex-col items-center space-y-4 text-center">
-					<Link to="/" className="group">
-						<div className="h-24 w-24 overflow-hidden rounded-full border-2 border-primary/50 transition-colors group-hover:border-primary">
-							<img
-								src={profile.image}
-								alt={profile.name}
-								className="h-full w-full object-cover"
-								onError={(e) => {
-									// Fallback to initials if image fails to load
-									const target = e.target as HTMLImageElement;
-									target.style.display = "none";
-									// biome-ignore lint/style/noNonNullAssertion: Fallback handler, parent guaranteed to exist
-									target.parentElement!.innerHTML = `<div class="w-full h-full bg-primary/20 flex items-center justify-center text-2xl font-bold text-primary">${profile.name
-										.split(" ")
-										.map((n) => n[0])
-										.join("")}</div>`;
-								}}
-							/>
-						</div>
-					</Link>
-					<div>
-						<h1 className="font-bold text-xl">{profile.name}</h1>
-						<p className="text-muted-foreground text-sm">{profile.tagline}</p>
-					</div>
-				</div>
+  return (
+    <div className="flex min-h-screen flex-col items-center bg-background px-4 py-8">
+      <div className="w-full max-w-md space-y-8">
+        {/* Profile Section */}
+        <div className="flex flex-col items-center space-y-4 text-center">
+          <Link to="/" className="group">
+            <div className="size-24 overflow-hidden rounded-full border-2 border-primary/50 transition-colors group-hover:border-primary">
+              <img
+                src={profile.image}
+                alt={profile.name}
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  // Fallback to initials if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = "none";
+                  // biome-ignore lint/style/noNonNullAssertion: Fallback handler, parent guaranteed to exist
+                  target.parentElement!.innerHTML = `<div class="w-full h-full bg-primary/20 flex items-center justify-center text-2xl font-bold text-primary">${profile.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}</div>`;
+                }}
+              />
+            </div>
+          </Link>
+          <div>
+            <h1 className="font-bold text-xl">{profile.name}</h1>
+            <p className="text-muted-foreground text-sm">{profile.tagline}</p>
+          </div>
+        </div>
 
-				{/* Featured Release */}
-				{isLoadingReleases && (
-					<div className="rounded-lg border border-border bg-card p-4">
-						<div className="flex items-center gap-4">
-							<div className="h-20 w-20 flex-shrink-0 animate-pulse rounded-md bg-muted/30" />
-							<div className="flex flex-col justify-center space-y-3">
-								<div className="h-5 w-32 animate-pulse rounded bg-muted/30" />
-								<div className="flex gap-2">
-									<div className="h-8 w-24 animate-pulse rounded-full bg-muted/30" />
-									<div className="h-8 w-28 animate-pulse rounded-full bg-muted/30" />
-								</div>
-							</div>
-						</div>
-					</div>
-				)}
-				{featuredRelease && (
-					<div className="relative rounded-lg border border-border bg-card p-4">
-						<span className="absolute -top-2.5 right-3 animate-pulse rounded bg-muted px-1.5 py-0.5 font-semibold text-[10px] text-foreground uppercase tracking-widest">
-							New {featuredRelease.type}
-						</span>
-						<div className="flex items-center gap-4">
-							<div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
-								<ArtworkImage
-									src={featuredRelease.artworkPublicUrl ?? undefined}
-									alt={featuredRelease.title}
-									className="h-full w-full object-cover"
-								/>
-							</div>
-							<div className="flex flex-col justify-center space-y-2">
-								<h2 className="font-semibold">{featuredRelease.title}</h2>
-								{streamingLinks.length > 0 && (
-									<div className="flex gap-2">
-										{streamingLinks.map(({ href, icon: Icon, label }) => (
-											<a
-												key={label}
-												href={href}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-1 text-xs text-primary transition-colors hover:border-primary/50 hover:bg-accent sm:gap-1.5 sm:px-3 sm:text-sm"
-												data-umami-event={`${label} click`}
-											>
-												<Icon size={16} className="shrink-0 text-primary" />
-												<span className="whitespace-nowrap">{label}</span>
-											</a>
-											))}
-										</div>
-									)}
-								</div>
-							</div>
-						</div>
-				)}
+        {/* Featured Release */}
+        {isLoadingReleases && (
+          <div className="rounded-lg border border-border bg-card p-4">
+            <div className="flex items-center gap-4">
+              <div className="size-20 flex-shrink-0 animate-pulse rounded-md bg-muted/30" />
+              <div className="flex flex-col justify-center space-y-3">
+                <div className="h-5 w-32 animate-pulse rounded bg-muted/30" />
+                <div className="flex gap-2">
+                  <div className="h-8 w-24 animate-pulse rounded-full bg-muted/30" />
+                  <div className="h-8 w-28 animate-pulse rounded-full bg-muted/30" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {featuredRelease && (
+          <div className="relative rounded-lg border border-border bg-card p-4">
+            <span className="absolute -top-2.5 right-3 animate-pulse rounded bg-muted px-1.5 py-0.5 font-semibold text-[10px] text-foreground uppercase tracking-widest">
+              New {featuredRelease.type}
+            </span>
+            <div className="flex items-center gap-4">
+              <div className="relative size-20 flex-shrink-0 overflow-hidden rounded-md">
+                <ArtworkImage
+                  src={featuredRelease.artworkPublicUrl ?? undefined}
+                  alt={featuredRelease.title}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col justify-center space-y-2">
+                <h2 className="font-semibold">{featuredRelease.title}</h2>
+                {streamingLinks.length > 0 && (
+                  <div className="flex gap-2">
+                    {streamingLinks.map(({ href, icon: Icon, label }) => (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-1 text-xs text-primary transition-colors hover:border-primary/50 hover:bg-accent sm:gap-1.5 sm:px-3 sm:text-sm"
+                        data-umami-event={`${label} click`}
+                      >
+                        <Icon size={16} className="shrink-0 text-primary" />
+                        <span className="whitespace-nowrap">{label}</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
-				{/* Link Buttons */}
-				<div className="space-y-3">
-					{links.map((link) => {
-						const Icon = link.icon;
-						const isExternal = link.external;
+        {/* Link Buttons */}
+        <div className="space-y-3">
+          {links.map((link) => {
+            const Icon = link.icon;
+            const isExternal = link.external;
 
-						if (isExternal) {
-							return (
-								<a
-									key={link.href}
-									href={link.href}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 font-medium transition-all hover:border-primary/50 hover:bg-accent"
-									data-umami-event={`${link.label} click`}
-								>
-									<Icon className="size-4" />
-									<span>{link.label}</span>
-									<ExternalLink className="ml-auto h-4 w-4 opacity-50" />
-								</a>
-							);
-						}
+            if (isExternal) {
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 font-medium transition-all hover:border-primary/50 hover:bg-accent"
+                  data-umami-event={`${link.label} click`}
+                >
+                  <Icon className="size-4" />
+                  <span>{link.label}</span>
+                  <ExternalLink className="ml-auto size-4 opacity-50" />
+                </a>
+              );
+            }
 
-						return (
-							<Link
-								key={link.href}
-								to={link.href}
-								className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 font-medium transition-all hover:border-primary/50 hover:bg-accent"
-								data-umami-event={`${link.label} click`}
-							>
-								<Icon className="size-4" />
-								<span className="mt-0.75">{link.label}</span>
-							</Link>
-						);
-					})}
-				</div>
+            return (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 font-medium transition-all hover:border-primary/50 hover:bg-accent"
+                data-umami-event={`${link.label} click`}
+              >
+                <Icon className="size-4" />
+                <span className="mt-0.75">{link.label}</span>
+              </Link>
+            );
+          })}
+        </div>
 
-				{/* Social Icons */}
-				{activeSocials.length > 0 && (
-					<div className="flex justify-center gap-3 pt-4">
-						{activeSocials.map((social) => {
-							const Icon = social.icon;
-							return (
-								<a
-									key={social.key}
-									href={social.href}
-									target="_blank"
-									rel="noopener noreferrer"
-									aria-label={social.label}
-									className="rounded-full border border-border bg-card p-2.5 transition-all hover:border-primary/50 hover:bg-accent"
-									data-umami-event={`${social.label} click`}
-								>
-									<Icon size={20} />
-								</a>
-							);
-						})}
-					</div>
-				)}
+        {/* Social Icons */}
+        {activeSocials.length > 0 && (
+          <div className="flex justify-center gap-3 pt-4">
+            {activeSocials.map((social) => {
+              const Icon = social.icon;
+              return (
+                <a
+                  key={social.key}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="rounded-full border border-border bg-card p-2.5 transition-all hover:border-primary/50 hover:bg-accent"
+                  data-umami-event={`${social.label} click`}
+                >
+                  <Icon size={20} />
+                </a>
+              );
+            })}
+          </div>
+        )}
 
-				{/* Mailing List */}
-				{showMailingList && (
-					<div className="border-border border-t pt-6">
-						<div className="space-y-4 text-center">
-							<div className="flex items-center justify-center gap-2 text-muted-foreground">
-								<Mail className="h-4 w-4" />
-								<span className="font-medium text-sm">Stay in the loop</span>
-							</div>
-							<form onSubmit={handleSubmit} className="flex gap-2">
-								<Input
-									type="email"
-									placeholder="Enter your email"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									required
-									className="flex-1"
-								/>
-								<Button type="submit" disabled={isSubmitting} size="default" data-umami-event="Mailing list subscribe">
-									{isSubmitting ? "..." : "Join"}
-								</Button>
-							</form>
-						</div>
-					</div>
-				)}
+        {/* Mailing List */}
+        {showMailingList && (
+          <div className="border-border border-t pt-6">
+            <div className="space-y-4 text-center">
+              <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                <Mail className="size-4" />
+                <span className="font-medium text-sm">Stay in the loop</span>
+              </div>
+              <form onSubmit={handleSubmit} className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="flex-1"
+                />
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  size="default"
+                  data-umami-event="Mailing list subscribe"
+                >
+                  {isSubmitting ? "..." : "Join"}
+                </Button>
+              </form>
+            </div>
+          </div>
+        )}
 
-				{/* Footer */}
-				<div className="pt-4 text-center">
-					<Link
-						to="/"
-						className="text-muted-foreground text-xs transition-colors hover:text-foreground"
-					>
-						lukeroes.com
-					</Link>
-				</div>
-			</div>
-		</div>
-	);
+        {/* Footer */}
+        <div className="pt-4 text-center">
+          <Link
+            to="/"
+            className="text-muted-foreground text-xs transition-colors hover:text-foreground"
+          >
+            lukeroes.com
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }

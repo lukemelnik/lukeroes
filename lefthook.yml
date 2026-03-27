@@ -1,0 +1,12 @@
+# Run `pnpm update-hooks` or `npx lefthook install` after changing!
+pre-commit:
+  jobs:
+    - name: lint
+      run: pnpm lint {staged_files}
+      stage_fixed: true
+    - name: format
+      run: pnpm format {staged_files}
+      stage_fixed: true
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}"
+    - name: check-types
+      run: pnpm check-types

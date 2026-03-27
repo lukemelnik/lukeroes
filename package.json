@@ -1,35 +1,46 @@
 {
-	"name": "lukeroes",
-	"private": true,
-	"type": "module",
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
-	"scripts": {
-		"check": "biome check --write .",
-		"lint": "biome check .",
-		"dev": "pnpm -r dev",
-		"build": "pnpm -r build",
-		"check-types": "pnpm -r check-types",
-		"dev:native": "pnpm --filter native dev",
-		"dev:web": "pnpm --filter web dev",
-		"db:push": "pnpm --filter @lukeroes/db db:push",
-		"db:studio": "pnpm --filter @lukeroes/db db:studio",
-		"db:generate": "pnpm --filter @lukeroes/db db:generate",
-		"db:migrate": "pnpm --filter @lukeroes/db db:migrate"
-	},
-	"dependencies": {
-		"dotenv": "^17.2.2",
-		"zod": "^4.1.11"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.2.0",
-		"@content-collections/core": "^0.12.0",
-		"@content-collections/mdx": "^0.2.2",
-		"@content-collections/vite": "^0.2.7",
-		"@types/node": "^22.13.11",
-		"tsdown": "^0.15.5"
-	},
-	"packageManager": "pnpm@10.13.1"
+  "name": "lukeroes",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "format": "oxfmt --no-error-on-unmatched-pattern --write",
+    "lint": "oxlint --fix",
+    "check": "oxlint --fix && oxfmt --write",
+    "check:ci": "oxlint && oxfmt --no-error-on-unmatched-pattern --check",
+    "check-types": "turbo check-types",
+    "test": "tsx --tsconfig apps/web/tsconfig.json --test apps/web/src/server/**/*.test.ts",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "dev:web": "pnpm --filter web dev",
+    "db:push": "pnpm --filter @lukeroes/db db:push",
+    "db:studio": "pnpm --filter @lukeroes/db db:studio",
+    "db:generate": "pnpm --filter @lukeroes/db db:generate",
+    "db:migrate": "pnpm --filter @lukeroes/db db:migrate",
+    "check:unused": "knip",
+    "update-hooks": "npx lefthook install"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.11",
+    "knip": "^6.0.6",
+    "lefthook": "^2.1.4",
+    "oxfmt": "^0.35.0",
+    "oxlint": "^1.57.0",
+    "tsdown": "^0.15.5",
+    "tsx": "^4.21.0",
+    "turbo": "^2.8.20"
+  },
+  "packageManager": "pnpm@10.13.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
+  }
 }

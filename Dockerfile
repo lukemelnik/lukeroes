@@ -1,9 +1,13 @@
 # Web Dockerfile
 FROM node:22-alpine
 
-# Install pnpm and curl
+# Install pnpm, curl, and Litestream
 RUN npm install -g pnpm && \
-    apk add --no-cache curl
+    apk add --no-cache curl && \
+    LITESTREAM_VERSION=v0.3.13 && \
+    wget -q "https://github.com/benbjohnson/litestream/releases/download/${LITESTREAM_VERSION}/litestream-${LITESTREAM_VERSION}-linux-amd64.tar.gz" -O /tmp/litestream.tar.gz && \
+    tar -xzf /tmp/litestream.tar.gz -C /usr/local/bin && \
+    rm /tmp/litestream.tar.gz
 
 WORKDIR /app
 
@@ -21,7 +25,10 @@ RUN pnpm install --frozen-lockfile
 # Copy source code and config files
 COPY apps/web ./apps/web
 COPY packages ./packages
-COPY biome.json ./
+COPY .oxlintrc.json turbo.json ./
+
+# Copy Litestream config
+COPY litestream.yml /etc/litestream.yml
 
 # Build the application
 WORKDIR /app/apps/web
@@ -46,6 +53,9 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build && \
     ls -la .output/server/ && \
     test -f .output/server/index.mjs || (echo "ERROR: .output/server/index.mjs not found!" && exit 1)
 
+# Create data directory for SQLite
+RUN mkdir -p /data
+
 # Expose port
 EXPOSE 3000
 
@@ -53,5 +63,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3000/api/health || exit 1
 
-# Start the application
-CMD ["node", ".output/server/index.mjs"]
+# Start with Litestream wrapping the Node process
+CMD ["litestream", "replicate", "-exec", "node .output/server/index.mjs"]

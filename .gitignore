@@ -44,6 +44,11 @@ lerna-debug.log*
 coverage
 .nyc_output
 
+# SQLite
+*.db
+*.db-wal
+*.db-shm
+
 # Misc
 *.tgz
 .cache

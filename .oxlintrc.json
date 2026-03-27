@@ -1,0 +1,67 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "jsx-a11y", "typescript", "import", "promise"],
+  "categories": {
+    "correctness": "warn",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "no-unused-imports": "error",
+    "react/no-array-index-key": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/react-in-jsx-scope": "off",
+    "jsx-a11y/no-access-key": "off",
+    "import/no-unassigned-import": "off",
+    "jsx-a11y/media-has-caption": "off",
+    "@typescript-eslint/no-floating-promises": "warn",
+    "@typescript-eslint/no-misused-promises": "warn",
+    "@typescript-eslint/switch-exhaustiveness-check": "warn",
+    "@typescript-eslint/await-thenable": "warn",
+    "@typescript-eslint/no-misused-spread": "warn",
+    "@typescript-eslint/consistent-type-imports": "warn",
+    "@typescript-eslint/no-unnecessary-condition": "warn",
+    "@typescript-eslint/restrict-template-expressions": "warn",
+    "@typescript-eslint/only-throw-error": "warn",
+    "@typescript-eslint/prefer-nullish-coalescing": "warn",
+    "@typescript-eslint/no-unnecessary-type-parameters": "warn",
+    "promise/no-multiple-resolved": "warn",
+    "react/jsx-no-constructed-context-values": "warn",
+    "react/button-has-type": "warn",
+    "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+    "promise/always-return": "off"
+  },
+  "jsPlugins": [
+    "./oxlint-plugins/lukeroes-react.js",
+    "./oxlint-plugins/lukeroes-tailwind.js",
+    "./oxlint-plugins/lukeroes-router.js"
+  ],
+  "overrides": [
+    {
+      "files": ["apps/web/**/*.ts", "apps/web/**/*.tsx"],
+      "rules": {
+        "lukeroes-react/no-useeffect-form-values": "error",
+        "lukeroes-react/no-usestate-modal": "warn",
+        "lukeroes-tailwind/prefer-size-utility": "warn",
+        "lukeroes-tailwind/no-raw-tailwind-colors": "warn",
+        "lukeroes-router/no-redirect-in-loader": "error",
+        "lukeroes-react/prefer-skip-token": "warn",
+        "lukeroes-react/require-form-field-errors": "warn"
+      }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx", "tests/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    "**/routeTree.gen.ts",
+    "apps/web/src/index.css",
+    "apps/web/public",
+    "apps/web/src/generated"
+  ]
+}

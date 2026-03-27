@@ -9,26 +9,24 @@ import { getReleaseDetailsById } from "@/lib/music-cache";
 export type { ReleaseSummary, ReleaseDetail };
 
 export const musicQueryOptions = queryOptions<ReleaseSummary[] | undefined>({
-	queryKey: ["music"],
-	queryFn: () => getMusic(),
-	staleTime: CACHE_TTL_MS,
+  queryKey: ["music"],
+  queryFn: () => getMusic(),
+  staleTime: CACHE_TTL_MS,
 });
 
 const GetReleaseInputSchema = z.object({ releaseId: z.number() });
 
 const getReleaseDetails = createServerFn({ method: "GET" })
-	.inputValidator(GetReleaseInputSchema)
-	.handler(async ({ data }) => {
-		const details = await getReleaseDetailsById(data.releaseId);
-		if (!details) throw new Error("Release information not found");
-		return details;
-	});
+  .inputValidator(GetReleaseInputSchema)
+  .handler(async ({ data }) => {
+    const details = await getReleaseDetailsById(data.releaseId);
+    if (!details) throw new Error("Release information not found");
+    return details;
+  });
 
 export const releaseDetailsQueryOptions = (releaseId: number | null) =>
-	queryOptions<ReleaseDetail | undefined>({
-		queryKey: ["release", releaseId],
-		queryFn: releaseId
-			? () => getReleaseDetails({ data: { releaseId } })
-			: skipToken,
-		staleTime: CACHE_TTL_MS,
-	});
+  queryOptions<ReleaseDetail | undefined>({
+    queryKey: ["release", releaseId],
+    queryFn: releaseId ? () => getReleaseDetails({ data: { releaseId } }) : skipToken,
+    staleTime: CACHE_TTL_MS,
+  });

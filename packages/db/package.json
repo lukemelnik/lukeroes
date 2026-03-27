@@ -1,35 +1,40 @@
 {
-	"name": "@lukeroes/db",
-	"type": "module",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./src/index.ts"
-		},
-		"./*": {
-			"types": "./dist/*.d.ts",
-			"default": "./src/*.ts"
-		}
-	},
-	"scripts": {
-		"build": "tsdown",
-		"db:push": "drizzle-kit push",
-		"db:studio": "drizzle-kit studio",
-		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate"
-	},
-	"devDependencies": {
-		"drizzle-kit": "^0.31.2",
-		"tsdown": "catalog:",
-		"@lukeroes/config": "workspace:*"
-	},
-	"peerDependencies": {
-		"typescript": "^5"
-	},
-	"dependencies": {
-		"drizzle-orm": "^0.44.2",
-		"postgres": "^3.4.5",
-		"dotenv": "catalog:",
-		"zod": "catalog:"
-	}
+  "name": "@lukeroes/db",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "types": "./src/*.ts",
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc --noEmit",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx src/seed.ts"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "dotenv": "catalog:",
+    "drizzle-orm": "^0.44.2",
+    "drizzle-zod": "^0.8.3",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@lukeroes/config": "workspace:*",
+    "@types/better-sqlite3": "^7.6.12",
+    "drizzle-kit": "^0.31.2",
+    "tsdown": "catalog:",
+    "tsx": "^4.21.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
 }
