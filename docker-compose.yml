@@ -1,28 +1,12 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    env_file:
-      - /opt/lukeroes-config/.env
-    networks:
-      - web
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   app:
     image: ghcr.io/lukemelnik/lukeroes:latest
     env_file:
       - /opt/lukeroes-config/.env
     networks:
       - web
-    depends_on:
-      postgres:
-        condition: service_healthy
+    volumes:
+      - sqlite-data:/data
     restart: unless-stopped
     deploy:
       replicas: 1
@@ -65,4 +49,4 @@ networks:
     external: true
 
 volumes:
-  postgres-data:
+  sqlite-data:
