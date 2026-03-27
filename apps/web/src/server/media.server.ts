@@ -5,6 +5,7 @@ import { createAdminAuditLogEntry } from "@/server/audit-log.server";
 import { generateUuidV7 } from "@/server/id.server";
 import type { RequestMetadata } from "@/server/request.server";
 import {
+  MAX_AUDIO_BYTE_SIZE,
   type AdminMediaAsset,
   type AdminMediaVariant,
   type MediaAccess,
@@ -330,13 +331,28 @@ export async function finalizeAudioUpload(input: {
     throw new Error("Uploaded audio file not found in storage.");
   }
 
-  const resolvedByteSize =
-    input.byteSize ?? uploadedFileMetadata?.contentLength ?? existingMedia.byteSize ?? null;
+  const uploadedByteSize = uploadedFileMetadata?.contentLength ?? null;
+  const isOversizedUpload =
+    input.status !== "failed" &&
+    uploadedByteSize !== null &&
+    uploadedByteSize > MAX_AUDIO_BYTE_SIZE;
+
+  if (isOversizedUpload) {
+    await deleteFile(originalVariant.fileKey).catch(() => undefined);
+  }
+
+  const resolvedStatus = isOversizedUpload ? "failed" : (input.status ?? "ready");
+  const resolvedProcessingError = isOversizedUpload
+    ? "Audio uploads must be 100MB or smaller."
+    : input.status === "failed"
+      ? (input.processingError ?? "Audio upload failed.")
+      : (input.processingError ?? null);
+  const resolvedByteSize = uploadedByteSize ?? input.byteSize ?? existingMedia.byteSize ?? null;
 
   const [record] = await db
     .update(media)
     .set({
-      status: input.status ?? "ready",
+      status: resolvedStatus,
       durationSeconds:
         input.durationSeconds !== undefined ? input.durationSeconds : existingMedia.durationSeconds,
       waveformPeaks:
@@ -345,10 +361,7 @@ export async function finalizeAudioUpload(input: {
             ? JSON.stringify(input.waveformPeaks)
             : null
           : existingMedia.waveformPeaks,
-      processingError:
-        input.status === "failed"
-          ? (input.processingError ?? "Audio upload failed.")
-          : (input.processingError ?? null),
+      processingError: resolvedProcessingError,
       byteSize: resolvedByteSize,
       updatedAt: nowIso,
     })

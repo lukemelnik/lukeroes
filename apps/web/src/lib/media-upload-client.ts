@@ -1,4 +1,8 @@
-import { confirmAudioUploadFn, requestAudioUploadFn } from "@/functions/media.functions";
+import {
+  confirmAudioUploadFn,
+  listMediaFn,
+  requestAudioUploadFn,
+} from "@/functions/media.functions";
 import {
   AUDIO_FILENAME_EXTENSIONS,
   MAX_AUDIO_BYTE_SIZE,
@@ -8,6 +12,7 @@ import {
   hasAllowedFilenameExtension,
   isSupportedAudioMimeType,
   resolveMediaFormat,
+  type AdminMediaAsset,
   type MediaAccess,
 } from "@/lib/media";
 
@@ -123,6 +128,23 @@ export async function uploadImageAsset(input: {
   throw new Error(errorMessage);
 }
 
+async function lookupUploadedAudioAsset(
+  mediaId: number,
+): Promise<AdminMediaAsset | null | "unknown"> {
+  try {
+    const assets = await listMediaFn({
+      data: {
+        ids: [mediaId],
+        limit: 1,
+      },
+    });
+
+    return assets[0] ?? null;
+  } catch {
+    return "unknown";
+  }
+}
+
 export async function uploadAudioAsset(input: { file: File; access: MediaAccess }) {
   validateClientAudioFile(input.file);
 
@@ -135,6 +157,8 @@ export async function uploadAudioAsset(input: { file: File; access: MediaAccess 
       byteSize: input.file.size,
     },
   });
+  let uploadCompleted = false;
+  let readyConfirmationStarted = false;
 
   try {
     const uploadResponse = await fetch(uploadSession.uploadUrl, {
@@ -149,7 +173,10 @@ export async function uploadAudioAsset(input: { file: File; access: MediaAccess 
       throw new Error("Audio upload failed.");
     }
 
-    await confirmAudioUploadFn({
+    uploadCompleted = true;
+    readyConfirmationStarted = true;
+
+    const confirmedAsset = await confirmAudioUploadFn({
       data: {
         mediaId: uploadSession.media.id,
         status: "ready",
@@ -159,7 +186,28 @@ export async function uploadAudioAsset(input: { file: File; access: MediaAccess 
         format: resolveMediaFormat(input.file.name, input.file.type) ?? undefined,
       },
     });
+
+    if (confirmedAsset.status !== "ready") {
+      throw new Error(confirmedAsset.processingError ?? "Audio upload failed.");
+    }
   } catch (error) {
+    if (uploadCompleted && readyConfirmationStarted) {
+      const existingAsset = await lookupUploadedAudioAsset(uploadSession.media.id);
+
+      if (existingAsset !== "unknown" && existingAsset?.status === "ready") {
+        return;
+      }
+
+      if (existingAsset !== "unknown" && existingAsset?.status === "failed") {
+        throw new Error(existingAsset.processingError ?? "Audio upload failed.", { cause: error });
+      }
+
+      throw new Error(
+        "Audio uploaded, but confirmation status is unknown. Refresh the media library before retrying.",
+        { cause: error },
+      );
+    }
+
     await confirmAudioUploadFn({
       data: {
         mediaId: uploadSession.media.id,

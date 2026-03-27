@@ -86,6 +86,7 @@ export const confirmAudioUploadFn = createServerFn({ method: "POST" })
   });
 
 const listMediaSchema = z.object({
+  ids: z.array(z.number().int().positive()).min(1).max(100).optional(),
   type: z.enum(["audio", "image"]).optional(),
   access: z.enum(["public", "members"]).optional(),
   search: z.string().trim().optional(),
