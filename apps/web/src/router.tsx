@@ -7,30 +7,30 @@ import "./index.css";
 import { routeTree } from "./routeTree.gen";
 
 export const getRouter = () => {
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				staleTime: 1000 * 60 * 5, // 5 minutes
-			},
-		},
-	});
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60 * 5, // 5 minutes
+      },
+    },
+  });
 
-	const router = routerWithQueryClient(
-		createTanStackRouter({
-			routeTree,
-			scrollRestoration: true,
-			defaultPreloadStaleTime: 0,
-			context: { queryClient },
-			defaultPendingComponent: () => <Loader />,
-			defaultNotFoundComponent: NotFound,
-		}),
-		queryClient,
-	);
-	return router;
+  const router = routerWithQueryClient(
+    createTanStackRouter({
+      routeTree,
+      scrollRestoration: true,
+      defaultPreloadStaleTime: 0,
+      context: { queryClient },
+      defaultPendingComponent: () => <Loader />,
+      defaultNotFoundComponent: NotFound,
+    }),
+    queryClient,
+  );
+  return router;
 };
 
 declare module "@tanstack/react-router" {
-	interface Register {
-		router: ReturnType<typeof getRouter>;
-	}
+  interface Register {
+    router: ReturnType<typeof getRouter>;
+  }
 }

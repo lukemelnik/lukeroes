@@ -19,13 +19,16 @@ import { Route as navVideosRouteImport } from './routes/(nav)/videos'
 import { Route as navTourRouteImport } from './routes/(nav)/tour'
 import { Route as navLoginRouteImport } from './routes/(nav)/login'
 import { Route as navContactRouteImport } from './routes/(nav)/contact'
-import { Route as navWritingIndexRouteImport } from './routes/(nav)/writing/index'
 import { Route as navMusicIndexRouteImport } from './routes/(nav)/music/index'
+import { Route as navMembersIndexRouteImport } from './routes/(nav)/members/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as navWritingSlugRouteImport } from './routes/(nav)/writing/$slug'
 import { Route as navMusicSlugRouteRouteImport } from './routes/(nav)/music/$slug/route'
 import { Route as navMusicSlugIndexRouteImport } from './routes/(nav)/music/$slug/index'
+import { Route as navAdminPostsIndexRouteImport } from './routes/(nav)/admin/posts/index'
 import { Route as navMusicSlugTrackRouteImport } from './routes/(nav)/music/$slug/$track'
+import { Route as navMembersPostSlugRouteImport } from './routes/(nav)/members/post/$slug'
+import { Route as navAdminPostsNewRouteImport } from './routes/(nav)/admin/posts/new'
+import { Route as navAdminPostsPostIdRouteImport } from './routes/(nav)/admin/posts/$postId'
 
 const LinksRoute = LinksRouteImport.update({
   id: '/links',
@@ -76,25 +79,20 @@ const navContactRoute = navContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => navRouteRoute,
 } as any)
-const navWritingIndexRoute = navWritingIndexRouteImport.update({
-  id: '/writing/',
-  path: '/writing/',
-  getParentRoute: () => navRouteRoute,
-} as any)
 const navMusicIndexRoute = navMusicIndexRouteImport.update({
   id: '/music/',
   path: '/music/',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navMembersIndexRoute = navMembersIndexRouteImport.update({
+  id: '/members/',
+  path: '/members/',
   getParentRoute: () => navRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
-} as any)
-const navWritingSlugRoute = navWritingSlugRouteImport.update({
-  id: '/writing/$slug',
-  path: '/writing/$slug',
-  getParentRoute: () => navRouteRoute,
 } as any)
 const navMusicSlugRouteRoute = navMusicSlugRouteRouteImport.update({
   id: '/music/$slug',
@@ -106,10 +104,30 @@ const navMusicSlugIndexRoute = navMusicSlugIndexRouteImport.update({
   path: '/',
   getParentRoute: () => navMusicSlugRouteRoute,
 } as any)
+const navAdminPostsIndexRoute = navAdminPostsIndexRouteImport.update({
+  id: '/admin/posts/',
+  path: '/admin/posts/',
+  getParentRoute: () => navRouteRoute,
+} as any)
 const navMusicSlugTrackRoute = navMusicSlugTrackRouteImport.update({
   id: '/$track',
   path: '/$track',
   getParentRoute: () => navMusicSlugRouteRoute,
+} as any)
+const navMembersPostSlugRoute = navMembersPostSlugRouteImport.update({
+  id: '/members/post/$slug',
+  path: '/members/post/$slug',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navAdminPostsNewRoute = navAdminPostsNewRouteImport.update({
+  id: '/admin/posts/new',
+  path: '/admin/posts/new',
+  getParentRoute: () => navRouteRoute,
+} as any)
+const navAdminPostsPostIdRoute = navAdminPostsPostIdRouteImport.update({
+  id: '/admin/posts/$postId',
+  path: '/admin/posts/$postId',
+  getParentRoute: () => navRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -123,11 +141,14 @@ export interface FileRoutesByFullPath {
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
   '/music/$slug': typeof navMusicSlugRouteRouteWithChildren
-  '/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/members': typeof navMembersIndexRoute
   '/music': typeof navMusicIndexRoute
-  '/writing': typeof navWritingIndexRoute
+  '/admin/posts/$postId': typeof navAdminPostsPostIdRoute
+  '/admin/posts/new': typeof navAdminPostsNewRoute
+  '/members/post/$slug': typeof navMembersPostSlugRoute
   '/music/$slug/$track': typeof navMusicSlugTrackRoute
+  '/admin/posts': typeof navAdminPostsIndexRoute
   '/music/$slug/': typeof navMusicSlugIndexRoute
 }
 export interface FileRoutesByTo {
@@ -140,11 +161,14 @@ export interface FileRoutesByTo {
   '/work-with-me': typeof navWorkWithMeRoute
   '/api/health': typeof ApiHealthRoute
   '/': typeof navIndexRoute
-  '/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/members': typeof navMembersIndexRoute
   '/music': typeof navMusicIndexRoute
-  '/writing': typeof navWritingIndexRoute
+  '/admin/posts/$postId': typeof navAdminPostsPostIdRoute
+  '/admin/posts/new': typeof navAdminPostsNewRoute
+  '/members/post/$slug': typeof navMembersPostSlugRoute
   '/music/$slug/$track': typeof navMusicSlugTrackRoute
+  '/admin/posts': typeof navAdminPostsIndexRoute
   '/music/$slug': typeof navMusicSlugIndexRoute
 }
 export interface FileRoutesById {
@@ -160,11 +184,14 @@ export interface FileRoutesById {
   '/api/health': typeof ApiHealthRoute
   '/(nav)/': typeof navIndexRoute
   '/(nav)/music/$slug': typeof navMusicSlugRouteRouteWithChildren
-  '/(nav)/writing/$slug': typeof navWritingSlugRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/(nav)/members/': typeof navMembersIndexRoute
   '/(nav)/music/': typeof navMusicIndexRoute
-  '/(nav)/writing/': typeof navWritingIndexRoute
+  '/(nav)/admin/posts/$postId': typeof navAdminPostsPostIdRoute
+  '/(nav)/admin/posts/new': typeof navAdminPostsNewRoute
+  '/(nav)/members/post/$slug': typeof navMembersPostSlugRoute
   '/(nav)/music/$slug/$track': typeof navMusicSlugTrackRoute
+  '/(nav)/admin/posts/': typeof navAdminPostsIndexRoute
   '/(nav)/music/$slug/': typeof navMusicSlugIndexRoute
 }
 export interface FileRouteTypes {
@@ -180,11 +207,14 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/'
     | '/music/$slug'
-    | '/writing/$slug'
     | '/api/auth/$'
+    | '/members'
     | '/music'
-    | '/writing'
+    | '/admin/posts/$postId'
+    | '/admin/posts/new'
+    | '/members/post/$slug'
     | '/music/$slug/$track'
+    | '/admin/posts'
     | '/music/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -197,11 +227,14 @@ export interface FileRouteTypes {
     | '/work-with-me'
     | '/api/health'
     | '/'
-    | '/writing/$slug'
     | '/api/auth/$'
+    | '/members'
     | '/music'
-    | '/writing'
+    | '/admin/posts/$postId'
+    | '/admin/posts/new'
+    | '/members/post/$slug'
     | '/music/$slug/$track'
+    | '/admin/posts'
     | '/music/$slug'
   id:
     | '__root__'
@@ -216,11 +249,14 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/(nav)/'
     | '/(nav)/music/$slug'
-    | '/(nav)/writing/$slug'
     | '/api/auth/$'
+    | '/(nav)/members/'
     | '/(nav)/music/'
-    | '/(nav)/writing/'
+    | '/(nav)/admin/posts/$postId'
+    | '/(nav)/admin/posts/new'
+    | '/(nav)/members/post/$slug'
     | '/(nav)/music/$slug/$track'
+    | '/(nav)/admin/posts/'
     | '/(nav)/music/$slug/'
   fileRoutesById: FileRoutesById
 }
@@ -304,18 +340,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navContactRouteImport
       parentRoute: typeof navRouteRoute
     }
-    '/(nav)/writing/': {
-      id: '/(nav)/writing/'
-      path: '/writing'
-      fullPath: '/writing'
-      preLoaderRoute: typeof navWritingIndexRouteImport
-      parentRoute: typeof navRouteRoute
-    }
     '/(nav)/music/': {
       id: '/(nav)/music/'
       path: '/music'
       fullPath: '/music'
       preLoaderRoute: typeof navMusicIndexRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/members/': {
+      id: '/(nav)/members/'
+      path: '/members'
+      fullPath: '/members'
+      preLoaderRoute: typeof navMembersIndexRouteImport
       parentRoute: typeof navRouteRoute
     }
     '/api/auth/$': {
@@ -324,13 +360,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/(nav)/writing/$slug': {
-      id: '/(nav)/writing/$slug'
-      path: '/writing/$slug'
-      fullPath: '/writing/$slug'
-      preLoaderRoute: typeof navWritingSlugRouteImport
-      parentRoute: typeof navRouteRoute
     }
     '/(nav)/music/$slug': {
       id: '/(nav)/music/$slug'
@@ -346,12 +375,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof navMusicSlugIndexRouteImport
       parentRoute: typeof navMusicSlugRouteRoute
     }
+    '/(nav)/admin/posts/': {
+      id: '/(nav)/admin/posts/'
+      path: '/admin/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof navAdminPostsIndexRouteImport
+      parentRoute: typeof navRouteRoute
+    }
     '/(nav)/music/$slug/$track': {
       id: '/(nav)/music/$slug/$track'
       path: '/$track'
       fullPath: '/music/$slug/$track'
       preLoaderRoute: typeof navMusicSlugTrackRouteImport
       parentRoute: typeof navMusicSlugRouteRoute
+    }
+    '/(nav)/members/post/$slug': {
+      id: '/(nav)/members/post/$slug'
+      path: '/members/post/$slug'
+      fullPath: '/members/post/$slug'
+      preLoaderRoute: typeof navMembersPostSlugRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/admin/posts/new': {
+      id: '/(nav)/admin/posts/new'
+      path: '/admin/posts/new'
+      fullPath: '/admin/posts/new'
+      preLoaderRoute: typeof navAdminPostsNewRouteImport
+      parentRoute: typeof navRouteRoute
+    }
+    '/(nav)/admin/posts/$postId': {
+      id: '/(nav)/admin/posts/$postId'
+      path: '/admin/posts/$postId'
+      fullPath: '/admin/posts/$postId'
+      preLoaderRoute: typeof navAdminPostsPostIdRouteImport
+      parentRoute: typeof navRouteRoute
     }
   }
 }
@@ -377,9 +434,12 @@ interface navRouteRouteChildren {
   navWorkWithMeRoute: typeof navWorkWithMeRoute
   navIndexRoute: typeof navIndexRoute
   navMusicSlugRouteRoute: typeof navMusicSlugRouteRouteWithChildren
-  navWritingSlugRoute: typeof navWritingSlugRoute
+  navMembersIndexRoute: typeof navMembersIndexRoute
   navMusicIndexRoute: typeof navMusicIndexRoute
-  navWritingIndexRoute: typeof navWritingIndexRoute
+  navAdminPostsPostIdRoute: typeof navAdminPostsPostIdRoute
+  navAdminPostsNewRoute: typeof navAdminPostsNewRoute
+  navMembersPostSlugRoute: typeof navMembersPostSlugRoute
+  navAdminPostsIndexRoute: typeof navAdminPostsIndexRoute
 }
 
 const navRouteRouteChildren: navRouteRouteChildren = {
@@ -390,9 +450,12 @@ const navRouteRouteChildren: navRouteRouteChildren = {
   navWorkWithMeRoute: navWorkWithMeRoute,
   navIndexRoute: navIndexRoute,
   navMusicSlugRouteRoute: navMusicSlugRouteRouteWithChildren,
-  navWritingSlugRoute: navWritingSlugRoute,
+  navMembersIndexRoute: navMembersIndexRoute,
   navMusicIndexRoute: navMusicIndexRoute,
-  navWritingIndexRoute: navWritingIndexRoute,
+  navAdminPostsPostIdRoute: navAdminPostsPostIdRoute,
+  navAdminPostsNewRoute: navAdminPostsNewRoute,
+  navMembersPostSlugRoute: navMembersPostSlugRoute,
+  navAdminPostsIndexRoute: navAdminPostsIndexRoute,
 }
 
 const navRouteRouteWithChildren = navRouteRoute._addFileChildren(

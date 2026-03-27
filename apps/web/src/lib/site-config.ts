@@ -6,56 +6,56 @@ import { XIcon } from "@/components/icons/x-icon";
 import { YoutubeIcon } from "@/components/icons/youtube-icon";
 
 export const siteConfig = {
-	name: "Luke Roes",
-	description: "Official website of Luke Roes - Music, tour dates, and more",
-	url: "https://lukeroes.com",
+  name: "Luke Roes",
+  description: "Official website of Luke Roes - Music, tour dates, and more",
+  url: "https://lukeroes.com",
 
-	SEO: {
-		author: "Luke Roes",
-		keywords: ["Luke Roes", "music", "artist", "singer", "songwriter"],
-		ogImage: "/og-image.jpg",
-	},
+  SEO: {
+    author: "Luke Roes",
+    keywords: ["Luke Roes", "music", "artist", "singer", "songwriter"],
+    ogImage: "/og-image.jpg",
+  },
 
-	socials: [
-		{
-			key: "spotify",
-			label: "Spotify",
-			href: "https://open.spotify.com/artist/4musCItyvLBJYaHClwbTLd",
-			icon: SpotifyIcon,
-		},
-		{
-			key: "appleMusic",
-			label: "Apple Music",
-			href: "https://music.apple.com/ca/artist/luke-roes/1457350673",
-			icon: AppleMusicIcon,
-		},
-		{
-			key: "youtube",
-			label: "YouTube",
-			href: "https://www.youtube.com/channel/UCsiMYzZ_pCMoOg_s55g4NHA",
-			icon: YoutubeIcon,
-		},
-		{
-			key: "instagram",
-			label: "Instagram",
-			href: "https://www.instagram.com/lukeroes",
-			icon: InstagramIcon,
-		},
-		{
-			key: "twitter",
-			label: "Twitter",
-			href: "https://x.com/lukeroes",
-			icon: XIcon,
-		},
-		{
-			key: "tiktok",
-			label: "TikTok",
-			href: "https://www.tiktok.com/@iamlukeroes",
-			icon: TiktokIcon,
-		},
-	],
+  socials: [
+    {
+      key: "spotify",
+      label: "Spotify",
+      href: "https://open.spotify.com/artist/4musCItyvLBJYaHClwbTLd",
+      icon: SpotifyIcon,
+    },
+    {
+      key: "appleMusic",
+      label: "Apple Music",
+      href: "https://music.apple.com/ca/artist/luke-roes/1457350673",
+      icon: AppleMusicIcon,
+    },
+    {
+      key: "youtube",
+      label: "YouTube",
+      href: "https://www.youtube.com/channel/UCsiMYzZ_pCMoOg_s55g4NHA",
+      icon: YoutubeIcon,
+    },
+    {
+      key: "instagram",
+      label: "Instagram",
+      href: "https://www.instagram.com/lukeroes",
+      icon: InstagramIcon,
+    },
+    {
+      key: "twitter",
+      label: "Twitter",
+      href: "https://x.com/lukeroes",
+      icon: XIcon,
+    },
+    {
+      key: "tiktok",
+      label: "TikTok",
+      href: "https://www.tiktok.com/@iamlukeroes",
+      icon: TiktokIcon,
+    },
+  ],
 
-	email: "luke@lukeroes.com",
+  email: "luke@lukeroes.com",
 } as const;
 
 export type SiteConfig = typeof siteConfig;
