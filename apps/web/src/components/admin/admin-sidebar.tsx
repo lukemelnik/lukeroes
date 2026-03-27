@@ -35,7 +35,7 @@ export function AdminSidebar() {
             <Icon className="size-4 text-muted-foreground" />
             <span>{label}</span>
             {label === "Comments" && (unseenCount ?? 0) > 0 && (
-              <span className="ml-auto flex size-5 items-center justify-center rounded-full bg-red-500 font-mono text-[10px] text-white">
+              <span className="ml-auto flex size-5 items-center justify-center rounded-full bg-destructive font-mono text-[10px] text-destructive-foreground">
                 {(unseenCount ?? 0) > 9 ? "9+" : unseenCount}
               </span>
             )}

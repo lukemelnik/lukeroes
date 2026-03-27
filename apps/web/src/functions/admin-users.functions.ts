@@ -24,6 +24,10 @@ export const changeUserRoleFn = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
   .inputValidator(changeRoleSchema)
   .handler(async ({ data, context }) => {
+    if (data.userId === context.user.id) {
+      throw new Error("Cannot change your own role");
+    }
+
     await db
       .update(user)
       .set({ role: data.role, updatedAt: getUtcNowIso() })
@@ -50,6 +54,10 @@ export const banUserFn = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])
   .inputValidator(banUserSchema)
   .handler(async ({ data, context }) => {
+    if (data.userId === context.user.id) {
+      throw new Error("Cannot ban yourself");
+    }
+
     await db
       .update(user)
       .set({ banned: true, banReason: data.reason, updatedAt: getUtcNowIso() })

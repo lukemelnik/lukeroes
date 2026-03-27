@@ -103,21 +103,23 @@ export const deleteAccountFn = createServerFn({ method: "POST" })
     const userId = context.session.user.id;
 
     const nowIso = getUtcNowIso();
-    await db
-      .update(comments)
-      .set({
-        userId: null,
-        isDeleted: true,
-        deletedAt: nowIso,
-        updatedAt: nowIso,
-      })
-      .where(eq(comments.userId, userId));
+    await db.transaction(async (tx) => {
+      await tx
+        .update(comments)
+        .set({
+          userId: null,
+          isDeleted: true,
+          deletedAt: nowIso,
+          updatedAt: nowIso,
+        })
+        .where(eq(comments.userId, userId));
 
-    await db.delete(notifications).where(eq(notifications.userId, userId));
-    await db.delete(postLikes).where(eq(postLikes.userId, userId));
-    await db.delete(session).where(eq(session.userId, userId));
-    await db.delete(account).where(eq(account.userId, userId));
-    await db.delete(user).where(eq(user.id, userId));
+      await tx.delete(notifications).where(eq(notifications.userId, userId));
+      await tx.delete(postLikes).where(eq(postLikes.userId, userId));
+      await tx.delete(session).where(eq(session.userId, userId));
+      await tx.delete(account).where(eq(account.userId, userId));
+      await tx.delete(user).where(eq(user.id, userId));
+    });
 
     return { success: true };
   });
