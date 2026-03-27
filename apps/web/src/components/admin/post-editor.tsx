@@ -90,7 +90,7 @@ export function PostEditor({ post }: PostEditorProps) {
           visibility,
           format: type === "writing" ? format : null,
           label: type === "audio" ? label : null,
-          publishedAt: publishNow ? post.publishedAt || new Date().toISOString() : undefined,
+          publishedAt: publishNow ? post.publishedAt || new Date().toISOString() : null,
         },
       });
       await syncPostTagsFn({ data: { postId: post.id, tagNames: selectedTags } });

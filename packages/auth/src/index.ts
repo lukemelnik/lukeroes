@@ -32,11 +32,12 @@ if (stripeClient) {
             priceId: process.env.STRIPE_PRICE_ID || "",
           },
         ],
-        onSubscriptionCreated: async ({ event, subscription }) => {
+        onSubscriptionCreated: async ({ event, subscription, stripeSubscription }) => {
           await recordStripeMembershipLifecycleEvent({
             type: "subscription_started",
             event,
             subscription,
+            stripeSubscription,
           });
         },
         onSubscriptionUpdate: async ({ event, subscription }) => {
@@ -46,11 +47,12 @@ if (stripeClient) {
             subscription,
           });
         },
-        onSubscriptionCancel: async ({ event, subscription }) => {
+        onSubscriptionDeleted: async ({ event, subscription, stripeSubscription }) => {
           await recordStripeMembershipLifecycleEvent({
             type: "subscription_canceled",
             event,
             subscription,
+            stripeSubscription,
           });
         },
       },

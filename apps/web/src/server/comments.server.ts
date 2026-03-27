@@ -2,7 +2,9 @@ import { db } from "@lukeroes/db";
 import { user } from "@lukeroes/db/schema/auth";
 import { comments, commentVotes, notifications, posts } from "@lukeroes/db/schema/membership";
 import { and, desc, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { createAdminAuditLogEntry } from "@/server/audit-log.server";
 import { createNotification } from "@/server/notifications.server";
+import type { RequestMetadata } from "@/server/request.server";
 import { buildRateLimitKey, enforceRateLimit, rateLimitPresets } from "@/server/rate-limit.server";
 import { getUtcNowIso } from "@/server/utc";
 
@@ -33,6 +35,8 @@ interface CommentReplyNode {
 interface CommentThreadNode extends CommentReplyNode {
   replies: CommentReplyNode[];
 }
+
+const deletedCommentPlaceholder = "This comment was deleted.";
 
 function isDefined<T>(value: T | undefined): value is T {
   return value !== undefined;
@@ -128,7 +132,7 @@ function createCommentThreadNode(
     postId: row.postId,
     userId: row.userId,
     parentCommentId: row.parentCommentId,
-    text: row.text,
+    text: row.isDeleted ? deletedCommentPlaceholder : row.text,
     seen: row.seen,
     isDeleted: row.isDeleted,
     deletedAt: row.deletedAt,
@@ -262,6 +266,7 @@ export async function createComment(input: {
           postId: comments.postId,
           userId: comments.userId,
           parentCommentId: comments.parentCommentId,
+          isDeleted: comments.isDeleted,
         })
         .from(comments)
         .where(and(eq(comments.id, input.parentCommentId), eq(comments.postId, input.postId)))
@@ -270,6 +275,10 @@ export async function createComment(input: {
 
   if (input.parentCommentId && !parentComment) {
     throw new Error("Parent comment not found.");
+  }
+
+  if (parentComment?.isDeleted) {
+    throw new Error("Replies to deleted comments are not allowed.");
   }
 
   if (parentComment?.parentCommentId !== null && parentComment?.parentCommentId !== undefined) {
@@ -310,11 +319,14 @@ export async function deleteComment(input: {
   commentId: number;
   actorUserId: string;
   isAdmin: boolean;
+  requestMetadata?: RequestMetadata | null;
 }) {
   const existingComment = await db
     .select({
       id: comments.id,
+      postId: comments.postId,
       userId: comments.userId,
+      parentCommentId: comments.parentCommentId,
       isDeleted: comments.isDeleted,
     })
     .from(comments)
@@ -344,6 +356,21 @@ export async function deleteComment(input: {
     })
     .where(eq(comments.id, input.commentId))
     .returning();
+
+  if (input.isAdmin) {
+    await createAdminAuditLogEntry({
+      actorUserId: input.actorUserId,
+      action: "comment.moderation_delete",
+      targetType: "comment",
+      targetId: `${comment.id}`,
+      metadata: {
+        postId: existingComment.postId,
+        parentCommentId: existingComment.parentCommentId,
+        commentAuthorUserId: existingComment.userId,
+      },
+      requestMetadata: input.requestMetadata,
+    });
+  }
 
   return comment;
 }

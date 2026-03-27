@@ -4,6 +4,8 @@ import { comments, notifications, posts } from "@lukeroes/db/schema/membership";
 import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { getUtcNowIso } from "@/server/utc";
 
+const deletedCommentPlaceholder = "This comment was deleted.";
+
 export async function createNotification(input: {
   userId: string;
   type: "comment_reply" | "comment_vote";
@@ -40,7 +42,7 @@ export async function listNotificationsForUser(userId: string, limit = 50) {
       actorId: notifications.actorId,
       actorName: user.name,
       actorImage: user.image,
-      commentText: comments.text,
+      commentText: sql<string>`CASE WHEN ${comments.isDeleted} THEN ${deletedCommentPlaceholder} ELSE ${comments.text} END`,
     })
     .from(notifications)
     .innerJoin(posts, eq(notifications.postId, posts.id))

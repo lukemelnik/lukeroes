@@ -1,6 +1,6 @@
 import { db } from "@lukeroes/db";
 import { media, mediaVariants, postMedia, posts } from "@lukeroes/db/schema/membership";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 import { createAdminAuditLogEntry } from "@/server/audit-log.server";
 import { generateUuidV7 } from "@/server/id.server";
 import type { RequestMetadata } from "@/server/request.server";
@@ -16,7 +16,7 @@ function isDefined<T>(value: T | undefined): value is T {
   return value !== undefined;
 }
 
-function normalizeFileExtension(input: string): string {
+function normalizeFileExtension(input: string): string | null {
   const dotIndex = input.lastIndexOf(".");
 
   if (dotIndex >= 0) {
@@ -42,7 +42,11 @@ function normalizeFileExtension(input: string): string {
     ["audio/x-m4a", "m4a"],
   ]);
 
-  return mimeToExtension.get(input.trim().toLowerCase()) ?? "bin";
+  return mimeToExtension.get(input.trim().toLowerCase()) ?? null;
+}
+
+function resolveFileExtension(originalFilename: string, mimeType: string): string {
+  return normalizeFileExtension(originalFilename) ?? normalizeFileExtension(mimeType) ?? "bin";
 }
 
 function buildOriginalFileKey(
@@ -67,6 +71,27 @@ function getPreferredVariantKind(type: "audio" | "image") {
   return type === "audio" ? "original" : "display";
 }
 
+function assertPostSupportsMediaRole(
+  postType: "writing" | "audio" | "note" | "photo",
+  role: "artwork" | "audio" | "photo" | "inline",
+) {
+  if ((postType === "writing" || postType === "note") && role !== "inline") {
+    throw new Error("Writing and note posts can only use inline image media.");
+  }
+
+  if (postType === "audio" && role !== "audio" && role !== "artwork") {
+    throw new Error("Audio posts can only use audio files and artwork.");
+  }
+
+  if (postType === "photo" && role !== "photo") {
+    throw new Error("Photo posts can only use photo media.");
+  }
+}
+
+function isSingleAttachmentRole(role: "artwork" | "audio" | "photo" | "inline") {
+  return role === "audio" || role === "artwork";
+}
+
 export async function createMediaWithUploadUrl(input: {
   type: "audio" | "image";
   access?: "public" | "members";
@@ -78,7 +103,7 @@ export async function createMediaWithUploadUrl(input: {
 }) {
   const nowIso = getUtcNowIso();
   const assetKey = generateUuidV7();
-  const extension = normalizeFileExtension(input.originalFilename || input.mimeType);
+  const extension = resolveFileExtension(input.originalFilename, input.mimeType);
   const originalFileKey = buildOriginalFileKey(input.type, assetKey, extension);
 
   const [record] = await db
@@ -244,7 +269,14 @@ export async function attachMediaToPost(input: {
   caption?: string;
 }) {
   const [postRecord, mediaRecord] = await Promise.all([
-    db.select({ visibility: posts.visibility }).from(posts).where(eq(posts.id, input.postId)).get(),
+    db
+      .select({
+        type: posts.type,
+        visibility: posts.visibility,
+      })
+      .from(posts)
+      .where(eq(posts.id, input.postId))
+      .get(),
     db
       .select({
         type: media.type,
@@ -268,6 +300,8 @@ export async function attachMediaToPost(input: {
     throw new Error("Only ready media can be attached to posts.");
   }
 
+  assertPostSupportsMediaRole(postRecord.type, input.role);
+
   if (postRecord.visibility === "public" && mediaRecord.access !== "public") {
     throw new Error("Members-only media cannot be attached to public posts.");
   }
@@ -278,6 +312,18 @@ export async function attachMediaToPost(input: {
 
   if (["artwork", "photo", "inline"].includes(input.role) && mediaRecord.type !== "image") {
     throw new Error("Image media is required for artwork, photo, and inline roles.");
+  }
+
+  if (isSingleAttachmentRole(input.role)) {
+    await db
+      .delete(postMedia)
+      .where(
+        and(
+          eq(postMedia.postId, input.postId),
+          eq(postMedia.role, input.role),
+          ne(postMedia.mediaId, input.mediaId),
+        ),
+      );
   }
 
   await db

@@ -9,14 +9,66 @@ import {
 } from "@/server/media.server";
 import { buildRateLimitKey, enforceRateLimit, rateLimitPresets } from "@/server/rate-limit.server";
 
-const requestUploadSchema = z.object({
-  type: z.enum(["audio", "image"]),
-  access: z.enum(["public", "members"]).optional(),
-  originalFilename: z.string().trim().min(1),
-  mimeType: z.string().trim().min(1),
-  byteSize: z.number().int().nonnegative().optional(),
-  checksum: z.string().trim().min(1).optional(),
-});
+const imageMimeTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+const audioMimeTypes = new Set([
+  "audio/mpeg",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/mp4",
+  "audio/x-m4a",
+]);
+const imageFilenameExtensions = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
+const audioFilenameExtensions = [".mp3", ".wav", ".m4a"];
+const maxImageByteSize = 20 * 1024 * 1024;
+const maxAudioByteSize = 100 * 1024 * 1024;
+
+function hasAllowedFilenameExtension(filename: string, allowedExtensions: string[]) {
+  const normalizedFilename = filename.trim().toLowerCase();
+
+  return allowedExtensions.some((extension) => normalizedFilename.endsWith(extension));
+}
+
+const requestUploadSchema = z
+  .object({
+    type: z.enum(["audio", "image"]),
+    access: z.enum(["public", "members"]).optional(),
+    originalFilename: z.string().trim().min(1),
+    mimeType: z.string().trim().min(1),
+    byteSize: z.number().int().nonnegative().optional(),
+    checksum: z.string().trim().min(1).optional(),
+  })
+  .superRefine((data, context) => {
+    const normalizedMimeType = data.mimeType.trim().toLowerCase();
+    const supportedMimeTypes = data.type === "image" ? imageMimeTypes : audioMimeTypes;
+    const supportedFilenameExtensions =
+      data.type === "image" ? imageFilenameExtensions : audioFilenameExtensions;
+    const isSupportedUpload =
+      supportedMimeTypes.has(normalizedMimeType) ||
+      hasAllowedFilenameExtension(data.originalFilename, supportedFilenameExtensions);
+    const maxByteSize = data.type === "image" ? maxImageByteSize : maxAudioByteSize;
+
+    if (!isSupportedUpload) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["mimeType"],
+        message:
+          data.type === "image"
+            ? "Images must be JPEG, PNG, WebP, or GIF."
+            : "Audio uploads must be MP3, WAV, or M4A.",
+      });
+    }
+
+    if (data.byteSize !== undefined && data.byteSize > maxByteSize) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["byteSize"],
+        message:
+          data.type === "image"
+            ? "Images must be 20MB or smaller."
+            : "Audio uploads must be 100MB or smaller.",
+      });
+    }
+  });
 
 export const requestUploadFn = createServerFn({ method: "POST" })
   .middleware([adminMiddleware])

@@ -52,34 +52,55 @@ export async function recordStripeMembershipLifecycleEvent(input: {
   type: "subscription_started" | "subscription_updated" | "subscription_canceled";
   subscription: Subscription;
   event?: StripeClient.Event | null;
+  stripeSubscription?: StripeClient.Subscription | null;
 }) {
   const fallbackIso = input.event
     ? new Date(input.event.created * 1000).toISOString()
     : getUtcNowIso();
+  const stripeSubscriptionId =
+    input.stripeSubscription?.id ?? input.subscription.stripeSubscriptionId ?? null;
+  const periodStart = input.stripeSubscription?.items.data[0]?.current_period_start
+    ? new Date(input.stripeSubscription.items.data[0].current_period_start * 1000)
+    : input.subscription.periodStart;
+  const periodEnd = input.stripeSubscription?.items.data[0]?.current_period_end
+    ? new Date(input.stripeSubscription.items.data[0].current_period_end * 1000)
+    : input.subscription.periodEnd;
+  const cancelAt = input.stripeSubscription?.cancel_at
+    ? new Date(input.stripeSubscription.cancel_at * 1000)
+    : input.subscription.cancelAt;
+  const canceledAt = input.stripeSubscription?.canceled_at
+    ? new Date(input.stripeSubscription.canceled_at * 1000)
+    : input.subscription.canceledAt;
+  const endedAt = input.stripeSubscription?.ended_at
+    ? new Date(input.stripeSubscription.ended_at * 1000)
+    : input.subscription.endedAt;
+  const status = input.stripeSubscription?.status ?? input.subscription.status;
+  const cancelAtPeriodEnd =
+    input.stripeSubscription?.cancel_at_period_end ?? input.subscription.cancelAtPeriodEnd ?? false;
   const effectiveAt =
     input.type === "subscription_started"
-      ? toUtcIso(input.subscription.periodStart, fallbackIso)
+      ? toUtcIso(periodStart, fallbackIso)
       : input.type === "subscription_canceled"
-        ? toUtcIso(input.subscription.canceledAt ?? input.subscription.endedAt, fallbackIso)
-        : toUtcIso(input.subscription.periodStart, fallbackIso);
+        ? toUtcIso(canceledAt ?? endedAt, fallbackIso)
+        : toUtcIso(periodStart, fallbackIso);
 
   return recordMembershipEvent({
     userId: input.subscription.referenceId,
     source: "stripe",
     type: input.type,
-    stripeSubscriptionId: input.subscription.stripeSubscriptionId ?? null,
+    stripeSubscriptionId,
     effectiveAt,
     metadata: {
       eventType: input.event?.type ?? null,
       plan: input.subscription.plan,
-      status: input.subscription.status,
+      status,
       billingInterval: input.subscription.billingInterval ?? null,
-      cancelAtPeriodEnd: input.subscription.cancelAtPeriodEnd ?? false,
-      periodStart: input.subscription.periodStart?.toISOString() ?? null,
-      periodEnd: input.subscription.periodEnd?.toISOString() ?? null,
-      cancelAt: input.subscription.cancelAt?.toISOString() ?? null,
-      canceledAt: input.subscription.canceledAt?.toISOString() ?? null,
-      endedAt: input.subscription.endedAt?.toISOString() ?? null,
+      cancelAtPeriodEnd,
+      periodStart: periodStart?.toISOString() ?? null,
+      periodEnd: periodEnd?.toISOString() ?? null,
+      cancelAt: cancelAt?.toISOString() ?? null,
+      canceledAt: canceledAt?.toISOString() ?? null,
+      endedAt: endedAt?.toISOString() ?? null,
     },
   });
 }
