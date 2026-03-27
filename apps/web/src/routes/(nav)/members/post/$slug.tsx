@@ -16,6 +16,9 @@ import {
   getPostImages,
 } from "@/lib/members/types";
 import { PostTags } from "@/components/members/post-tags";
+import { PostLikeButton } from "@/components/members/post-like-button";
+import { CommentsSection } from "@/components/members/comments-section";
+import { DetailGallery } from "@/components/members/photo-gallery";
 import { buildPostSeoHead } from "@/lib/post-seo";
 
 export const Route = createFileRoute("/(nav)/members/post/$slug")({
@@ -78,8 +81,50 @@ function PostDetailPage() {
         {post.type === "audio" && <AudioDetail post={post} />}
         {post.type === "photo" && <PhotoDetail post={post} />}
         {post.type === "note" && <NoteDetail post={post} />}
+
+        <PostEngagement
+          postId={post.id}
+          postVisibility={post.visibility}
+          isLoggedIn={membership.isLoggedIn}
+          isMember={membership.isMember}
+          isAdmin={membership.isAdmin}
+          userId={membership.userId}
+        />
       </div>
     </MembershipProvider>
+  );
+}
+
+function PostEngagement({
+  postId,
+  postVisibility,
+  isLoggedIn,
+  isMember,
+  isAdmin,
+  userId,
+}: {
+  postId: number;
+  postVisibility: "public" | "members";
+  isLoggedIn: boolean;
+  isMember: boolean;
+  isAdmin: boolean;
+  userId: string | null;
+}) {
+  return (
+    <>
+      <div className="mt-8 flex items-center gap-4">
+        <PostLikeButton postId={postId} isLoggedIn={isLoggedIn} />
+      </div>
+
+      <CommentsSection
+        postId={postId}
+        postVisibility={postVisibility}
+        isLoggedIn={isLoggedIn}
+        isMember={isMember}
+        currentUserId={userId}
+        isAdmin={isAdmin}
+      />
+    </>
   );
 }
 
@@ -230,25 +275,13 @@ function PhotoDetail({ post }: { post: FeedPost }) {
         <FormattedDate date={post.publishedAt ?? post.createdAt} />
       </div>
 
+      <h1 className="mb-6 font-heading text-3xl leading-tight sm:text-4xl">{post.title}</h1>
+
       {caption && <p className="mb-6 text-lg leading-relaxed text-foreground/80">{caption}</p>}
 
       {post.tags.length > 0 && <PostTags tags={post.tags.map((t) => t.name)} className="mb-6" />}
 
-      {locked ? (
-        <MemberGateBlock />
-      ) : (
-        <div className="space-y-3">
-          {images.map((image) => (
-            <img
-              key={image.url}
-              src={image.url}
-              alt={image.alt}
-              className="w-full rounded-lg object-cover"
-              loading="lazy"
-            />
-          ))}
-        </div>
-      )}
+      {locked ? <MemberGateBlock /> : <DetailGallery images={images} />}
 
       {post.visibility === "public" && !locked && <SoftCta />}
     </article>

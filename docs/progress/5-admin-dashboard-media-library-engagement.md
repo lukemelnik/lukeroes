@@ -6,7 +6,7 @@ Last Updated: 2026-03-27
 
 ## Status
 
-Current Sprint: Sprint 4
+Current Sprint: Sprint 5
 
 ## Completed Work
 
@@ -64,6 +64,29 @@ Completed: 2026-03-27
   - Created `buildPostSeoHead` helper implementing spec rules: post title, excerpt/stripped description, OG image selection respecting members-only access (never exposing members-only media URLs to non-members), SSR-rendered via `beforeLoad` data.
   - Files: `apps/web/src/lib/post-seo.ts`, `apps/web/src/routes/(nav)/members/post/$slug.tsx`
 
+### Sprint 4: Public-facing post rendering, engagement UX, and notifications
+
+Completed: 2026-03-27
+
+- Task 4.1: Expose comment, like, and notification server functions to the UI - DONE
+  - Created `comments.functions.ts` (listComments, createComment, deleteComment, toggleVote), `likes.functions.ts` (togglePostLike, getPostLikeInfo), and `notifications.functions.ts` (listNotifications, unreadCount, markRead) with proper middleware and validation.
+  - Files: `apps/web/src/functions/comments.functions.ts`, `apps/web/src/functions/likes.functions.ts`, `apps/web/src/functions/notifications.functions.ts`
+- Task 4.2: Implement photo gallery layouts and lightbox - DONE
+  - Built `FeedGallery` (1/2/3/4+ layouts per spec) and `DetailGallery` (masonry-style for 4+ using CSS columns with aspect ratio). Built `Lightbox` with dark blurred backdrop, prev/next nav, escape/backdrop close, swipe on mobile, image counter, visible captions.
+  - Files: `apps/web/src/components/members/photo-gallery.tsx`, `apps/web/src/components/members/lightbox.tsx`, `apps/web/src/components/members/photo-post-card.tsx`
+- Task 4.3: Implement post likes UI - DONE
+  - Built `PostLikeButton` with optimistic toggle, filled heart for liked state, like count, and query invalidation. Integrated into post detail page.
+  - Files: `apps/web/src/components/members/post-like-button.tsx`
+- Task 4.4: Implement comments system end-to-end UI - DONE
+  - Built `CommentsSection` with composer, threaded display (top-level newest first, replies nested one level chronological), admin badge/highlight, vote button, reply button, delete button, relative time, sign-in prompt for logged-out users, membership gate for locked posts.
+  - Files: `apps/web/src/components/members/comments-section.tsx`
+- Task 4.5: Implement notification bell and notifications list - DONE
+  - Built `NotificationBell` with unread count badge (polling every 60s) in site header for logged-in users. Built `NotificationsList` with read/unread state, mark-all-read, and links to source posts.
+  - Files: `apps/web/src/components/members/notification-bell.tsx`, `apps/web/src/components/members/notifications-list.tsx`, `apps/web/src/components/header.tsx`
+- Task 4.6: Wire engagement into post detail page - DONE
+  - Updated post detail page to render likes and comments below all post types, with proper access gating (members-only posts gate comments for non-members). Added userId to membership status for comment ownership checks.
+  - Files: `apps/web/src/routes/(nav)/members/post/$slug.tsx`, `apps/web/src/functions/membership.functions.ts`, `apps/web/src/lib/members/types.ts`
+
 ## Implementation Notes
 
 - The repo did not have a tracked Drizzle migration baseline, so Sprint 1 ships the schema in code plus validation; apply the updated schema to environments with `drizzle-kit push` or an equivalent reviewed migration plan before deploying.
@@ -72,5 +95,8 @@ Completed: 2026-03-27
 - The custom `MediaImage` Tiptap extension stores `data-media-id` for stable media references; the save flow uses regex extraction rather than DOM parsing to avoid server-side JSDOM overhead for this simple pattern.
 - `syncPostMediaAttachments` accepts a `rolesToSync` parameter to deterministically clear roles even when no attachments are present for that role, preventing orphaned media associations.
 - Post SEO uses `beforeLoad` to fetch post data server-side, making all SEO tags available in the initial SSR HTML.
+- The notification bell polls every 60 seconds for unread count. Future optimization could use SSE/WebSocket.
+- `getPostImages` now returns `caption`, `width`, and `height` to support lightbox captions and masonry aspect ratios.
+- `getMembershipStatusFn` now returns `userId` so the comments UI can determine comment ownership for delete permissions.
 
 ## Blockers

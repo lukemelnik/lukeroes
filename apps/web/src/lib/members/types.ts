@@ -80,5 +80,8 @@ export function getPostImages(post: FeedPost) {
     .map((m) => ({
       url: m.url ?? "",
       alt: m.alt ?? "",
+      caption: m.caption ?? null,
+      width: m.width ?? null,
+      height: m.height ?? null,
     }));
 }

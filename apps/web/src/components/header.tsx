@@ -2,9 +2,12 @@ import { Link, linkOptions } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/lib/site-config";
+import { authClient } from "@/lib/auth-client";
+import { NotificationBell } from "./members/notification-bell";
 import { Button } from "./ui/button";
 
 export default function Header() {
+  const { data: session } = authClient.useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -66,7 +69,7 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Right - Social Icons */}
+        {/* Right - Social Icons + Notifications */}
         <div className="flex items-center">
           {socialLinks.map(({ href, icon: Icon, label }) => (
             <Button
@@ -86,6 +89,15 @@ export default function Header() {
               </a>
             </Button>
           ))}
+          {session?.user && (
+            <Link
+              to="/members"
+              className="ml-2 text-foreground transition-colors hover:text-primary"
+              aria-label="Notifications"
+            >
+              <NotificationBell />
+            </Link>
+          )}
         </div>
       </div>
 
